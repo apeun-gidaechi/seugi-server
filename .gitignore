@@ -41,3 +41,4 @@ out/
 
 ### Seula's Setting ###
 application.yml
+application-dev.yml
