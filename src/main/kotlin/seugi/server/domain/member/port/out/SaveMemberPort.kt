@@ -1,6 +1,7 @@
 package seugi.server.domain.member.port.out
 
-import java.lang.reflect.Member
+import seugi.server.domain.member.application.model.Member
+
 
 interface SaveMemberPort {
 
