@@ -4,6 +4,6 @@ import seugi.server.domain.member.application.model.value.MemberId
 
 data class Member (
 
-    val id: MemberId
+    val id: MemberId?
 
 )
