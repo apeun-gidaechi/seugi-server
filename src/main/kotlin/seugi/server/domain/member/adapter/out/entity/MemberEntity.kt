@@ -10,6 +10,6 @@ data class MemberEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int = 0
+    var id: Long? = 0
 
 )
