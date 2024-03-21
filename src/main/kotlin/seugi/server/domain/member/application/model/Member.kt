@@ -8,6 +8,7 @@ data class Member (
     val name: MemberName,
     val email: MemberEmail,
     val password: MemberPassword,
-    val birth: MemberBirth
+    val birth: MemberBirth,
+    val role: MemberRole
 
 )
