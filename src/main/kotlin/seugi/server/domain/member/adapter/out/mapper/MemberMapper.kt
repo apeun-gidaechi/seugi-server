@@ -9,7 +9,11 @@ class MemberMapper {
 
     fun returnMemberToMemberEntityWithoutId(member: Member): MemberEntity {
         return MemberEntity(
-            id = null
+            id = null,
+            name = member.name.value,
+            email = member.email.value,
+            password = member.password.value,
+            birth = member.birth.value
         )
     }
 
