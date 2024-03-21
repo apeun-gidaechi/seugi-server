@@ -1,5 +1,6 @@
 package seugi.server.domain.member.application.service
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 import seugi.server.domain.member.adapter.`in`.dto.CreateMemberDTO
@@ -14,7 +15,8 @@ import seugi.server.global.response.BaseResponse
 
 @Service
 class CreateMemberService (
-    private val saveMemberPort: SaveMemberPort
+    private val saveMemberPort: SaveMemberPort,
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder
 ): CreateMemberUseCase {
 
     override fun createMember(@RequestBody memberDTO: CreateMemberDTO)
@@ -23,7 +25,9 @@ class CreateMemberService (
             id = null,
             name = MemberName(memberDTO.name),
             email = MemberEmail(memberDTO.email),
-            password = MemberPassword(memberDTO.password),
+            password = MemberPassword(
+                bCryptPasswordEncoder.encode(memberDTO.password)
+            ),
             birth = MemberBirth(memberDTO.birth)
         ))
 
