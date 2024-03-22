@@ -1,6 +1,6 @@
 package seugi.server.domain.member.adapter.`in`.dto
 
-class CreateMemberDTO (
+data class RegisterMemberDTO (
     val name: String,
     val email: String,
     val password: String,
