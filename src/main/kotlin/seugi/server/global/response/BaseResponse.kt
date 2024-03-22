@@ -1,6 +1,6 @@
 package seugi.server.global.response
 
-class BaseResponse<T> (
+data class BaseResponse<T> (
 
     val code: Int,
     val success: Boolean,
