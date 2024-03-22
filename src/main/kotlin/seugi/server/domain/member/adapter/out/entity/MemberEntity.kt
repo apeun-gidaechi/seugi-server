@@ -13,7 +13,7 @@ data class MemberEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = 0,
+    var id: Long = 0,
 
     @Column(nullable = false)
     var name: String = "",
@@ -26,5 +26,8 @@ data class MemberEntity (
 
     @Column(nullable = false)
     var birth: String = "",
+
+    @Column(nullable = false)
+    var role: String = "ROLE_USER",
 
 )
