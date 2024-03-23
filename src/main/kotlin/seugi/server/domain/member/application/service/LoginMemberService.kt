@@ -3,12 +3,11 @@ package seugi.server.domain.member.application.service
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import seugi.server.domain.member.adapter.`in`.dto.LoginMemberDTO
-import seugi.server.domain.member.adapter.out.mapper.MemberMapper
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.port.`in`.LoginMemberUseCase
 import seugi.server.domain.member.port.out.LoadMemberPort
-import seugi.server.global.jwt.JwtInfo
-import seugi.server.global.jwt.JwtUtils
+import seugi.server.global.auth.jwt.JwtInfo
+import seugi.server.global.auth.jwt.JwtUtils
 import seugi.server.global.response.BaseResponse
 
 @Service

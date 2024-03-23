@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import seugi.server.domain.member.adapter.`in`.dto.LoginMemberDTO
 import seugi.server.domain.member.port.`in`.LoginMemberUseCase
-import seugi.server.global.jwt.JwtInfo
+import seugi.server.global.auth.jwt.JwtInfo
 import seugi.server.global.response.BaseResponse
 
 @RestController
