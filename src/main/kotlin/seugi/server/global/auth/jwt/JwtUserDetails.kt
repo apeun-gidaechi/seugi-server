@@ -1,10 +1,10 @@
-package seugi.server.global.auth
+package seugi.server.global.auth.jwt
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import seugi.server.domain.member.application.model.Member
 
-class UserDetailsImpl(
+class JwtUserDetails(
     val member: Member
 ) : UserDetails {
 
