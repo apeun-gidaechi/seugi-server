@@ -1,4 +1,4 @@
-package seugi.server.global.jwt
+package seugi.server.global.auth
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

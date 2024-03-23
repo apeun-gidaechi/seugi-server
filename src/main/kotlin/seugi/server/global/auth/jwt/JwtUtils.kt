@@ -1,4 +1,4 @@
-package seugi.server.global.jwt
+package seugi.server.global.auth.jwt
 
 import io.jsonwebtoken.Jwts
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
