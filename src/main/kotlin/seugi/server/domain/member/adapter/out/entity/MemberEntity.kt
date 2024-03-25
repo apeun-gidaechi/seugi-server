@@ -30,4 +30,10 @@ data class MemberEntity (
     @Column(nullable = false)
     var role: String = "ROLE_USER",
 
+    var loginId: String = "",
+
+    var provider: String = "",
+
+    var providerId: String = ""
+
 )
