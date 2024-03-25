@@ -1,6 +1,7 @@
 package seugi.server.global.auth.jwt
 
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import seugi.server.domain.member.application.model.Member
 
@@ -11,7 +12,7 @@ class JwtUserDetails(
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities: MutableCollection<GrantedAuthority> = ArrayList()
 
-        authorities.add(member.role.value as GrantedAuthority)
+        authorities.add(SimpleGrantedAuthority(member.role.value))
 
         return authorities
     }
