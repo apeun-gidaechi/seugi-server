@@ -13,6 +13,9 @@ class MemberMapper {
             email = member.email.value,
             password = member.password.value,
             birth = member.birth.value,
+            loginId = member.loginId.value,
+            provider = member.provider.value,
+            providerId = member.providerId.value
         )
     }
 
@@ -23,7 +26,10 @@ class MemberMapper {
             email = MemberEmail(memberEntity.email),
             password = MemberPassword(memberEntity.password),
             birth = MemberBirth(memberEntity.birth),
-            role = MemberRole(memberEntity.role)
+            role = MemberRole(memberEntity.role),
+            loginId = MemberLoginId(memberEntity.loginId),
+            provider = MemberProvider(memberEntity.provider),
+            providerId = MemberProviderId(memberEntity.providerId)
         )
     }
 
