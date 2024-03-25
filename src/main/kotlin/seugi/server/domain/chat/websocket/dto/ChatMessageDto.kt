@@ -5,5 +5,6 @@ data class ChatMessageDto(
     var writer : String,
     var message : String,
     var emoji : Long,
-    var time  : String
+    var timestemp  : String,
+
 )
