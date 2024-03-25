@@ -9,6 +9,9 @@ data class Member (
     val email: MemberEmail,
     val password: MemberPassword,
     val birth: MemberBirth,
-    val role: MemberRole
+    val role: MemberRole,
+    val loginId: MemberLoginId,
+    val provider: MemberProvider,
+    val providerId: MemberProviderId
 
 )
