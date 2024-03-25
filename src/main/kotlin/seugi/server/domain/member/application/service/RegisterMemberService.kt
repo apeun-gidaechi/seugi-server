@@ -28,6 +28,9 @@ class RegisterMemberService (
             ),
             birth = MemberBirth(memberDTO.birth),
             role = MemberRole("ROLE_USER"),
+            loginId = MemberLoginId(""),
+            provider = MemberProvider(""),
+            providerId = MemberProviderId("")
         )
 
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
