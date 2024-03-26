@@ -3,7 +3,7 @@ package seugi.server.domain.chat.domain.chat
 import jakarta.persistence.*
 import seugi.server.domain.chat.domain.chat.embeddable.emoji
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
-import seugi.server.domain.chat.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.status.ChatStatusEnum
 import java.time.LocalDateTime
 
 

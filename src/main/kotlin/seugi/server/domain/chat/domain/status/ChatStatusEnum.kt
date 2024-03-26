@@ -1,4 +1,4 @@
-package seugi.server.domain.chat.status
+package seugi.server.domain.chat.domain.status
 
 enum class ChatStatusEnum {
     DELETE, ALIVE

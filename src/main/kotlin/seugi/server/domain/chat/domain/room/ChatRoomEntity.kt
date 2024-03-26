@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.aspectj.bridge.Message
 import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.joined.JoinedEntity
-import seugi.server.domain.chat.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.status.ChatStatusEnum
 import java.time.LocalDateTime
 
 
