@@ -4,7 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 
 @Embeddable
-class emoji {
+class Emoji {
     @Column(name = "emoji_id")
     var emojiId: Long? = null
     @Column(name = "emoji_set_user")
