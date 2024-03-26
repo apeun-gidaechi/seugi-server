@@ -1,9 +1,9 @@
-package seugi.server.domain.chat.websocket.controller
+package seugi.server.domain.chat.presentation.websocket.controller
 
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
-import seugi.server.domain.chat.websocket.dto.ChatMessageDto
+import seugi.server.domain.chat.presentation.websocket.dto.ChatMessageDto
 
 @Controller
 class StompChatController(

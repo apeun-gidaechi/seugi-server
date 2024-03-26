@@ -1,4 +1,4 @@
-package seugi.server.domain.chat.websocket.config
+package seugi.server.domain.chat.presentation.websocket.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry

@@ -1,4 +1,4 @@
-package seugi.server.domain.chat.websocket.dto
+package seugi.server.domain.chat.presentation.websocket.dto
 
 data class ChatMessageDto(
     var roomId : String,
