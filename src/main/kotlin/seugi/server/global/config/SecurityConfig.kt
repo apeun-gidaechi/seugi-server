@@ -12,12 +12,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import seugi.server.global.auth.jwt.JwtAuthenticationFilter
 import seugi.server.global.auth.jwt.JwtUtils
 import seugi.server.global.auth.oauth.OAuth2MemberService
+import seugi.server.global.auth.oauth.handler.OAuth2SuccessfulHandler
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig (
     private val jwtUtils: JwtUtils,
-    private val oAuth2MemberService: OAuth2MemberService
+    private val oAuth2MemberService: OAuth2MemberService,
+    private val oAuth2SuccessfulHandler: OAuth2SuccessfulHandler
 ) {
 
     @Bean
@@ -55,6 +57,8 @@ class SecurityConfig (
                 req.userInfoEndpoint {
                     it.userService(oAuth2MemberService)
                 }
+
+                req.successHandler(oAuth2SuccessfulHandler)
             }
 
             .addFilterBefore(JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
