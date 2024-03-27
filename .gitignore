@@ -41,3 +41,5 @@ out/
 
 ### Seula's Setting ###
 application.yml
+application-mysql.yml
+application-oauth.yml
