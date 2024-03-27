@@ -5,13 +5,14 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
 import seugi.server.domain.member.port.out.ExistMemberPort
 import seugi.server.domain.member.port.out.LoadMemberPort
 import seugi.server.domain.member.port.out.SaveMemberPort
 
-@Component
+@Service
 class OAuth2MemberService(
     private val existMemberPort: ExistMemberPort,
     private val saveMemberPort: SaveMemberPort,
