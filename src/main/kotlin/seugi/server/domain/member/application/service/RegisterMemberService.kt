@@ -1,6 +1,5 @@
 package seugi.server.domain.member.application.service
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
