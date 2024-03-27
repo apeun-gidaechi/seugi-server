@@ -10,12 +10,12 @@ import seugi.server.global.auth.jwt.JwtInfo
 import seugi.server.global.response.BaseResponse
 
 @RestController
-@RequestMapping("member")
+@RequestMapping("/member")
 class LoginMemberController (
     private val loginMemberUseCase: LoginMemberUseCase
 ) {
 
-    @PostMapping("login")
+    @PostMapping("/login")
     fun loginMember(@RequestBody memberDTO: LoginMemberDTO): BaseResponse<JwtInfo> {
         return loginMemberUseCase.loginMember(memberDTO)
     }
