@@ -16,6 +16,10 @@ class MessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id:Long? = null
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
+    var chatRoom: ChatRoomEntity? = null
+
     @Column(nullable = false)
     val writer:String = ""
 
