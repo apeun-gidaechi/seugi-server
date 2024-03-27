@@ -17,7 +17,7 @@ class RegisterMemberController (
 ) {
 
     @PostMapping("/register")
-    fun createMember(@RequestBody memberDTO: RegisterMemberDTO): BaseResponse<Any> {
+    fun createMember(@RequestBody memberDTO: RegisterMemberDTO): BaseResponse<String> {
         return registerMemberUseCase.registerMember(memberDTO)
     }
 

@@ -5,6 +5,6 @@ import seugi.server.global.response.BaseResponse
 
 interface RegisterMemberUseCase {
 
-    fun registerMember(memberDTO: RegisterMemberDTO): BaseResponse<Any>
+    fun registerMember(memberDTO: RegisterMemberDTO): BaseResponse<String>
 
 }
