@@ -4,6 +4,5 @@ data class ChatMessageDto(
     var roomId : String,
     var writer : String,
     var message : String,
-    var emoji : Long,
-    var timestamp  : String,
+    var timestamp  : String
 )
