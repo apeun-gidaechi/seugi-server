@@ -1,5 +1,6 @@
 package seugi.server.global.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -21,7 +22,8 @@ class SecurityConfig (
     private val jwtUtils: JwtUtils,
     private val oAuth2MemberService: OAuth2MemberService,
     private val oAuth2SuccessfulHandler: OAuth2SuccessfulHandler,
-    private val oAuth2FailureHandler: OAuth2FailureHandler
+    private val oAuth2FailureHandler: OAuth2FailureHandler,
+    private val objectMapper: ObjectMapper
 ) {
 
     @Bean
@@ -61,10 +63,11 @@ class SecurityConfig (
                 }
 
                 req.successHandler(oAuth2SuccessfulHandler)
+
                 req.failureHandler(oAuth2FailureHandler)
             }
 
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtils), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
 
             .exceptionHandling {
                 it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.NOT_FOUND))
