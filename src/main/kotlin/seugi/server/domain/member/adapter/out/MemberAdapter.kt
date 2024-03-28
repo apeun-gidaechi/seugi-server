@@ -16,19 +16,19 @@ class MemberAdapter (
 
     override fun saveMember(member: Member) {
         memberRepository.save(
-            memberMapper.returnMemberToMemberEntityWithoutId(member)
+            memberMapper.toEntity(member)
         )
     }
 
     override fun loadMemberWithId(id: Long): Member {
-        return memberMapper.returnMemberEntityToMember(
+        return memberMapper.toDomain(
             memberRepository.findById(id).get()
         )
     }
 
     override fun loadMemberWithEmail(email: String): Member {
-        return memberMapper.returnMemberEntityToMember(
-            memberRepository.findByEmail(email)
+        return memberMapper.toDomain(
+            memberRepository.findByEmail(email).get()
         )
     }
 
