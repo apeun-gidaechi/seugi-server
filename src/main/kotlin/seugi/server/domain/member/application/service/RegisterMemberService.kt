@@ -1,15 +1,17 @@
 package seugi.server.domain.member.application.service
 
+import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 import seugi.server.domain.member.adapter.`in`.dto.RegisterMemberDTO
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
+import seugi.server.domain.member.exception.MemberErrorCode
 import seugi.server.domain.member.port.`in`.RegisterMemberUseCase
 import seugi.server.domain.member.port.out.ExistMemberPort
 import seugi.server.domain.member.port.out.SaveMemberPort
-import seugi.server.global.exception.CustomErrorCode
+import seugi.server.global.auth.jwt.exception.JwtErrorCode
 import seugi.server.global.exception.CustomException
 import seugi.server.global.response.BaseResponse
 
@@ -36,15 +38,14 @@ class RegisterMemberService (
         )
 
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
-            throw CustomException(CustomErrorCode.MEMBER_ALREADY_EXIST)
+            throw CustomException(MemberErrorCode.MEMBER_ALREADY_EXIST)
         } else {
             saveMemberPort.saveMember(member)
 
             return BaseResponse (
-                code = 200,
+                status = HttpStatus.OK,
                 success = true,
                 message = "회원가입 성공 !!",
-                data = emptyList()
             )
         }
     }

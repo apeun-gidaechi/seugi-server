@@ -1,14 +1,13 @@
 package seugi.server.global.auth.jwt
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.jsonwebtoken.ExpiredJwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
-import seugi.server.global.exception.CustomErrorCode
+import seugi.server.global.auth.jwt.exception.JwtErrorCode
 import seugi.server.global.response.BaseResponse
 
 class JwtAuthenticationFilter(
@@ -31,7 +30,7 @@ class JwtAuthenticationFilter(
 
                 SecurityContextHolder.getContext().authentication = authentication
             } else {
-                setErrorResponse(response, CustomErrorCode.JWT_TOKEN_EXPIRED)
+                setErrorResponse(response, JwtErrorCode.JWT_TOKEN_EXPIRED)
                 return
             }
         }
@@ -41,18 +40,18 @@ class JwtAuthenticationFilter(
 
     private fun setErrorResponse(
         response: HttpServletResponse,
-        errorCode: CustomErrorCode
+        errorCode: JwtErrorCode
     ) {
-        response.status = errorCode.code
+        response.status = errorCode.status.value()
         response.contentType = "application/json;charset=UTF-8"
 
         response.writer.write(
             objectMapper.writeValueAsString(
                 BaseResponse<String> (
-                    code = errorCode.code,
+                    status = errorCode.status,
+                    state = errorCode.state,
                     success = false,
-                    message = errorCode.msg,
-                    data = emptyList()
+                    message = errorCode.message,
                 )
             )
         )
