@@ -26,15 +26,14 @@ class JwtAuthenticationFilter(
         if (token != null && token.startsWith("Bearer ")) {
             token = jwtUtils.getToken(token)
 
-            try  {
-                jwtUtils.isExpired(token)
-            } catch (e: ExpiredJwtException) {
+            if (!jwtUtils.isExpired(token)) {
+                val authentication: Authentication = jwtUtils.getAuthentication(token)
+
+                SecurityContextHolder.getContext().authentication = authentication
+            } else {
                 setErrorResponse(response, CustomErrorCode.JWT_TOKEN_EXPIRED)
+                return
             }
-
-            val authentication: Authentication = jwtUtils.getAuthentication(token)
-
-            SecurityContextHolder.getContext().authentication = authentication
         }
 
         doFilter(request, response, filterChain)
@@ -45,7 +44,7 @@ class JwtAuthenticationFilter(
         errorCode: CustomErrorCode
     ) {
         response.status = errorCode.code
-        response.contentType = "application/json"
+        response.contentType = "application/json;charset=UTF-8"
 
         response.writer.write(
             objectMapper.writeValueAsString(
