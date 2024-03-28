@@ -6,10 +6,13 @@ plugins {
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
+    kotlin("kapt") version "1.9.23"
 }
 
 group = "seugi"
 version = "0.0.1-SNAPSHOT"
+
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -20,6 +23,7 @@ configurations {
         extendsFrom(configurations.annotationProcessor.get())
     }
 }
+val queryDslVersion: String by extra
 
 repositories {
     mavenCentral()
@@ -36,12 +40,34 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     testImplementation("org.springframework.security:spring-security-test")
-    compileOnly("org.projectlombok:lombok")
     implementation("org.webjars:stomp-websocket:2.3.4")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     runtimeOnly("com.mysql:mysql-connector-j")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
+}
+
+
+val generated = file("src/main/generated")
+
+tasks.withType<JavaCompile> {
+    options.generatedSourceOutputDirectory.set(generated)
+}
+
+sourceSets {
+    main {
+        kotlin.srcDirs += generated
+    }
+}
+
+tasks.named("clean") {
+    doLast {
+        generated.deleteRecursively()
+    }
 }
 
 tasks.withType<KotlinCompile> {
