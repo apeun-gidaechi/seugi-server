@@ -1,5 +1,6 @@
 package seugi.server.global.auth.jwt
 
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -28,7 +29,12 @@ class JwtUtils (
     }
 
     fun isExpired(token: String): Boolean {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).payload.expiration.before(Date())
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+            return false
+        } catch (e: ExpiredJwtException) {
+            return true
+        }
     }
 
     fun getToken(token: String): String {

@@ -1,5 +1,6 @@
 package seugi.server.global.exception
 
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import seugi.server.global.response.BaseResponse
@@ -8,13 +9,15 @@ import seugi.server.global.response.BaseResponse
 class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException::class)
-    fun handleCustomException(customException: CustomException): BaseResponse<String> {
-        return BaseResponse (
-            code = customException.customErrorCode.code,
+    fun handleCustomException(customException: CustomException): ResponseEntity<Any> {
+        val response = BaseResponse<Unit>(
+            status = customException.customErrorCode.status,
+            state = customException.customErrorCode.state,
             success = false,
-            message = customException.customErrorCode.msg,
-            data = emptyList()
+            message = customException.customErrorCode.message,
         )
+
+        return ResponseEntity(response, customException.customErrorCode.status)
     }
 
 }
