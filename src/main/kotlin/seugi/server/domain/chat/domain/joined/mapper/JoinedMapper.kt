@@ -10,7 +10,7 @@ import seugi.server.global.common.Mapper
 class JoinedMapper : Mapper<Joined, JoinedEntity> {
     override fun toDomain(entity: JoinedEntity): Joined {
         return Joined(
-            id = entity.id!!,
+            joinUserId = entity.joinedUserId!!,
             chatRoomId = entity.chatRoom?.id!!
         )
     }
@@ -19,7 +19,7 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
 
     override fun toEntity(domain: Joined): JoinedEntity {
         return JoinedEntity(
-            id = domain.id,
+            joinedUserId = domain.joinUserId,
             chatRoom = this.chatRoomEntity
         )
     }
