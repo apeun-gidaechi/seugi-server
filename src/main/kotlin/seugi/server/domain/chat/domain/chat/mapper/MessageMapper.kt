@@ -1,10 +1,12 @@
 package seugi.server.domain.chat.domain.chat.mapper
 
+import org.springframework.stereotype.Component
 import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
 import seugi.server.global.common.Mapper
 
+@Component
 class MessageMapper : Mapper<Message, MessageEntity> {
 
     override fun toDomain(entity: MessageEntity): Message {

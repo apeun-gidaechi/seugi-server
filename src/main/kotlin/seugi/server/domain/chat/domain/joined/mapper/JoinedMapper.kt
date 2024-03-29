@@ -1,11 +1,12 @@
 package seugi.server.domain.chat.domain.joined.mapper
 
+import org.springframework.stereotype.Component
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
-import seugi.server.domain.chat.domain.room.model.Room
 import seugi.server.global.common.Mapper
 
+@Component
 class JoinedMapper : Mapper<Joined, JoinedEntity> {
     override fun toDomain(entity: JoinedEntity): Joined {
         return Joined(
