@@ -10,37 +10,35 @@ import java.time.LocalDateTime
 
 
 @Entity
-class MessageEntity {
+class MessageEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id:Long? = null
+    val id:Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id")
-    var chatRoom: ChatRoomEntity? = null
+    var chatRoom: ChatRoomEntity,
 
     @Column(nullable = false)
-    val writer:String = ""
+    val writer:String,
 
     @Column(nullable = false)
-    val message:String = ""
+    val message:String,
 
     @ElementCollection
-    var emoji:MutableList<Emoji> = mutableListOf()
+    var emoji:MutableList<Emoji> = emptyArray<Emoji>().toMutableList(),
 
     @Column(nullable = false)
-    val timestamp : LocalDateTime = LocalDateTime.now()
+    val timestamp : LocalDateTime = LocalDateTime.now(),
 
     @ElementCollection
-    var read: MutableList<Read> = mutableListOf()
+    var read: MutableList<Read> = emptyArray<Read>().toMutableList(),
 
     @ElementCollection
-    var unRead: MutableList<UnRead> = mutableListOf()
+    var unRead: MutableList<UnRead> = emptyArray<UnRead>().toMutableList(),
 
     @Enumerated(value = EnumType.STRING)
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 
-
-
-}
+)
