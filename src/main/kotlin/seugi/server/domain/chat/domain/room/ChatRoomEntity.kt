@@ -28,5 +28,5 @@ class ChatRoomEntity(
     var messages: MutableList<MessageEntity> = emptyArray<MessageEntity>().toMutableList(),
 
     @OneToMany(mappedBy = "chatRoom", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var joined: MutableList<JoinedEntity>
+    var joined: MutableList<JoinedEntity> = emptyArray<JoinedEntity>().toMutableList()
 )
