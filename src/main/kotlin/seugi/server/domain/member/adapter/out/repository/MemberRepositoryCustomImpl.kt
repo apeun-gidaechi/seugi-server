@@ -27,7 +27,7 @@ class MemberRepositoryCustomImpl (
         val memberEntity: QMemberEntity = QMemberEntity.memberEntity
 
         return jpaQueryFactory
-            .select(memberEntity)
+            .selectOne()
             .from(memberEntity)
             .where(memberEntity.email.eq(email))
             .fetchOne() != null
