@@ -8,7 +8,7 @@ data class BaseResponse<T> (
 
     val status: HttpStatus,
     val success: Boolean,
-    val state: String? = "NONE",
+    val state: String? = "OK",
     val message: String,
     val data: T? = null
 
