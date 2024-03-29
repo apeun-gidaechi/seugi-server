@@ -1,6 +1,6 @@
 package seugi.server.domain.chat.domain.joined.model
 
 data class Joined (
-    val id : Long,
+    val joinUserId : Long,
     val chatRoomId : Long
 )
