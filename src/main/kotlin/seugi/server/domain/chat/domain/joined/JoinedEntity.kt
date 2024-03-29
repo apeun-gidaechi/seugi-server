@@ -7,7 +7,7 @@ import seugi.server.domain.chat.domain.room.ChatRoomEntity
 @Entity
 class JoinedEntity (
     @Id
-    val id: Long? = null,
+    val joinedUserId: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id")
