@@ -12,8 +12,6 @@ plugins {
 group = "seugi"
 version = "0.0.1-SNAPSHOT"
 
-
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
@@ -49,6 +47,7 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 
