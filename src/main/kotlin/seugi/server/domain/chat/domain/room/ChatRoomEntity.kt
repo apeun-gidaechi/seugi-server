@@ -9,26 +9,24 @@ import java.time.LocalDateTime
 
 
 @Entity
-class ChatRoomEntity {
-
+class ChatRoomEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
-    var id: Long? = null
+    var id: Long? = null,
 
     @Column(nullable = false)
-    var chatName: String = ""
+    var chatName: String,
 
     @Column(nullable = false)
-    val createdAt: LocalDateTime? = null
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
-    var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
+    var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE,
 
     @OneToMany(mappedBy = "chatRoom", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var messages: MutableList<MessageEntity> = mutableListOf()
+    var messages: MutableList<MessageEntity> = emptyArray<MessageEntity>().toMutableList(),
 
     @OneToMany(mappedBy = "chatRoom", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    var joined: MutableList<JoinedEntity> = mutableListOf()
-
-}
+    var joined: MutableList<JoinedEntity>
+)
