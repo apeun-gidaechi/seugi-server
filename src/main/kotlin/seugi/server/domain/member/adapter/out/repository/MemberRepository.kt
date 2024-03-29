@@ -6,10 +6,10 @@ import seugi.server.domain.member.adapter.out.entity.MemberEntity
 import java.util.Optional
 
 @Repository
-interface MemberRepository: CrudRepository<MemberEntity, Long> {
+interface MemberRepository: CrudRepository<MemberEntity, Long>, MemberRepositoryCustom {
 
-    fun findByEmail(email: String): Optional<MemberEntity>
+    override fun findByEmail(email: String): Optional<MemberEntity>
 
-    fun existsByEmail(email: String): Boolean
+    override fun existsByEmail(email: String): Boolean
 
 }
