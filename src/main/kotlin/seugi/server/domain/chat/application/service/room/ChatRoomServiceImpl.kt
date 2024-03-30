@@ -22,7 +22,10 @@ class ChatRoomServiceImpl(
             )
         ).id
 
-        joinedService.joinUserJoined(chatRoomId = chatRoomId!!, joinedUserId = createRoomRequest.joinUsers)
+        joinedService.joinUserJoined(
+            chatRoomId = chatRoomId!!,
+            joinedUserId = createRoomRequest.joinUsers!!
+        )
 
         return BaseResponse(
             status = HttpStatus.OK,
