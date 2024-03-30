@@ -6,7 +6,6 @@ import seugi.server.domain.chat.domain.chat.embeddable.UnRead
 import java.time.LocalDateTime
 
 data class Message(
-    val id: Long,
     val chatRoomId: Long,
     val writer: String,
     val message: String,
