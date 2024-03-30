@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
+import seugi.server.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import seugi.server.global.common.Mapper
 
 @Component
@@ -11,21 +12,21 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
     override fun toDomain(entity: JoinedEntity): Joined {
         return Joined(
             joinUserId = entity.joinedUserId!!,
-            chatRoomId = entity.chatRoom?.id!!
+            chatRoomId = entity.chatRoomId!!
         )
     }
-
-    private var chatRoomEntity : ChatRoomEntity? = null
 
     override fun toEntity(domain: Joined): JoinedEntity {
         return JoinedEntity(
             joinedUserId = domain.joinUserId,
-            chatRoom = this.chatRoomEntity
+            chatRoomId = domain.chatRoomId
         )
     }
 
-    private fun setChatRoomEntity(chatRoomEntity: ChatRoomEntity){
-        this.chatRoomEntity = chatRoomEntity
+    fun toEntity(chatRoomId : Long, joinedUserId : Long) : JoinedEntity{
+        return JoinedEntity(
+            joinedUserId = joinedUserId,
+            chatRoomId = chatRoomId
+        )
     }
-
 }
