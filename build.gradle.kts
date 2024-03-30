@@ -51,7 +51,7 @@ dependencies {
     kapt("jakarta.persistence:jakarta.persistence-api")
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
 }
 
 
