@@ -17,7 +17,7 @@ class OAuth2SuccessfulHandler (
     private val loadMemberPort: LoadMemberPort
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
-    @Value("\${rest.base-url}") val baseUrl: String = ""
+    @Value("\${oauth2.redirect-url}") val redirectUrl: String = ""
 
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -40,7 +40,7 @@ class OAuth2SuccessfulHandler (
 
     private fun makeRedirectUri(jwtInfo: JwtInfo): String {
         return UriComponentsBuilder
-            .fromUriString("$baseUrl/oauth2/redirect")
+            .fromUriString(redirectUrl)
             .queryParam("accessToken", jwtInfo.accessToken)
             .queryParam("refreshToken", jwtInfo.refreshToken)
             .build()

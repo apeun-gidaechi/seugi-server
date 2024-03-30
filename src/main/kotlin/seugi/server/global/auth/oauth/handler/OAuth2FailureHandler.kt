@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder
 @Component
 class OAuth2FailureHandler : SimpleUrlAuthenticationFailureHandler() {
 
-    @Value("\${rest.base-url}") val baseUrl: String = ""
+    @Value("\${oauth2.redirect-url}") val redirectUrl: String = ""
 
     override fun onAuthenticationFailure(
         request: HttpServletRequest?,
@@ -23,7 +23,7 @@ class OAuth2FailureHandler : SimpleUrlAuthenticationFailureHandler() {
 
     private fun makeRedirectUri(): String {
         return UriComponentsBuilder
-            .fromUriString("$baseUrl/oauth2/redirect")
+            .fromUriString(redirectUrl)
             .queryParam("status", "500")
             .queryParam("message", "구글 인증 실패")
             .build()
