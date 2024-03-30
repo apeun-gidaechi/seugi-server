@@ -1,15 +1,14 @@
 package seugi.server.domain.chat.domain.joined
 
 import jakarta.persistence.*
+import org.springframework.data.mongodb.core.mapping.Document
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
 
 
-@Entity
+@Document(collection = "join")
 class JoinedEntity (
     @Id
-    val joinedUserId: Long? = null,
+    val chatRoomId: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
-    var chatRoom: ChatRoomEntity? = null
+    val joinedUserId : Long?  = null,
 )
