@@ -2,6 +2,7 @@ package seugi.server.global.auth.oauth.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
@@ -15,6 +16,8 @@ class OAuth2SuccessfulHandler (
     private val jwtUtils: JwtUtils,
     private val loadMemberPort: LoadMemberPort
 ) : SimpleUrlAuthenticationSuccessHandler() {
+
+    @Value("\${rest.base-url}") val baseUrl: String = ""
 
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -37,7 +40,7 @@ class OAuth2SuccessfulHandler (
 
     private fun makeRedirectUri(jwtInfo: JwtInfo): String {
         return UriComponentsBuilder
-            .fromUriString("http://localhost:8082/oauth2/redirect")
+            .fromUriString("$baseUrl/oauth2/redirect")
             .queryParam("accessToken", jwtInfo.accessToken)
             .queryParam("refreshToken", jwtInfo.refreshToken)
             .build()
