@@ -4,10 +4,13 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import seugi.server.domain.member.application.model.Member
+import seugi.server.domain.member.application.model.value.MemberId
 
 class JwtUserDetails(
     val member: Member
 ) : UserDetails {
+
+    val id: MemberId? = member.id
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities: MutableCollection<GrantedAuthority> = ArrayList()
