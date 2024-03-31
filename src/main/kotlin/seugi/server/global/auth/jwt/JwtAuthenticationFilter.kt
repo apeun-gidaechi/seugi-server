@@ -30,8 +30,9 @@ class JwtAuthenticationFilter(
                     val authentication: Authentication = jwtUtils.getAuthentication(token)
 
                     SecurityContextHolder.getContext().authentication = authentication
-                } catch (e: NullPointerException) {
+                } catch (e: Exception) {
                     setErrorResponse(response, JwtErrorCode.JWT_NULL_EXCEPTION)
+                    return
                 }
             } else {
                 setErrorResponse(response, JwtErrorCode.JWT_TOKEN_EXPIRED)
