@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 data class Room(
     val id: Long? = null,
     val chatName: String,
+    val containUserCnt : Long,
     val createdAt: LocalDateTime? = null,
     val chatStatusEnum: ChatStatusEnum? = null
 )

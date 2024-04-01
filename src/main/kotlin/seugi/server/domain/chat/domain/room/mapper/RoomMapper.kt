@@ -13,6 +13,7 @@ class RoomMapper: Mapper<Room, ChatRoomEntity> {
         return Room(
             id = entity.id!!,
             chatName = entity.chatName,
+            containUserCnt = entity.containUserCnt,
             createdAt = entity.createdAt,
             chatStatusEnum = entity.chatStatus,
         )
@@ -20,13 +21,15 @@ class RoomMapper: Mapper<Room, ChatRoomEntity> {
 
     override fun toEntity(domain: Room): ChatRoomEntity {
         return ChatRoomEntity(
-            chatName = domain.chatName
+            chatName = domain.chatName,
+            containUserCnt = domain.containUserCnt
         )
     }
 
     fun toRoom(createRoomRequest: CreateRoomRequest) : Room{
         return Room(
-            chatName = createRoomRequest.roomName
+            chatName = createRoomRequest.roomName,
+            containUserCnt = createRoomRequest.joinUsers?.size?.toLong()!!
         )
     }
 }
