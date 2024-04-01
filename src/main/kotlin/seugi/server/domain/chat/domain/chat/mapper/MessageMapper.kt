@@ -37,10 +37,10 @@ class MessageMapper : Mapper<Message, MessageEntity> {
 
     fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, userId:Long, writer: String) : Message{
         return Message(
-            chatRoomId = chatMessageDto.roomId,
+            chatRoomId = chatMessageDto.roomId!!,
             writer = writer,
             userId = userId,
-            message = chatMessageDto.message,
+            message = chatMessageDto.message!!,
             unRead = joinedEntity.joinedUserId
         )
     }
