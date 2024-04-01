@@ -1,4 +1,4 @@
-package seugi.server.domain.member.exception
+package seugi.server.domain.member.application.exception
 
 import org.springframework.http.HttpStatus
 import seugi.server.global.exception.CustomErrorCode

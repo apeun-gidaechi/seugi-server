@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import seugi.server.domain.member.adapter.`in`.dto.RegisterMemberDTO
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
-import seugi.server.domain.member.exception.MemberErrorCode
+import seugi.server.domain.member.application.exception.MemberErrorCode
 import seugi.server.domain.member.port.`in`.RegisterMemberUseCase
 import seugi.server.domain.member.port.out.ExistMemberPort
 import seugi.server.domain.member.port.out.SaveMemberPort
