@@ -3,8 +3,6 @@ package seugi.server.domain.chat.domain.chat
 import jakarta.persistence.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
-import seugi.server.domain.chat.domain.chat.embeddable.Read
-import seugi.server.domain.chat.domain.chat.embeddable.UnRead
 import seugi.server.domain.chat.domain.status.ChatStatusEnum
 import java.time.LocalDateTime
 
@@ -13,9 +11,13 @@ import java.time.LocalDateTime
 class MessageEntity(
 
     @Id
+    val id: String? = null,
+
     var chatRoomId: Long? = null,
 
     var writer: String,
+
+    var userId: Long,
 
     var message: String,
 
@@ -23,9 +25,9 @@ class MessageEntity(
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    var read: MutableList<Read> = mutableListOf(),
+    var read: MutableList<Long> = mutableListOf(),
 
-    var unRead: MutableList<UnRead> = mutableListOf(),
+    var unRead: MutableList<Long>,
 
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 
