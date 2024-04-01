@@ -16,6 +16,9 @@ class ChatRoomEntity(
     var chatName: String,
 
     @Column(nullable = false)
+    var containUserCnt : Long,
+
+    @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
