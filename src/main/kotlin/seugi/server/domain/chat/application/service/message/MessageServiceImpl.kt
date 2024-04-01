@@ -16,15 +16,18 @@ class MessageServiceImpl(
 ) : MessageService {
 
     override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long){
+        val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
-        val joinedEntity = joinedRepository.findById(chatMessageDto.roomId)
+        val memberEntity = memberRepository.findById(userId)
+            .orElseThrow { IllegalArgumentException("해당 id로 MemberEntity를 찾을 수 없습니다.") }
+
         messageRepository.save(
             messageMapper.toEntity(
                 messageMapper.toMessage(
                     chatMessageDto = chatMessageDto,
-                    joinedEntity = joinedEntity.get(),
+                    joinedEntity = joinedEntity,
                     userId = userId,
-                    writer = memberRepository.findById(userId).get().name
+                    writer = memberEntity.name
                 )
             )
         )
