@@ -43,3 +43,5 @@ out/
 application.yml
 application-mysql.yml
 application-oauth.yml
+application-redis.yml
+application-mongo.yml
