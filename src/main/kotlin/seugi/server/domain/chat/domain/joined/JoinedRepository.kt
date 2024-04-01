@@ -2,4 +2,6 @@ package seugi.server.domain.chat.domain.joined
 
 import org.springframework.data.repository.CrudRepository
 
-interface JoinedRepository : CrudRepository<JoinedEntity, Long>
+interface JoinedRepository : CrudRepository<JoinedEntity, Long>{
+    fun findByJoinedUserIdEquals(joinedUserId: Long) : List<JoinedEntity>
+}
