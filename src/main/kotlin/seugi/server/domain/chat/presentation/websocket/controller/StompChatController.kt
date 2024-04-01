@@ -1,11 +1,11 @@
 package seugi.server.domain.chat.presentation.websocket.controller
 
+import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import seugi.server.domain.chat.application.service.message.MessageService
 import seugi.server.domain.chat.presentation.websocket.dto.ChatMessageDto
-import seugi.server.global.common.annotation.GetAuthenticatedId
 
 @Controller
 class StompChatController(
@@ -14,10 +14,11 @@ class StompChatController(
 ) {
     @MessageMapping("/chat/message")
     fun message(
-        @GetAuthenticatedId id: Long,
-        message: ChatMessageDto
-    ){
+        message: ChatMessageDto,
+        @Header("user-id") userId: String
+    ) {
         template.convertAndSend("/sub/chat/room/" + message.roomId, message)
-        messageService.saveMessage(message, id)
+        println("++++++++++$userId+++++++++++")
+        messageService.saveMessage(message, userId.toLong())
     }
 }
