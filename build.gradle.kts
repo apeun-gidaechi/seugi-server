@@ -52,6 +52,8 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 
