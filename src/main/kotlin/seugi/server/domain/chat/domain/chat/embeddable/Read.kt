@@ -1,10 +1,10 @@
 package seugi.server.domain.chat.domain.chat.embeddable
 
-import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
+import java.time.LocalDateTime
 
 @Embeddable
-class Read {
-    @Column(name = "read_user_id")
-    var userid : Long? = null
-}
+class Read(
+    var userId: Long,
+    var timestamp: LocalDateTime = LocalDateTime.now()
+)

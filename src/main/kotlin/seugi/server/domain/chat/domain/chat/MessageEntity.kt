@@ -1,46 +1,32 @@
 package seugi.server.domain.chat.domain.chat
 
-import jakarta.persistence.*
+import jakarta.persistence.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.domain.chat.domain.chat.embeddable.Read
 import seugi.server.domain.chat.domain.chat.embeddable.UnRead
-import seugi.server.domain.chat.domain.room.ChatRoomEntity
 import seugi.server.domain.chat.domain.status.ChatStatusEnum
 import java.time.LocalDateTime
 
 
-@Entity
-class MessageEntity {
+@Document(collection = "messages")
+class MessageEntity(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id:Long? = null
+    var chatRoomId: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
-    var chatRoom: ChatRoomEntity? = null
+    var writer: String,
 
-    @Column(nullable = false)
-    val writer:String = ""
+    var message: String,
 
-    @Column(nullable = false)
-    val message:String = ""
+    var emoji: MutableList<Emoji> = mutableListOf(),
 
-    @ElementCollection
-    var emoji:MutableList<Emoji> = mutableListOf()
+    var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    @Column(nullable = false)
-    val timestamp : LocalDateTime = LocalDateTime.now()
+    var read: MutableList<Read> = mutableListOf(),
 
-    @ElementCollection
-    var read: MutableList<Read> = mutableListOf()
+    var unRead: MutableList<UnRead> = mutableListOf(),
 
-    @ElementCollection
-    var unRead: MutableList<UnRead> = mutableListOf()
-
-    @Enumerated(value = EnumType.STRING)
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 
-
-
-}
+)
