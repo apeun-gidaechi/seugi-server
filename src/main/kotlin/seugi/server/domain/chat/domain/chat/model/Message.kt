@@ -10,7 +10,7 @@ data class Message(
     val writer: String,
     val message: String,
     val emoji: List<Emoji>,
-    val timestamp: LocalDateTime?,
+    val timestamp: String?,
     val read: List<Read>,
     val unRead: List<UnRead>,
     val messageStatus: String

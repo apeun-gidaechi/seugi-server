@@ -7,6 +7,6 @@ data class Room(
     val id: Long? = null,
     val chatName: String,
     val containUserCnt : Long,
-    val createdAt: LocalDateTime? = null,
+    val createdAt: String? = null,
     val chatStatusEnum: ChatStatusEnum? = null
 )

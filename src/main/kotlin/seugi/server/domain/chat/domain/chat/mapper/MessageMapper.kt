@@ -14,7 +14,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             writer = entity.writer,
             message = entity.message,
             emoji = entity.emoji.toMutableList(),
-            timestamp = entity.timestamp,
+            timestamp = entity.timestamp.toString(),
             read = entity.read.toMutableList(),
             unRead = entity.unRead.toMutableList(),
             messageStatus = entity.messageStatus.toString()

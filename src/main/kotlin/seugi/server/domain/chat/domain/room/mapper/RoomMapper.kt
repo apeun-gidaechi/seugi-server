@@ -14,7 +14,7 @@ class RoomMapper: Mapper<Room, ChatRoomEntity> {
             id = entity.id!!,
             chatName = entity.chatName,
             containUserCnt = entity.containUserCnt,
-            createdAt = entity.createdAt,
+            createdAt = entity.createdAt.toString(),
             chatStatusEnum = entity.chatStatus,
         )
     }
