@@ -10,8 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Steps to create application-cloud.properties before the build
-      - name: Create application-cloud.properties
+      - name: Create resources directory
+        run: mkdir -p ./src/main/resources/
+
+      - name: Create application.yml
         run: |
           touch ./src/main/resources/application.yml
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.yml
@@ -41,4 +43,11 @@ jobs:
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: ${{ always() }}
-  
+        with:
+          files: build/test-results/**/*.xml
+
+      - name: Cleanup Gradle Cache
+        if: ${{ always() }}
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
