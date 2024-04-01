@@ -1,6 +1,6 @@
 package seugi.server.domain.chat.domain.chat
 
-import jakarta.persistence.*
+import jakarta.persistence.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.domain.chat.domain.chat.embeddable.Read
