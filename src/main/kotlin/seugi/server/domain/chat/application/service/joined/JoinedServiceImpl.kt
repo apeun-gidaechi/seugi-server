@@ -11,11 +11,8 @@ class JoinedServiceImpl(
 ) : JoinedService {
 
     override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>) {
-        joinedRepository.saveAll(joinedUserId.map {
-            joinedMapper.toEntity(
-                joinedUserId = it,
-                chatRoomId = chatRoomId
-            ) }
+        joinedRepository.save(
+            joinedMapper.toEntity(chatRoomId, joinedUserId)
         )
     }
 
