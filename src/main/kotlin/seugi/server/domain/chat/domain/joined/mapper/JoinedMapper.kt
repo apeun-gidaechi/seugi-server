@@ -11,7 +11,7 @@ import seugi.server.global.common.Mapper
 class JoinedMapper : Mapper<Joined, JoinedEntity> {
     override fun toDomain(entity: JoinedEntity): Joined {
         return Joined(
-            joinUserId = entity.joinedUserId!!,
+            joinUserId = entity.joinedUserId,
             chatRoomId = entity.chatRoomId!!
         )
     }
@@ -23,9 +23,9 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
         )
     }
 
-    fun toEntity(chatRoomId : Long, joinedUserId : Long) : JoinedEntity{
+    fun toEntity(chatRoomId : Long, joinedUserId : List<Long>) : JoinedEntity{
         return JoinedEntity(
-            joinedUserId = joinedUserId,
+            joinedUserId = joinedUserId.toMutableList(),
             chatRoomId = chatRoomId
         )
     }

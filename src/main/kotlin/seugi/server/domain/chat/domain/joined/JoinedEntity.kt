@@ -11,5 +11,5 @@ class JoinedEntity (
     @Id
     val chatRoomId: Long? = null,
 
-    val joinedUserId : MutableList<Long> = emptyArray<Long>().toMutableList(),
+    var joinedUserId : MutableList<Long> = emptyArray<Long>().toMutableList(),
 )
