@@ -1,6 +1,7 @@
 package seugi.server.domain.chat.domain.room
 
 import jakarta.persistence.*
+import org.hibernate.annotations.UpdateTimestamp
 import seugi.server.domain.chat.domain.status.ChatStatusEnum
 import java.time.LocalDateTime
 
@@ -20,6 +21,9 @@ class ChatRoomEntity(
 
     @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @UpdateTimestamp
+    val lastModified : LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
     var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
