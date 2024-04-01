@@ -26,9 +26,14 @@ class JwtAuthenticationFilter(
             token = jwtUtils.getToken(token)
 
             if (!jwtUtils.isExpired(token)) {
-                val authentication: Authentication = jwtUtils.getAuthentication(token)
+                try {
+                    val authentication: Authentication = jwtUtils.getAuthentication(token)
 
-                SecurityContextHolder.getContext().authentication = authentication
+                    SecurityContextHolder.getContext().authentication = authentication
+                } catch (e: Exception) {
+                    setErrorResponse(response, JwtErrorCode.JWT_NULL_EXCEPTION)
+                    return
+                }
             } else {
                 setErrorResponse(response, JwtErrorCode.JWT_TOKEN_EXPIRED)
                 return
