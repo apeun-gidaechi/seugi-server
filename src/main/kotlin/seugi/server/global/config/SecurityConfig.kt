@@ -46,9 +46,6 @@ class SecurityConfig (
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/member/**", "/oauth2/**").permitAll()
-
-                    .requestMatchers("/chat/**").permitAll()
-
                     .anyRequest().authenticated()
             }
 
