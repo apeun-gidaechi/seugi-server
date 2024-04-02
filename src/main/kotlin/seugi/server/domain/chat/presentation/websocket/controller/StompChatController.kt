@@ -18,10 +18,15 @@ class StompChatController(
     ) {
         val simpAttributes = SimpAttributesContextHolder.currentAttributes()
         val userId = simpAttributes.getAttribute("user-id") as String?
+        val userName = simpAttributes.getAttribute("user-name") as String?
+
+        message.userId = userId?.toLong()
+        message.writer = userName
 
         template.convertAndSend("/sub/chat/room/" + message.roomId, message)
+
         if (userId != null) {
-            messageService.saveMessage(message, userId.toLong())
+            messageService.saveMessage(message)
         }
     }
 }
