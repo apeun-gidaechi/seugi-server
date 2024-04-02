@@ -96,6 +96,21 @@ class MessageServiceImpl(
     }
 
     override fun deleteMessage(userId: Long, messageId: Long): BaseResponse<Unit> {
-        TODO("Not yet implemented")
+
+        val message: MessageEntity = messageRepository.findById(messageId).get()
+
+        if (message.userId == userId) {
+            message.messageStatus = ChatStatusEnum.DELETE
+            messageRepository.save(message)
+        } else {
+            throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
+        }
+
+        return BaseResponse(
+            status = HttpStatus.OK,
+            state = "M1",
+            success = true,
+            message = "메시지 지워짐으로 상태변경 성공"
+        )
     }
 }

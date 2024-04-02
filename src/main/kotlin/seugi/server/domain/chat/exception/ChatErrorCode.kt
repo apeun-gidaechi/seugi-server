@@ -10,6 +10,6 @@ enum class ChatErrorCode (
 ): CustomErrorCode {
 
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "C2", "채팅방을 찾을 수 없습니다."),
-    NO_ACCESS_ROOM(HttpStatus.BAD_REQUEST, "C3", "채팅방 접근 권한이 없습니다.")
-
+    NO_ACCESS_ROOM(HttpStatus.BAD_REQUEST, "C3", "채팅방 접근 권한이 없습니다."),
+    NO_ACCESS_MESSAGE(HttpStatus.FORBIDDEN, "C4", "메세지 삭제 권한이 없습니다.")
 }
