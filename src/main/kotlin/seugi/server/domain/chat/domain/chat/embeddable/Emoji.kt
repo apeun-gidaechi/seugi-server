@@ -4,6 +4,6 @@ import jakarta.persistence.Embeddable
 
 @Embeddable
 class Emoji(
-    var userId: Long,
+    var userId: Long? = null,
     var emojiId: Long
 )

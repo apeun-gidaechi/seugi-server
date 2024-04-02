@@ -4,9 +4,11 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import seugi.server.domain.chat.application.service.message.MessageService
+import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.global.common.annotation.GetAuthenticatedId
 import seugi.server.global.response.BaseResponse
 
@@ -33,11 +35,13 @@ class MessageController(
     @PostMapping("/emoji/{messageId}")
     fun addEmojiToMessage(
         @PathVariable messageId: Long,
+        @RequestBody emoji: Emoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.addEmojiToMessage(
             messageId = messageId,
-            userId = userId
+            userId = userId,
+            emoji = emoji
         )
     }
 
