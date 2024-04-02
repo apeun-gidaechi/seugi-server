@@ -19,7 +19,12 @@ class ChatRoomEntity(
     var containUserCnt : Long,
 
     @Column(nullable = false)
+    var chatRoomImg : String? = null,
+
+    @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    val lastModified : LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
     var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE

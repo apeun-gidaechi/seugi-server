@@ -1,8 +1,9 @@
 package seugi.server.domain.chat.presentation.websocket.dto
 
 data class ChatMessageDto(
-    var roomId : String,
-    var writer : String,
-    var message : String,
-    var timestamp  : String
+    var roomId : Long? = null,
+    var userId : Long? = null,
+    var writer : String? = null,
+    var message : String? = null,
+
 )
