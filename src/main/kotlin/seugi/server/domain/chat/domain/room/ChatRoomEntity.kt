@@ -19,7 +19,7 @@ class ChatRoomEntity(
     var containUserCnt : Long,
 
     @Column(nullable = false)
-    var chatRoomImg : String? = null,
+    var chatRoomImg : String = "",
 
     @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
