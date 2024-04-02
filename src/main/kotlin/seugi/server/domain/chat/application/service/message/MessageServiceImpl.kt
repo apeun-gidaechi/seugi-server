@@ -2,6 +2,7 @@ package seugi.server.domain.chat.application.service.message
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.chat.MessageRepository
 import seugi.server.domain.chat.domain.chat.mapper.MessageMapper
 import seugi.server.domain.chat.domain.chat.model.Message
@@ -52,5 +53,30 @@ class MessageServiceImpl(
 
         } else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
+    }
+
+    override fun readMessage(userId: Long, chatRoomId: Long): BaseResponse<Unit> {
+        val message: List<MessageEntity> = messageRepository.findByChatRoomIdAndUserIdEquals(userId, chatRoomId)
+
+        message.map { it ->
+            it.read.add(userId)
+            it.unRead =  it.unRead.filterNot { it == userId }.toMutableList()
+            messageRepository.save(it)
+        }
+
+        return BaseResponse(
+            status = HttpStatus.OK,
+            state = "M1",
+            success = true,
+            message = "읽음처리 성공"
+        )
+    }
+
+    override fun addEmojiToMessage(userId: Long, messageId: Long): BaseResponse<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteMessage(userId: Long, messageId: Long): BaseResponse<Unit> {
+        TODO("Not yet implemented")
     }
 }
