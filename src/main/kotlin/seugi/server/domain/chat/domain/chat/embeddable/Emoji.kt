@@ -1,9 +1,10 @@
 package seugi.server.domain.chat.domain.chat.embeddable
 
-import jakarta.persistence.Embeddable
 
-@Embeddable
-class Emoji(
-    var userId: Long? = null,
-    var emojiId: Long
+data class Emoji(
+    var emojiId : Int? = null
+)
+
+data class EmojiUserId(
+    var userId: MutableSet<Long> = mutableSetOf()
 )
