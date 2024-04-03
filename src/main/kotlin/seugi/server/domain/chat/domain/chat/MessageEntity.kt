@@ -6,10 +6,10 @@ import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
+import seugi.server.domain.chat.domain.chat.embeddable.MessageMember
 import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
 import seugi.server.domain.chat.domain.chat.model.Type
 import seugi.server.domain.chat.domain.status.ChatStatusEnum
-import seugi.server.domain.member.adapter.out.entity.MemberEntity
 import java.time.LocalDateTime
 
 
@@ -24,7 +24,7 @@ data class MessageEntity(
     @Enumerated(EnumType.ORDINAL)
     val type : Type,
 
-    var author : MemberEntity,
+    var author : MessageMember,
 
     val message : String = "",
 
@@ -36,9 +36,9 @@ data class MessageEntity(
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    var read: MutableList<Long> = mutableListOf(),
+    var read: MutableSet<Long> = mutableSetOf(),
 
-    var unRead: MutableList<Long>,
+    var unRead: MutableSet<Long>,
 
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 

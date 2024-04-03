@@ -18,7 +18,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             id = entity.id.toString(),
             type = entity.type,
             chatRoomId = entity.chatRoomId!!,
-            author = toMember(entity.author),
+            author = entity.author,
             message = entity.message,
             emojiList = entity.emojiList,
             timestamp = entity.timestamp.toString(),
@@ -34,11 +34,11 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         return MessageEntity(
             type = domain.type,
             chatRoomId = domain.chatRoomId,
-            author = toMemberEntity(domain.author),
+            author = domain.author,
             message = domain.message,
             mention = domain.mention,
             mentionALl = domain.mentionAll,
-            unRead = domain.unRead.toMutableList(),
+            unRead = domain.unRead.toMutableSet(),
         )
     }
 
@@ -58,13 +58,6 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         return MessageMember (
             id =  entity.id,
             name = entity.name
-        )
-    }
-
-     fun toMemberEntity(domain: MessageMember): MemberEntity {
-        return MemberEntity(
-            id = domain.id,
-            name = domain.name
         )
     }
 

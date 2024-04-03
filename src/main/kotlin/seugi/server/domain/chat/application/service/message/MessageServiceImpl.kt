@@ -61,11 +61,11 @@ class MessageServiceImpl(
     }
 
     override fun readMessage(userId: Long, chatRoomId: Long): BaseResponse<Unit> {
-        val message: List<MessageEntity> = messageRepository.findByChatRoomIdAndAuthorId(userId, chatRoomId)
+        val message: List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndAuthorId(chatRoomId,userId)
 
         message.map { it ->
             it.read.add(userId)
-            it.unRead =  it.unRead.filterNot { it == userId }.toMutableList()
+            it.unRead =  it.unRead.filterNot { it == userId }.toMutableSet()
             messageRepository.save(it)
         }
 

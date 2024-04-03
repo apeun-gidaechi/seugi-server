@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface MessageRepository :MongoRepository<MessageEntity, ObjectId>{
     fun findByChatRoomIdEquals(chatRoomId: Long) : List<MessageEntity>
-    fun findByChatRoomIdAndAuthorId(chatRoomId: Long, authorId: Long): List<MessageEntity>
+    fun findByChatRoomIdEqualsAndAuthorId(chatRoomId: Long, authorId: Long): List<MessageEntity>
 }
