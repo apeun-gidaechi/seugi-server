@@ -2,23 +2,30 @@ package seugi.server.domain.chat.domain.chat.mapper
 
 import org.springframework.stereotype.Component
 import seugi.server.domain.chat.domain.chat.MessageEntity
+import seugi.server.domain.chat.domain.chat.embeddable.MessageMember
 import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.presentation.websocket.dto.ChatMessageDto
+import seugi.server.domain.member.adapter.out.entity.MemberEntity
+import seugi.server.domain.member.application.model.Member
+import seugi.server.domain.member.application.model.value.*
 import seugi.server.global.common.Mapper
 
 @Component
 class MessageMapper : Mapper<Message, MessageEntity> {
 
+
     override fun toDomain(entity: MessageEntity): Message {
         return Message(
-            id = entity.id,
+            id = entity.id.toString(),
+            type = entity.type,
             chatRoomId = entity.chatRoomId!!,
-            writer = entity.writer,
-            userId = entity.userId,
+            author = toMember(entity.author),
             message = entity.message,
-            emoji = entity.emoji.toMutableList(),
+            emojiList = entity.emojiList,
             timestamp = entity.timestamp.toString(),
+            mention = entity.mention,
+            mentionAll = entity.mentionALl,
             read = entity.read.toMutableList(),
             unRead = entity.unRead.toMutableList(),
             messageStatus = entity.messageStatus
@@ -27,21 +34,43 @@ class MessageMapper : Mapper<Message, MessageEntity> {
 
     override fun toEntity(domain: Message): MessageEntity {
         return MessageEntity(
+            type = domain.type,
             chatRoomId = domain.chatRoomId,
-            writer = domain.writer,
-            userId = domain.userId,
+            author = toMemberEntity(domain.author),
             message = domain.message,
+            mention = domain.mention,
+            mentionALl = domain.mentionAll,
             unRead = domain.unRead.toMutableList(),
         )
     }
 
-    fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, userId:Long, writer: String) : Message{
+    fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, author: MemberEntity) : Message{
         return Message(
+            type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
-            writer = writer,
-            userId = userId,
+            author = toMember(author),
             message = chatMessageDto.message!!,
-            unRead = joinedEntity.joinedUserId
+            mention = chatMessageDto.mention!!,
+            mentionAll = chatMessageDto.mentionAll,
+            unRead = joinedEntity.joinedUserId,
+        )
+    }
+
+     fun toMember(entity: MemberEntity): MessageMember {
+        return MessageMember (
+            id =  entity.id,
+            name = entity.name,
+            email = entity.email,
+            birth = entity.birth,
+        )
+    }
+
+     fun toMemberEntity(domain: MessageMember): MemberEntity {
+        return MemberEntity(
+            id = domain.id,
+            name = domain.name,
+            email = domain.email!!,
+            birth = domain.birth!!
         )
     }
 
