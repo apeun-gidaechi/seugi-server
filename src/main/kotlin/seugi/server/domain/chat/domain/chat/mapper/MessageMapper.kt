@@ -7,8 +7,6 @@ import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.presentation.websocket.dto.ChatMessageDto
 import seugi.server.domain.member.adapter.out.entity.MemberEntity
-import seugi.server.domain.member.application.model.Member
-import seugi.server.domain.member.application.model.value.*
 import seugi.server.global.common.Mapper
 
 @Component
