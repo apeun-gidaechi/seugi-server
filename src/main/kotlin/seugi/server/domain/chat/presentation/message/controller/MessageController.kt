@@ -1,12 +1,6 @@
 package seugi.server.domain.chat.presentation.message.controller
 
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import seugi.server.domain.chat.application.service.message.MessageService
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.global.common.annotation.GetAuthenticatedId
@@ -34,7 +28,7 @@ class MessageController(
 
     @PostMapping("/emoji/{messageId}")
     fun addEmojiToMessage(
-        @PathVariable messageId: Long,
+        @PathVariable messageId: String,
         @RequestBody emoji: Emoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
@@ -47,7 +41,7 @@ class MessageController(
 
     @DeleteMapping("/delete/{messageId}")
     fun deleteMessage(
-        @PathVariable messageId: Long,
+        @PathVariable messageId: String,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.deleteMessage(
