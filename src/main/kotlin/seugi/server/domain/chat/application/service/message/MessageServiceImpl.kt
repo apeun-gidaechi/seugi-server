@@ -64,7 +64,7 @@ class MessageServiceImpl(
 
         message.map { it ->
             it.read.add(userId)
-            it.unRead =  it.unRead.filterNot { it == userId }.toMutableSet()
+            it.unRead = it.unRead.filterNot { it == userId }.toMutableSet()
             messageRepository.save(it)
         }
 
