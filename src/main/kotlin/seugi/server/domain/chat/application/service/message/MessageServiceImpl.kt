@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.chat.MessageRepository
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
-import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
 import seugi.server.domain.chat.domain.chat.mapper.MessageMapper
 import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.joined.JoinedRepository
