@@ -1,10 +1,12 @@
 package seugi.server.domain.chat.application.service.message
 
+import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.chat.MessageRepository
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
+import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
 import seugi.server.domain.chat.domain.chat.mapper.MessageMapper
 import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.joined.JoinedRepository
@@ -23,19 +25,20 @@ class MessageServiceImpl(
     private val joinedRepository: JoinedRepository
 ) : MessageService {
 
-    override fun saveMessage(chatMessageDto: ChatMessageDto){
+    override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message{
         val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
-        val memberEntity = memberRepository.findById(chatMessageDto.userId!!)
-            .orElseThrow { IllegalArgumentException("해당 id로 MemberEntity를 찾을 수 없습니다.") }
+        val memberEntity = memberRepository.findById(userId)
+            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
-        messageRepository.save(
-            messageMapper.toEntity(
-                messageMapper.toMessage(
-                    chatMessageDto = chatMessageDto,
-                    joinedEntity = joinedEntity,
-                    userId = chatMessageDto.userId!!,
-                    writer = memberEntity.name
+        return messageMapper.toDomain(
+            messageRepository.save(
+                messageMapper.toEntity(
+                    messageMapper.toMessage(
+                        chatMessageDto = chatMessageDto,
+                        author = memberEntity,
+                        joinedEntity = joinedEntity,
+                    )
                 )
             )
         )
@@ -58,7 +61,7 @@ class MessageServiceImpl(
     }
 
     override fun readMessage(userId: Long, chatRoomId: Long): BaseResponse<Unit> {
-        val message: List<MessageEntity> = messageRepository.findByChatRoomIdAndUserIdEquals(userId, chatRoomId)
+        val message: List<MessageEntity> = messageRepository.findByChatRoomIdAndAuthorId(userId, chatRoomId)
 
         message.map { it ->
             it.read.add(userId)
@@ -74,16 +77,11 @@ class MessageServiceImpl(
         )
     }
 
-    override fun addEmojiToMessage(userId: Long, messageId: Long, emoji: Emoji): BaseResponse<Unit> {
+    override fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji): BaseResponse<Unit> {
+        val id = ObjectId(messageId)
+        val message: MessageEntity = messageRepository.findById(id).get()
 
-        val message: MessageEntity = messageRepository.findById(messageId).get()
-
-        message.emoji.add(
-            Emoji(
-                userId = userId,
-                emojiId = emoji.emojiId
-            )
-        )
+        message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.add(userId)
 
         messageRepository.save(message)
 
@@ -95,11 +93,11 @@ class MessageServiceImpl(
         )
     }
 
-    override fun deleteMessage(userId: Long, messageId: Long): BaseResponse<Unit> {
+    override fun deleteMessage(userId: Long, messageId: String): BaseResponse<Unit> {
+        val id = ObjectId(messageId)
+        val message: MessageEntity = messageRepository.findById(id).get()
 
-        val message: MessageEntity = messageRepository.findById(messageId).get()
-
-        if (message.userId == userId) {
+        if (message.author.id == userId) {
             message.messageStatus = ChatStatusEnum.DELETE
             messageRepository.save(message)
         } else {

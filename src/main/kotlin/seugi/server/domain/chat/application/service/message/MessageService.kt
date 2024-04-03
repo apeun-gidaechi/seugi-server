@@ -7,11 +7,11 @@ import seugi.server.global.response.BaseResponse
 
 interface MessageService {
 
-    fun saveMessage(chatMessageDto: ChatMessageDto)
+    fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message
     fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<List<Message>>
 
     fun readMessage(userId: Long, chatRoomId: Long) : BaseResponse<Unit>
-    fun addEmojiToMessage(userId: Long, messageId: Long, emoji: Emoji) : BaseResponse<Unit>
-    fun deleteMessage(userId: Long, messageId: Long) : BaseResponse<Unit>
+    fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji) : BaseResponse<Unit>
+    fun deleteMessage(userId: Long, messageId: String) : BaseResponse<Unit>
 
 }
