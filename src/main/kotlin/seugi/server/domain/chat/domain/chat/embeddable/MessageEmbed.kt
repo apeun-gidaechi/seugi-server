@@ -12,7 +12,5 @@ data class MessageUserId(
 
 data class MessageMember(
     var id: Long,
-    var name: String,
-    var email: String? = null,
-    var birth: String? = null
+    var name: String
 )

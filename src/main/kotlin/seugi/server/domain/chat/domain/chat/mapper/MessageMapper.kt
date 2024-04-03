@@ -59,18 +59,14 @@ class MessageMapper : Mapper<Message, MessageEntity> {
      fun toMember(entity: MemberEntity): MessageMember {
         return MessageMember (
             id =  entity.id,
-            name = entity.name,
-            email = entity.email,
-            birth = entity.birth,
+            name = entity.name
         )
     }
 
      fun toMemberEntity(domain: MessageMember): MemberEntity {
         return MemberEntity(
             id = domain.id,
-            name = domain.name,
-            email = domain.email!!,
-            birth = domain.birth!!
+            name = domain.name
         )
     }
 
