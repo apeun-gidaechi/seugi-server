@@ -1,9 +1,12 @@
 package seugi.server.domain.chat.presentation.websocket.dto
 
-data class ChatMessageDto(
-    var roomId : Long? = null,
-    var userId : Long? = null,
-    var writer : String? = null,
-    var message : String? = null,
+import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
+import seugi.server.domain.chat.domain.chat.model.Type
 
+data class ChatMessageDto(
+    var type : Type? = Type.MESSAGE,
+    var roomId : Long? = null,
+    var message : String? = null,
+    var mention : List<MessageUserId>? = emptyList(),
+    var mentionAll : Boolean = false,
 )
