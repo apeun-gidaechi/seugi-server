@@ -23,7 +23,7 @@ class ChatRoomController(
     fun createRoom(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
-    ) : BaseResponse<Unit>{
+    ) : BaseResponse<Long>{
         return chatRoomService.createChatRoom(createRoomRequest, id)
     }
 

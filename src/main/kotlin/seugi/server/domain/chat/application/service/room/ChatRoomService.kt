@@ -7,7 +7,7 @@ import seugi.server.global.response.BaseResponse
 
 interface ChatRoomService {
 
-    fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long) : BaseResponse<Unit>
+    fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long) : BaseResponse<Long>
 
     fun searchRooms(userId: Long) : BaseResponse<List<Room>>
 

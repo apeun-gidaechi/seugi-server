@@ -19,7 +19,7 @@ class ChatRoomServiceImpl(
     private val chatRoomMapper: RoomMapper
 ) : ChatRoomService {
 
-    override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long): BaseResponse<Unit> {
+    override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long): BaseResponse<Long> {
         createRoomRequest.joinUsers?.add(userId)
         val chatRoomId = chatRoomRepository.save(
             chatRoomMapper.toEntity(
@@ -36,7 +36,8 @@ class ChatRoomServiceImpl(
             status = HttpStatus.OK,
             success = true,
             state = "C1",
-            message = "채팅방 생성 성공 | 채팅방 ID = $chatRoomId"
+            message = "채팅방 생성 성공 | 채팅방 ID",
+            data = chatRoomId
         )
     }
 
