@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryEntity
 import jakarta.persistence.*
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
+import seugi.server.domain.chat.domain.enums.type.RoomType
 
 
 @Document(collection = "join")
@@ -13,6 +14,8 @@ class JoinedEntity (
     val id:ObjectId? = null,
 
     val chatRoomId: Long? = null,
+
+    val roomType: RoomType,
 
     var joinedUserId : MutableSet<Long> = emptyArray<Long>().toMutableSet(),
 )

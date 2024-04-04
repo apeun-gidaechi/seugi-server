@@ -3,8 +3,7 @@ package seugi.server.domain.chat.domain.chat.model
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.domain.chat.domain.chat.embeddable.MessageMember
 import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
-import seugi.server.domain.chat.domain.joined.model.Joined
-import seugi.server.domain.chat.domain.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.enums.status.ChatStatusEnum
 
 data class Message(
     val id : String? = null,
