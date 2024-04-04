@@ -37,6 +37,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
     testImplementation("org.springframework.security:spring-security-test")
     implementation("org.webjars:stomp-websocket:2.3.4")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
