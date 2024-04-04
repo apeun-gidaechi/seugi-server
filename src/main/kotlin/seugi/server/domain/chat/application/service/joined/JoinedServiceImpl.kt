@@ -2,6 +2,7 @@ package seugi.server.domain.chat.application.service.joined
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.JoinedRepository
 import seugi.server.domain.chat.domain.joined.mapper.JoinedMapper
@@ -21,8 +22,8 @@ class JoinedServiceImpl(
         )
     }
 
-    override fun findByJoinedUserId(userId: Long): List<Joined> {
-        return joinedRepository.findByJoinedUserIdEquals(userId).map { joinedMapper.toDomain(it) }
+    override fun findByJoinedUserId(userId: Long, roomType: RoomType): List<Joined> {
+        return joinedRepository.findByJoinedUserIdEqualsAndRoomType(userId, roomType).map { joinedMapper.toDomain(it) }
     }
 
     override fun addJoined(userId: Long, addJoinedRequest: AddJoinedRequest): BaseResponse<Joined> {
