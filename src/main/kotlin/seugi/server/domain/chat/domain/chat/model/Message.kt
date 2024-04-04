@@ -3,6 +3,7 @@ package seugi.server.domain.chat.domain.chat.model
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.domain.chat.domain.chat.embeddable.MessageMember
 import seugi.server.domain.chat.domain.chat.embeddable.MessageUserId
+import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.domain.status.ChatStatusEnum
 
 data class Message(
@@ -16,6 +17,6 @@ data class Message(
     val mentionAll : Boolean = false,
     val timestamp: String? = null,
     val read: List<Long> = emptyList(),
-    val unRead: List<Long>,
+    val joined: Set<Long>,
     val messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 )
