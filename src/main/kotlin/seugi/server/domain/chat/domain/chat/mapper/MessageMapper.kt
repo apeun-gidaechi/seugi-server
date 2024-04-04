@@ -25,7 +25,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             mention = entity.mention,
             mentionAll = entity.mentionALl,
             read = entity.read.toMutableList(),
-            unRead = entity.unRead.toMutableList(),
+            joined = entity.joined,
             messageStatus = entity.messageStatus
         )
     }
@@ -38,7 +38,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             message = domain.message,
             mention = domain.mention,
             mentionALl = domain.mentionAll,
-            unRead = domain.unRead.toMutableSet(),
+            joined = domain.joined
         )
     }
 
@@ -50,7 +50,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             message = chatMessageDto.message!!,
             mention = chatMessageDto.mention!!,
             mentionAll = chatMessageDto.mentionAll,
-            unRead = joinedEntity.joinedUserId,
+            joined = joinedEntity.joinedUserId
         )
     }
 
@@ -60,5 +60,14 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             name = entity.name
         )
     }
+
+//
+//    fun toJoined(entity: JoinedEntity) :Joined{
+//        return Joined(
+//            chatRoomId = entity.chatRoomId!!,
+//            joinUserId = entity.joinedUserId
+//        )
+//    }
+
 
 }

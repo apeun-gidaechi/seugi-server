@@ -43,38 +43,40 @@ class MessageServiceImpl(
         )
     }
 
-    override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<List<Message>> {
+    override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
 
         if (joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)){
+            val read : Set<Long> = setOf(userId)
+            val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
+
+            val data : MutableMap<String, Any> = emptyMap<String, List<Message>>().toMutableMap()
+
+            if (messages.isNotEmpty()){
+                messages.map {
+                    it.read.add(userId)
+                }
+                val id = messageRepository.saveAll(messages).last()
+                data["firstMessageId"] = messages.first().id?:id
+                data["messages"] = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+            } else {
+                val readMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+                data["firstMessageId"] = readMessages.last().id!!
+                data["messages"] = readMessages
+            }
+
 
             return BaseResponse(
                 status = HttpStatus.OK,
                 success = true,
                 state = "M1",
                 message = "채팅 불러오기 성공",
-                data = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+                data = data
             )
 
         } else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
     }
 
-    override fun readMessage(userId: Long, chatRoomId: Long): BaseResponse<Unit> {
-        val message: List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndAuthorId(chatRoomId,userId)
-
-        message.map { it ->
-            it.read.add(userId)
-            it.unRead = it.unRead.filterNot { it == userId }.toMutableSet()
-            messageRepository.save(it)
-        }
-
-        return BaseResponse(
-            status = HttpStatus.OK,
-            state = "M1",
-            success = true,
-            message = "읽음처리 성공"
-        )
-    }
 
     override fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji): BaseResponse<Unit> {
         val id = ObjectId(messageId)
