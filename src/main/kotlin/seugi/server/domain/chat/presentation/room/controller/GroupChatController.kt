@@ -1,21 +1,21 @@
 package seugi.server.domain.chat.presentation.room.controller
 
 import org.springframework.web.bind.annotation.*
-import seugi.server.domain.chat.application.service.message.MessageService
 import seugi.server.domain.chat.application.service.room.ChatRoomService
-import seugi.server.domain.chat.domain.chat.model.Message
+import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.room.model.Room
 import seugi.server.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import seugi.server.global.common.annotation.GetAuthenticatedId
 import seugi.server.global.response.BaseResponse
 
 /**
+ * 그룹
  * 방 생성 or 삭제 or 수정(이름, 사진), 방 찾기, 방에대한 채팅내역 불러오기
  */
 
 @RestController
-@RequestMapping("/chat/room")
-class ChatRoomController(
+@RequestMapping("/chat/group")
+class GroupChatController(
     private val chatRoomService: ChatRoomService,
 ) {
 
@@ -24,14 +24,14 @@ class ChatRoomController(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
     ) : BaseResponse<Long>{
-        return chatRoomService.createChatRoom(createRoomRequest, id)
+        return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
     }
 
     @GetMapping("/search")
     fun searchRooms(
         @GetAuthenticatedId userid: Long
     ) : BaseResponse<List<Room>>{
-        return chatRoomService.searchRooms(userid)
+        return chatRoomService.searchRooms(userid, RoomType.GROUP)
     }
 
 }
