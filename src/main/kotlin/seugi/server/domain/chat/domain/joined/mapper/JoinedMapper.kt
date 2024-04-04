@@ -25,7 +25,7 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
 
     fun toEntity(chatRoomId : Long, joinedUserId : List<Long>) : JoinedEntity{
         return JoinedEntity(
-            joinedUserId = joinedUserId.toMutableList(),
+            joinedUserId = joinedUserId.toMutableSet(),
             chatRoomId = chatRoomId
         )
     }
