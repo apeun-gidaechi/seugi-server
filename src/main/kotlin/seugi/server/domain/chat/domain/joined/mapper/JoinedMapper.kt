@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component
 import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.model.Joined
-import seugi.server.domain.chat.domain.room.ChatRoomEntity
-import seugi.server.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import seugi.server.global.common.Mapper
 
 @Component
