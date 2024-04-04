@@ -3,8 +3,6 @@ package seugi.server.domain.chat.application.service.room
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import seugi.server.domain.chat.application.service.joined.JoinedService
-import seugi.server.domain.chat.domain.joined.JoinedRepository
-import seugi.server.domain.chat.domain.joined.mapper.JoinedMapper
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
 import seugi.server.domain.chat.domain.room.ChatRoomRepository
@@ -17,10 +15,8 @@ import java.util.*
 @Service
 class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
-    private val joinedRepository: JoinedRepository,
     private val joinedService: JoinedService,
-    private val chatRoomMapper: RoomMapper,
-    private val joinedMapper: JoinedMapper
+    private val chatRoomMapper: RoomMapper
 ) : ChatRoomService {
 
     override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long): BaseResponse<Unit> {
@@ -46,7 +42,7 @@ class ChatRoomServiceImpl(
 
     override fun searchRooms(userId: Long): BaseResponse<List<Room>> {
 
-        val joined : List<Joined> = joinedRepository.findByJoinedUserIdEquals(userId).map { joinedMapper.toDomain(it) }
+        val joined : List<Joined> = joinedService.findByJoinedUserId(userId)
         val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
         val data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
 
