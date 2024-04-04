@@ -1,7 +1,8 @@
 package seugi.server.domain.chat.domain.room
 
 import jakarta.persistence.*
-import seugi.server.domain.chat.domain.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.enums.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.enums.type.RoomType
 import java.time.LocalDateTime
 
 
@@ -11,6 +12,9 @@ class ChatRoomEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
     var id: Long? = null,
+
+    @Enumerated(EnumType.ORDINAL)
+    val roomType: RoomType,
 
     @Column(nullable = false)
     var chatName: String,
