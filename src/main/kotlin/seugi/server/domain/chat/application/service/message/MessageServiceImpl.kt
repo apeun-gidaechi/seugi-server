@@ -9,7 +9,7 @@ import seugi.server.domain.chat.domain.chat.embeddable.Emoji
 import seugi.server.domain.chat.domain.chat.mapper.MessageMapper
 import seugi.server.domain.chat.domain.chat.model.Message
 import seugi.server.domain.chat.domain.joined.JoinedRepository
-import seugi.server.domain.chat.domain.status.ChatStatusEnum
+import seugi.server.domain.chat.domain.enums.status.ChatStatusEnum
 import seugi.server.domain.chat.exception.ChatErrorCode
 import seugi.server.domain.chat.presentation.websocket.dto.ChatMessageDto
 import seugi.server.domain.member.adapter.out.repository.MemberRepository
