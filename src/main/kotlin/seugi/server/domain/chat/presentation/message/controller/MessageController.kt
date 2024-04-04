@@ -15,16 +15,6 @@ import seugi.server.global.response.BaseResponse
 class MessageController(
     private val messageService: MessageService
 ) {
-    @PostMapping("/{chatRoomId}")
-    fun readMessage(
-        @PathVariable chatRoomId: Long,
-        @GetAuthenticatedId userId: Long
-    ): BaseResponse<Unit> {
-        return messageService.readMessage(
-            chatRoomId = chatRoomId,
-            userId = userId
-        )
-    }
 
     @PostMapping("/emoji/{messageId}")
     fun addEmojiToMessage(
@@ -50,5 +40,15 @@ class MessageController(
         )
     }
 
+    @GetMapping("/search/{roomId}")
+    fun getMessages(
+        @GetAuthenticatedId userId: Long,
+        @PathVariable roomId: Long
+    ) : BaseResponse<MutableMap<String, Any>>{
+        return messageService.getMessages(
+            chatRoomId = roomId,
+            userId = userId
+        )
+    }
 
 }

@@ -17,7 +17,6 @@ import seugi.server.global.response.BaseResponse
 @RequestMapping("/chat/room")
 class ChatRoomController(
     private val chatRoomService: ChatRoomService,
-    private val messageService: MessageService
 ) {
 
     @PostMapping("/create")
@@ -33,17 +32,6 @@ class ChatRoomController(
         @GetAuthenticatedId userid: Long
     ) : BaseResponse<List<Room>>{
         return chatRoomService.searchRooms(userid)
-    }
-
-    @GetMapping("/search/{roomId}")
-    fun getMessages(
-        @GetAuthenticatedId userId: Long,
-        @PathVariable roomId: Long
-    ) : BaseResponse<List<Message>>{
-        return messageService.getMessages(
-            chatRoomId = roomId,
-            userId = userId
-        )
     }
 
 }
