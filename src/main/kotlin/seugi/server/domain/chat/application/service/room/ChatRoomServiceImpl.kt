@@ -31,6 +31,7 @@ class ChatRoomServiceImpl(
 
         joinedService.joinUserJoined(
             chatRoomId = chatRoomId!!,
+            type = type,
             joinedUserId = createRoomRequest.joinUsers!!
         )
 
