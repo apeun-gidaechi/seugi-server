@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
+import seugi.server.domain.email.application.service.ConfirmTokenService
 import seugi.server.domain.member.adapter.`in`.dto.RegisterMemberDTO
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
@@ -19,7 +20,8 @@ import seugi.server.global.response.BaseResponse
 class RegisterMemberService (
     private val saveMemberPort: SaveMemberPort,
     private val existMemberPort: ExistMemberPort,
-    private val bCryptPasswordEncoder: BCryptPasswordEncoder
+    private val bCryptPasswordEncoder: BCryptPasswordEncoder,
+    private val confirmTokenService: ConfirmTokenService
 ): RegisterMemberUseCase {
 
     override fun registerMember(@RequestBody memberDTO: RegisterMemberDTO): BaseResponse<String> {
@@ -40,13 +42,15 @@ class RegisterMemberService (
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
             throw CustomException(MemberErrorCode.MEMBER_ALREADY_EXIST)
         } else {
+            confirmTokenService.confirmToken(memberDTO.token, memberDTO.email)
+
             saveMemberPort.saveMember(member)
 
             return BaseResponse (
-                status = HttpStatus.OK,
-                success = true,
-                message = "회원가입 성공 !!",
-            )
+                    status = HttpStatus.OK,
+                    success = true,
+                    message = "회원가입 성공 !!",
+                );
         }
     }
 }
