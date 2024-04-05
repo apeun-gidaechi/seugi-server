@@ -45,7 +45,7 @@ class SecurityConfig (
             }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/member/**", "/oauth2/**").permitAll()
+                    .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
                     .requestMatchers("/stomp/**").permitAll()
                     .anyRequest().authenticated()
             }
