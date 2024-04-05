@@ -34,7 +34,7 @@ class ChatRoomServiceImpl(
                     createRoomRequest.roomName = createRoomRequest.joinUsers?.asSequence()
                         ?.map { memberRepository.findById(it).get().name }
                         ?.takeWhile { (createRoomRequest.roomName + it).length <= 10 }
-                        ?.joinToString(separator = ", ", prefix = "${createRoomRequest.roomName}, ")
+                        ?.joinToString(separator = ", ")
                         ?: createRoomRequest.roomName
 
                 }
