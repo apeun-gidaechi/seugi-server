@@ -19,6 +19,7 @@ class JoinedController(
     private val joinedService: JoinedService
 ) {
 
+    //참가자 추가
     @PostMapping("/add")
     fun addJoined(
         @GetAuthenticatedId userId: Long,
@@ -30,6 +31,7 @@ class JoinedController(
         )
     }
 
+    //참가자 삭제
     @PatchMapping("/out")
     fun outJoined(
         @GetAuthenticatedId userId: Long,
