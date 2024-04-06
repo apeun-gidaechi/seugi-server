@@ -16,9 +16,9 @@ class JoinedServiceImpl(
     private val joinedMapper: JoinedMapper
 ) : JoinedService {
 
-    override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType) {
+    override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType, roomAdmin: Long) {
         joinedRepository.save(
-            joinedMapper.toEntity(chatRoomId, joinedUserId, type)
+            joinedMapper.toEntity(chatRoomId, joinedUserId, type, roomAdmin)
         )
     }
 

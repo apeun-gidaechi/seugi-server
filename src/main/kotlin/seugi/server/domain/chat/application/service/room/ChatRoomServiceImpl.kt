@@ -49,6 +49,7 @@ class ChatRoomServiceImpl(
 
         joinedService.joinUserJoined(
             chatRoomId = chatRoomId!!,
+            roomAdmin = if (type == GROUP) userId else 0,
             type = type,
             joinedUserId = createRoomRequest.joinUsers!!
         )

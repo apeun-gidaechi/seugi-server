@@ -12,6 +12,7 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
         return Joined(
             joinUserId = entity.joinedUserId,
             roomType = entity.roomType,
+            roomAdmin = entity.roomAdmin,
             chatRoomId = entity.chatRoomId!!
         )
     }
@@ -20,14 +21,16 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
         return JoinedEntity(
             joinedUserId = domain.joinUserId,
             roomType = domain.roomType,
+            roomAdmin = domain.roomAdmin,
             chatRoomId = domain.chatRoomId
         )
     }
 
-    fun toEntity(chatRoomId : Long, joinedUserId : List<Long>, type: RoomType) : JoinedEntity{
+    fun toEntity(chatRoomId : Long, joinedUserId : List<Long>, type: RoomType, roomAdmin: Long) : JoinedEntity{
         return JoinedEntity(
             joinedUserId = joinedUserId.toMutableSet(),
             roomType = type,
+            roomAdmin = roomAdmin,
             chatRoomId = chatRoomId
         )
     }
