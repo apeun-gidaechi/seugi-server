@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.client.exchange
 import seugi.server.domain.member.port.`in`.OAuth2MemberUseCase
 import seugi.server.global.auth.oauth.OAuth2Properties
 
@@ -48,4 +49,18 @@ class OAuth2MemberService (
         return accessTokenNode!!.get("access_token").asText()
     }
 
+    override fun getUserResource(token: String): JsonNode {
+        val headers = HttpHeaders()
+
+        headers.set("Authorization", "Bearer $token")
+
+        val entity = HttpEntity<Unit>(headers)
+
+        return restTemplate.exchange(
+            oAuth2Properties.resourceURI,
+            HttpMethod.GET,
+            entity,
+            JsonNode::class.java
+        ).body!!
+    }
 }
