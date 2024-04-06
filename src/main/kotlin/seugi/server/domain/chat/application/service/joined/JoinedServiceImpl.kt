@@ -2,6 +2,7 @@ package seugi.server.domain.chat.application.service.joined
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.JoinedRepository
@@ -16,16 +17,19 @@ class JoinedServiceImpl(
     private val joinedMapper: JoinedMapper
 ) : JoinedService {
 
+    @Transactional
     override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType, roomAdmin: Long) {
         joinedRepository.save(
             joinedMapper.toEntity(chatRoomId, joinedUserId, type, roomAdmin)
         )
     }
 
+    @Transactional(readOnly = true)
     override fun findByJoinedUserId(userId: Long, roomType: RoomType): List<Joined> {
         return joinedRepository.findByJoinedUserIdEqualsAndRoomType(userId, roomType).map { joinedMapper.toDomain(it) }
     }
 
+    @Transactional
     override fun addJoined(userId: Long, addJoinedRequest: AddJoinedRequest): BaseResponse<Joined> {
 
         val joinedEntity : JoinedEntity = joinedRepository.findByChatRoomId(addJoinedRequest.chatRoomId!!)

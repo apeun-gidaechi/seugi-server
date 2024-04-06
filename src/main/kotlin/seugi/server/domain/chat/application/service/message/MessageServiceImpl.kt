@@ -3,6 +3,7 @@ package seugi.server.domain.chat.application.service.message
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import seugi.server.domain.chat.domain.chat.MessageEntity
 import seugi.server.domain.chat.domain.chat.MessageRepository
 import seugi.server.domain.chat.domain.chat.embeddable.Emoji
@@ -24,6 +25,7 @@ class MessageServiceImpl(
     private val joinedRepository: JoinedRepository
 ) : MessageService {
 
+    @Transactional
     override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message{
         val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
@@ -43,6 +45,7 @@ class MessageServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
 
         if (joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)){
@@ -77,7 +80,7 @@ class MessageServiceImpl(
 
     }
 
-
+    @Transactional
     override fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji): BaseResponse<Unit> {
         val id = ObjectId(messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
@@ -94,6 +97,7 @@ class MessageServiceImpl(
         )
     }
 
+    @Transactional
     override fun deleteMessage(userId: Long, messageId: String): BaseResponse<Unit> {
         val id = ObjectId(messageId)
         val message: MessageEntity = messageRepository.findById(id).get()

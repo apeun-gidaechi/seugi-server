@@ -2,6 +2,7 @@ package seugi.server.domain.chat.application.service.room
 
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import seugi.server.domain.chat.application.service.joined.JoinedService
 import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.enums.type.RoomType.GROUP
@@ -24,6 +25,7 @@ class ChatRoomServiceImpl(
     private val chatRoomMapper: RoomMapper
 ) : ChatRoomService {
 
+    @Transactional
     override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long, type: RoomType): BaseResponse<Long> {
 
         when(type){
@@ -63,6 +65,7 @@ class ChatRoomServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun searchRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
         val joined : List<Joined> = joinedService.findByJoinedUserId(userId, type)
