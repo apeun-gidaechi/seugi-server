@@ -29,10 +29,10 @@ class PersonalChatController(
     }
 
     @GetMapping("/search")
-    fun searchRooms(
+    fun getRooms(
         @GetAuthenticatedId userid: Long
     ) : BaseResponse<List<Room>> {
-        return chatRoomService.searchRooms(userid, RoomType.PERSONAL)
+        return chatRoomService.getRooms(userid, RoomType.PERSONAL)
     }
 
 }

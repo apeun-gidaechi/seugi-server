@@ -28,10 +28,10 @@ class GroupChatController(
     }
 
     @GetMapping("/search")
-    fun searchRooms(
+    fun getRooms(
         @GetAuthenticatedId userid: Long
     ) : BaseResponse<List<Room>>{
-        return chatRoomService.searchRooms(userid, RoomType.GROUP)
+        return chatRoomService.getRooms(userid, RoomType.GROUP)
     }
 
 }
