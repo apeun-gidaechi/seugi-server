@@ -66,7 +66,7 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun searchRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
+    override fun getRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
         val joined : List<Joined> = joinedService.findByJoinedUserId(userId, type)
         val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}

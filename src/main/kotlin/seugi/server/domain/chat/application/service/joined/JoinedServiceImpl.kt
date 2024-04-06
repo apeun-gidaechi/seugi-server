@@ -9,6 +9,7 @@ import seugi.server.domain.chat.domain.joined.JoinedRepository
 import seugi.server.domain.chat.domain.joined.mapper.JoinedMapper
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.presentation.joined.dto.request.AddJoinedRequest
+import seugi.server.domain.chat.presentation.joined.dto.request.OutJoinedRequest
 import seugi.server.global.response.BaseResponse
 
 @Service
@@ -48,6 +49,23 @@ class JoinedServiceImpl(
         )
 
 
+    }
+
+    @Transactional
+    override fun outJoined(outJoinedRequest: OutJoinedRequest, userId: Long): BaseResponse<Unit> {
+
+        val joined: JoinedEntity = joinedRepository.findByChatRoomId(outJoinedRequest.roomId!!)
+        if (joined.roomAdmin == userId){
+            joined.joinedUserId = (joined.joinedUserId - outJoinedRequest.outJoinedUsers.toSet()).toMutableSet()
+        }
+        joinedRepository.save(joined)
+
+        return BaseResponse(
+            status = HttpStatus.OK,
+            state = "J1",
+            success = true,
+            message = "맴버 내보내기 성공"
+        )
     }
 
 }

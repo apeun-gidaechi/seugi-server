@@ -1,12 +1,10 @@
 package seugi.server.domain.chat.presentation.joined.controller
 
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import seugi.server.domain.chat.application.service.joined.JoinedService
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.presentation.joined.dto.request.AddJoinedRequest
+import seugi.server.domain.chat.presentation.joined.dto.request.OutJoinedRequest
 import seugi.server.global.common.annotation.GetAuthenticatedId
 import seugi.server.global.response.BaseResponse
 
@@ -30,6 +28,14 @@ class JoinedController(
             userId = userId,
             addJoinedRequest = addJoinedRequest
         )
+    }
+
+    @PatchMapping("/out")
+    fun outJoined(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody outJoinedRequest: OutJoinedRequest
+    ): BaseResponse<Unit>{
+        return joinedService.outJoined(outJoinedRequest, userId)
     }
 
 }
