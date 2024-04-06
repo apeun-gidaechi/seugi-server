@@ -30,6 +30,16 @@ class JoinedServiceImpl(
         return joinedRepository.findByJoinedUserIdEqualsAndRoomType(userId, roomType).map { joinedMapper.toDomain(it) }
     }
 
+    @Transactional(readOnly = true)
+    override fun findByRoomId(roomId: Long): JoinedEntity {
+        return joinedRepository.findByChatRoomId(roomId)
+    }
+
+    @Transactional
+    override fun save(joinedEntity: JoinedEntity) {
+        joinedRepository.save(joinedEntity)
+    }
+
     @Transactional
     override fun addJoined(userId: Long, addJoinedRequest: AddJoinedRequest): BaseResponse<Joined> {
 

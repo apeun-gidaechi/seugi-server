@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import seugi.server.domain.chat.application.service.joined.JoinedService
+import seugi.server.domain.chat.domain.enums.status.ChatStatusEnum
 import seugi.server.domain.chat.domain.enums.type.RoomType
 import seugi.server.domain.chat.domain.enums.type.RoomType.GROUP
 import seugi.server.domain.chat.domain.enums.type.RoomType.PERSONAL
+import seugi.server.domain.chat.domain.joined.JoinedEntity
 import seugi.server.domain.chat.domain.joined.model.Joined
 import seugi.server.domain.chat.domain.room.ChatRoomEntity
 import seugi.server.domain.chat.domain.room.ChatRoomRepository
@@ -80,6 +82,28 @@ class ChatRoomServiceImpl(
             data = data
         )
 
+    }
+
+    @Transactional
+    override fun leftRoom(userId: Long, roomId: Long): BaseResponse<Unit> {
+
+        val joinedEntity: JoinedEntity = joinedService.findByRoomId(roomId)
+        joinedEntity.joinedUserId -= userId
+
+        if (joinedEntity.joinedUserId.isEmpty()){
+            val chatRoomEntity: ChatRoomEntity = chatRoomRepository.findById(roomId).get()
+            chatRoomEntity.chatStatus = ChatStatusEnum.DELETE
+            chatRoomRepository.save(chatRoomEntity)
+        }
+
+        joinedService.save(joinedEntity)
+
+        return BaseResponse(
+            status = HttpStatus.OK,
+            state = "J1",
+            success = true,
+            message = "방 나가기 성공"
+        )
     }
 
 }

@@ -12,4 +12,6 @@ interface ChatRoomService {
 
     fun getRooms(userId: Long, type: RoomType) : BaseResponse<List<Room>>
 
+    fun leftRoom(userId: Long, roomId: Long) : BaseResponse<Unit>
+
 }
