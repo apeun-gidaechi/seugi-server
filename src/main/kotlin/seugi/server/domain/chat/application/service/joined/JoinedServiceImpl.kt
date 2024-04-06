@@ -26,6 +26,17 @@ class JoinedServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun getUsersInfo(roomId: Long): BaseResponse<Joined> {
+        return BaseResponse(
+            status = HttpStatus.OK,
+            state = "J1",
+            success = true,
+            message = "맴버 정보 불러오기 성공",
+            data = joinedMapper.toDomain(joinedRepository.findByChatRoomId(chatRoomId = roomId))
+        )
+    }
+
+    @Transactional(readOnly = true)
     override fun findByJoinedUserId(userId: Long, roomType: RoomType): List<Joined> {
         return joinedRepository.findByJoinedUserIdEqualsAndRoomType(userId, roomType).map { joinedMapper.toDomain(it) }
     }
