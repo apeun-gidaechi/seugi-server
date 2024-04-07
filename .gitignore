@@ -46,3 +46,4 @@ application-oauth.yml
 application-redis.yml
 application-mongo.yml
 application-smtp.yml
+application-mq.yml
