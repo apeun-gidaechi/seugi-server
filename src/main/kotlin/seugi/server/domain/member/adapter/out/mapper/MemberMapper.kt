@@ -29,6 +29,7 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             email = domain.email.value,
             password = domain.password.value,
             birth = domain.birth.value,
+            profile = MemberProfile(),
             loginId = domain.loginId.value,
             provider = domain.provider.value,
             providerId = domain.providerId.value
