@@ -1,4 +1,9 @@
 package seugi.server.domain.member.port.`in`
 
-class OAuth2MemberUseCase {
+interface OAuth2MemberUseCase {
+
+    fun process(code: String, registrationId: String)
+
+    fun getAccessToken(code: String): String
+
 }
