@@ -49,12 +49,10 @@ class StompWebSocketConfig(private val jwtUtils: JwtUtils) : WebSocketMessageBro
                             val userDetails = auth.principal as? JwtUserDetails
 
                             val userId: String? = userDetails?.id?.value?.toString()
-                            val userName: String? = userDetails?.username
 
                             if (userId != null) {
                                 val simpAttributes = SimpAttributesContextHolder.currentAttributes()
                                 simpAttributes.setAttribute("user-id", userId)
-                                simpAttributes.setAttribute("user-name", userName!!)
 
                                 return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
                             } else {
@@ -67,10 +65,8 @@ class StompWebSocketConfig(private val jwtUtils: JwtUtils) : WebSocketMessageBro
                         if (auth != null) {
                             val userDetails = auth.principal as? JwtUserDetails
                             val userId: String = userDetails?.id?.value.toString()
-                            val userName: String = userDetails?.username!!
                             accessor.setLeaveMutable(true)
                             accessor.setHeader("user-id", userId)
-                            accessor.setHeader("userName", userName)
 
                             return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
                         }
