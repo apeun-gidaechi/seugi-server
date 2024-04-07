@@ -6,6 +6,7 @@ class GoogleMemberInfo (
 
     override val email: String
         get() = attributes.getValue("email") as String
+    
     override val name: String
         get() = attributes.getValue("name") as String
 
