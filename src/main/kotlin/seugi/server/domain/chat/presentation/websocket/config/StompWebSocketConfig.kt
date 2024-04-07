@@ -1,5 +1,6 @@
 package seugi.server.domain.chat.presentation.websocket.config
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -12,24 +13,32 @@ import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.messaging.support.MessageHeaderAccessor
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import seugi.server.global.auth.jwt.JwtUserDetails
 import seugi.server.global.auth.jwt.JwtUtils
 
+
 @Configuration
 @EnableWebSocketMessageBroker
-class StompWebSocketConfig(private val jwtUtils: JwtUtils) : WebSocketMessageBrokerConfigurer {
+class StompWebSocketConfig(
+    private val jwtUtils: JwtUtils,
+    @Value("\${spring.rabbitmq.host:}") private val rabbitmqHost: String
+) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
         registry.addEndpoint("/stomp/chat")
             .setAllowedOrigins("*")
     }
 
-    override fun configureMessageBroker(config: MessageBrokerRegistry) {
-        config.enableSimpleBroker("/sub")
-        config.setApplicationDestinationPrefixes("/pub")
+    override fun configureMessageBroker(registry: MessageBrokerRegistry) {
+        registry.setPathMatcher(AntPathMatcher("."))
+        registry.setApplicationDestinationPrefixes("/pub")
+        registry.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+            .setRelayHost(rabbitmqHost)
+            .setVirtualHost("/")
     }
 
 
@@ -73,6 +82,7 @@ class StompWebSocketConfig(private val jwtUtils: JwtUtils) : WebSocketMessageBro
                     }
                     StompCommand.DISCONNECT,
                     StompCommand.SUBSCRIBE,
+                    StompCommand.STOMP,
                     StompCommand.UNSUBSCRIBE -> {
                         val auth = SecurityContextHolder.getContext().authentication
                         if (auth != null) {
@@ -81,6 +91,9 @@ class StompWebSocketConfig(private val jwtUtils: JwtUtils) : WebSocketMessageBro
                             accessor.setHeader("user-id", userId)
                         }
                         return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
+                    }
+                    null -> {
+                        //뭔지 모르겠는데 stomp 일땐 null 요청이 없었는데 rabbitmq 에선 null 이 넘어오네
                     }
                     else -> {
                         throw IllegalArgumentException("지원하지 않는 STOMP 명령어: ${accessor.command}")
