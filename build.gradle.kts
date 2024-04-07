@@ -53,6 +53,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
+    implementation("io.projectreactor.netty:reactor-netty")
 }
 
 
