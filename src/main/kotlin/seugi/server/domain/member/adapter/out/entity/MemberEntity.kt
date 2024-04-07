@@ -28,6 +28,7 @@ data class MemberEntity (
     var birth: String = "",
 
     @Embedded
+    @Column(nullable = false)
     val profile: MemberProfile,
 
     @Column(nullable = false)
