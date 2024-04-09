@@ -7,21 +7,59 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
+import seugi.server.domain.member.application.model.Member
+import seugi.server.domain.member.application.model.value.*
 import seugi.server.domain.member.port.`in`.OAuth2MemberUseCase
+import seugi.server.domain.member.port.out.ExistMemberPort
+import seugi.server.domain.member.port.out.LoadMemberPort
+import seugi.server.domain.member.port.out.SaveMemberPort
+import seugi.server.global.auth.jwt.JwtInfo
+import seugi.server.global.auth.jwt.JwtUtils
 import seugi.server.global.auth.oauth.OAuth2Properties
+import seugi.server.global.response.BaseResponse
 
 @Service
 @Transactional
 class OAuth2MemberService (
     private val oAuth2Properties: OAuth2Properties,
-    private val restTemplate: RestTemplate
+    private val restTemplate: RestTemplate,
+    private val existMemberPort: ExistMemberPort,
+    private val saveMemberPort: SaveMemberPort,
+    private val loadMemberPort: LoadMemberPort,
+    private val jwtUtils: JwtUtils
 ) : OAuth2MemberUseCase {
 
-    override fun process(code: String, registrationId: String) {
-        val token = getAccessToken(code)
+    override fun process(code: String, registrationId: String): BaseResponse<JwtInfo> {
+        val token = this.getAccessToken(code)
 
-        println(token)
+        val user = this.getUserResource(token)
+
+        if (!existMemberPort.existMemberWithEmail(user.get("email").asText())) {
+            val member = Member(
+                id = null,
+                name = MemberName(user.get("name").asText()),
+                email = MemberEmail(user.get("email").asText()),
+                password = MemberPassword(""),
+                birth = MemberBirth(user.get("birth").asText()),
+                profile = MemberProfile(),
+                role = MemberRole("ROLE_USER"),
+                loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
+                provider = MemberProvider(user.get("provider").asText()),
+                providerId = MemberProviderId(user.get("provider").asText())
+            )
+
+            saveMemberPort.saveMember(member)
+        }
+
+        val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
+
+        return BaseResponse (
+            HttpStatus.OK,
+            true,
+            "OK",
+            "로그인 성공 !",
+            jwtUtils.generate(member)
+        )
     }
 
     override fun getAccessToken(code: String): String {
@@ -63,4 +101,5 @@ class OAuth2MemberService (
             JsonNode::class.java
         ).body!!
     }
+
 }
