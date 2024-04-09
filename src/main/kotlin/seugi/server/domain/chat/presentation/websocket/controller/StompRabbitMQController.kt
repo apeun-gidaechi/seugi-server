@@ -19,9 +19,9 @@ class StompRabbitMQController(
     fun send(chat: ChatMessageDto) {
 
         val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-        val userId = simpAttributes.getAttribute("user-id") as Long?
+        val userId = simpAttributes.getAttribute("user-id") as String?
         if (userId != null) {
-            val domainMessage: Message = messageService.saveMessage(chat, userId)
+            val domainMessage: Message = messageService.saveMessage(chat, userId.toLong())
             template.convertAndSend("chat.exchange", "room.${chat.roomId}", domainMessage)
         }
 
