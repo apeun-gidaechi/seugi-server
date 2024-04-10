@@ -12,17 +12,11 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import seugi.server.global.auth.jwt.JwtAuthenticationFilter
 import seugi.server.global.auth.jwt.JwtUtils
-import seugi.server.global.auth.oauth.OAuth2MemberService
-import seugi.server.global.auth.oauth.handler.OAuth2FailureHandler
-import seugi.server.global.auth.oauth.handler.OAuth2SuccessfulHandler
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig (
     private val jwtUtils: JwtUtils,
-    private val oAuth2MemberService: OAuth2MemberService,
-    private val oAuth2SuccessfulHandler: OAuth2SuccessfulHandler,
-    private val oAuth2FailureHandler: OAuth2FailureHandler,
     private val objectMapper: ObjectMapper
 ) {
 
@@ -48,24 +42,6 @@ class SecurityConfig (
                     .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
                     .requestMatchers("/stomp/**").permitAll()
                     .anyRequest().authenticated()
-            }
-
-            .oauth2Login { req ->
-                req.authorizationEndpoint {
-                    it.baseUri("/oauth2/authorize")
-                }
-
-                req.redirectionEndpoint {
-                    it.baseUri("/oauth2/callback/*")
-                }
-
-                req.userInfoEndpoint {
-                    it.userService(oAuth2MemberService)
-                }
-
-                req.successHandler(oAuth2SuccessfulHandler)
-
-                req.failureHandler(oAuth2FailureHandler)
             }
 
             .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
