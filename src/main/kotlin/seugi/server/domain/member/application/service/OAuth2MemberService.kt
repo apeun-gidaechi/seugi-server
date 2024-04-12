@@ -39,10 +39,10 @@ class OAuth2MemberService (
         if (!existMemberPort.existMemberWithEmail(user.get("email").asText())) {
             val member = Member(
                 id = null,
-                name = MemberName(user.get("name").asText()),
+                name = MemberName(""),
                 email = MemberEmail(user.get("email").asText()),
                 password = MemberPassword(""),
-                birth = MemberBirth(user.get("birth").asText()),
+                birth = MemberBirth(""),
                 profile = MemberProfile(),
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
