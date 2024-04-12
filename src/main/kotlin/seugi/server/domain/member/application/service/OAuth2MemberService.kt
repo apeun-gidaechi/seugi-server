@@ -70,7 +70,7 @@ class OAuth2MemberService (
         params.add("redirect_uri", oAuth2Properties.redirectURI)
         params.add("grant_type", "authorization_code")
 
-        val headers: HttpHeaders = HttpHeaders()
+        val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
 
         val entity: HttpEntity<*> = HttpEntity<Any?>(params, headers)
