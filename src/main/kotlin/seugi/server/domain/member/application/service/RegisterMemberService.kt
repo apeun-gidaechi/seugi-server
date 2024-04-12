@@ -48,7 +48,7 @@ class RegisterMemberService (
             saveMemberPort.saveMember(member)
 
             return BaseResponse (
-                    status = HttpStatus.OK,
+                    status = HttpStatus.OK.value(),
                     success = true,
                     message = "회원가입 성공 !!",
                 );

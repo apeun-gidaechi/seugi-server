@@ -28,7 +28,7 @@ class LoginMemberService (
         }
 
         return BaseResponse (
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             message = "토큰 발급 성공 !!",
             data = jwtUtils.generate(member)

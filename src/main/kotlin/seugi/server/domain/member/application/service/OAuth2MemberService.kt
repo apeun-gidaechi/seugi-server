@@ -54,7 +54,7 @@ class OAuth2MemberService (
         val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
 
         return BaseResponse (
-            HttpStatus.OK,
+            HttpStatus.OK.value(),
             true,
             "OK",
             "로그인 성공 !",
