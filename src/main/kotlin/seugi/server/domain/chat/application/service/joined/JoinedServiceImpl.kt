@@ -28,7 +28,7 @@ class JoinedServiceImpl(
     @Transactional(readOnly = true)
     override fun getUsersInfo(roomId: Long): BaseResponse<Joined> {
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             state = "J1",
             success = true,
             message = "맴버 정보 불러오기 성공",
@@ -61,7 +61,7 @@ class JoinedServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             state = "J1",
             message = "유저 채팅방에 추가 성공",
@@ -82,7 +82,7 @@ class JoinedServiceImpl(
         joinedRepository.save(joined)
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             state = "J1",
             success = true,
             message = "맴버 내보내기 성공"

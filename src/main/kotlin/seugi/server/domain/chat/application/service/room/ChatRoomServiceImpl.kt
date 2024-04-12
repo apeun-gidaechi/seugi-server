@@ -59,7 +59,7 @@ class ChatRoomServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             state = "C1",
             message = "채팅방 생성 성공 | 채팅방 ID",
@@ -75,7 +75,7 @@ class ChatRoomServiceImpl(
         val data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             state = "C1",
             message = "방 찾기 성공",
@@ -99,7 +99,7 @@ class ChatRoomServiceImpl(
         joinedService.save(joinedEntity)
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             state = "J1",
             success = true,
             message = "방 나가기 성공"
