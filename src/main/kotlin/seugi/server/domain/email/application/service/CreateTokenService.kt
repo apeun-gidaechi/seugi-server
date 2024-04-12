@@ -45,7 +45,7 @@ class CreateTokenService (
         )
 
         return BaseResponse (
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             message = "전송 성공 !",
         )
