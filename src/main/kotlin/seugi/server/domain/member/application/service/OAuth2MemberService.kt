@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import seugi.server.domain.member.application.exception.MemberErrorCode
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
 import seugi.server.domain.member.port.`in`.OAuth2MemberUseCase
@@ -16,6 +17,7 @@ import seugi.server.domain.member.port.out.SaveMemberPort
 import seugi.server.global.auth.jwt.JwtInfo
 import seugi.server.global.auth.jwt.JwtUtils
 import seugi.server.global.auth.oauth.OAuth2Properties
+import seugi.server.global.exception.CustomException
 import seugi.server.global.response.BaseResponse
 
 @Service
@@ -29,7 +31,7 @@ class OAuth2MemberService (
     private val jwtUtils: JwtUtils
 ) : OAuth2MemberUseCase {
 
-    override fun process(code: String, registrationId: String): BaseResponse<JwtInfo> {
+    override fun process(code: String, provider: String): BaseResponse<JwtInfo> {
         val token = this.getAccessToken(code)
 
         val user = this.getUserResource(token)
@@ -45,13 +47,22 @@ class OAuth2MemberService (
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
                 provider = MemberProvider(user.get("provider").asText()),
-                providerId = MemberProviderId(user.get("provider_id").asText())
+                providerId = MemberProviderId(user.get("provider").asText())
             )
 
             saveMemberPort.saveMember(member)
+
+            throw CustomException(MemberErrorCode.MEMBER_NOT_SUFFICIENT)
         }
 
         val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
+
+        if (
+            member.name.value.isBlank() ||
+            member.birth.value.isBlank()
+            ) {
+            throw CustomException(MemberErrorCode.MEMBER_NOT_SUFFICIENT)
+        }
 
         return BaseResponse (
             HttpStatus.OK.value(),
