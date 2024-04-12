@@ -45,7 +45,7 @@ class OAuth2MemberService (
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
                 provider = MemberProvider(user.get("provider").asText()),
-                providerId = MemberProviderId(user.get("provider").asText())
+                providerId = MemberProviderId(user.get("provider_id").asText())
             )
 
             saveMemberPort.saveMember(member)
