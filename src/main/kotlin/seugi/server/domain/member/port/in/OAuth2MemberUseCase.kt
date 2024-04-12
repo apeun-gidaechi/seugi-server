@@ -7,7 +7,7 @@ import seugi.server.global.response.BaseResponse
 
 interface OAuth2MemberUseCase {
 
-    fun process(code: String, registrationId: String): BaseResponse<JwtInfo>
+    fun process(code: String, provider: String): BaseResponse<JwtInfo>
 
     fun getAccessToken(code: String): String
 
