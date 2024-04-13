@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import seugi.server.domain.member.adapter.`in`.dto.OAuth2MemberDTO
 import seugi.server.domain.member.application.exception.MemberErrorCode
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
@@ -70,6 +71,31 @@ class OAuth2MemberService (
             "OK",
             "로그인 성공 !",
             jwtUtils.generate(member)
+        )
+    }
+
+    override fun complete(dto: OAuth2MemberDTO): BaseResponse<Unit> {
+        val member = loadMemberPort.loadMemberWithEmail(dto.email)
+
+        if (
+            member.name.value.isNotBlank() &&
+            member.birth.value.isNotBlank()
+            ) {
+            throw CustomException(MemberErrorCode.MEMBER_ALREADY_SUFFICIENT)
+        }
+
+        member.name = MemberName(dto.name)
+        member.birth = MemberBirth(dto.birth)
+
+        saveMemberPort.saveMember(
+            member
+        )
+
+        return BaseResponse (
+            HttpStatus.OK.value(),
+            true,
+            "OK",
+            "회원가입 완료 ~ !!",
         )
     }
 
