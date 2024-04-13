@@ -12,7 +12,6 @@ import seugi.server.domain.member.application.exception.MemberErrorCode
 import seugi.server.domain.member.port.`in`.RegisterMemberUseCase
 import seugi.server.domain.member.port.out.ExistMemberPort
 import seugi.server.domain.member.port.out.SaveMemberPort
-import seugi.server.global.auth.jwt.exception.JwtErrorCode
 import seugi.server.global.exception.CustomException
 import seugi.server.global.response.BaseResponse
 
@@ -48,10 +47,10 @@ class RegisterMemberService (
             saveMemberPort.saveMember(member)
 
             return BaseResponse (
-                    status = HttpStatus.OK,
+                    status = HttpStatus.OK.value(),
                     success = true,
                     message = "회원가입 성공 !!",
-                );
+                )
         }
     }
 }

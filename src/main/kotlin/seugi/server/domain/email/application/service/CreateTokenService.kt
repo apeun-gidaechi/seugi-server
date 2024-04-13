@@ -16,8 +16,8 @@ class CreateTokenService (
     private val saveEmailPort: SaveEmailPort
 ) : CreateTokenUseCase {
 
-    val alphaString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    val alphaNumber = "0123456789";
+    val alphaString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    val alphaNumber = "0123456789"
 
     val random = Random()
     override fun createToken(email: String): BaseResponse<Unit> {
@@ -45,7 +45,7 @@ class CreateTokenService (
         )
 
         return BaseResponse (
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             success = true,
             message = "전송 성공 !",
         )

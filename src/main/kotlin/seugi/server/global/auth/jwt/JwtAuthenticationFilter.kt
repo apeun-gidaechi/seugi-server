@@ -53,7 +53,7 @@ class JwtAuthenticationFilter(
         response.writer.write(
             objectMapper.writeValueAsString(
                 BaseResponse<String> (
-                    status = errorCode.status,
+                    status = errorCode.status.value(),
                     state = errorCode.state,
                     success = false,
                     message = errorCode.message,

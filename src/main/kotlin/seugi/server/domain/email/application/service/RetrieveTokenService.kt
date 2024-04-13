@@ -21,7 +21,7 @@ class RetrieveTokenService (
 
         return BaseResponse (
             success = true,
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             message = "토큰 발급 성공 !",
             data = data
         )

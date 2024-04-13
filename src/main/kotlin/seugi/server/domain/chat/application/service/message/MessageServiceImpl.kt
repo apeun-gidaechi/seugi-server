@@ -69,7 +69,7 @@ class MessageServiceImpl(
 
 
             return BaseResponse(
-                status = HttpStatus.OK,
+                status = HttpStatus.OK.value(),
                 success = true,
                 state = "M1",
                 message = "채팅 불러오기 성공",
@@ -90,7 +90,7 @@ class MessageServiceImpl(
         messageRepository.save(message)
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             state = "M1",
             success = true,
             message = "이모지 추가 성공"
@@ -110,7 +110,7 @@ class MessageServiceImpl(
         }
 
         return BaseResponse(
-            status = HttpStatus.OK,
+            status = HttpStatus.OK.value(),
             state = "M1",
             success = true,
             message = "메시지 지워짐으로 상태변경 성공"

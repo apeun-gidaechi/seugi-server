@@ -54,7 +54,7 @@ class OAuth2MemberService (
         val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
 
         return BaseResponse (
-            HttpStatus.OK,
+            HttpStatus.OK.value(),
             true,
             "OK",
             "로그인 성공 !",
@@ -70,7 +70,7 @@ class OAuth2MemberService (
         params.add("redirect_uri", oAuth2Properties.redirectURI)
         params.add("grant_type", "authorization_code")
 
-        val headers: HttpHeaders = HttpHeaders()
+        val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
 
         val entity: HttpEntity<*> = HttpEntity<Any?>(params, headers)
