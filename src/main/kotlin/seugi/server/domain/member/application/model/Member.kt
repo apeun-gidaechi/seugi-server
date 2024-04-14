@@ -5,11 +5,11 @@ import seugi.server.domain.member.application.model.value.*
 data class Member (
 
     val id: MemberId?,
-    val name: MemberName,
+    var name: MemberName,
     val email: MemberEmail,
     val password: MemberPassword,
-    val birth: MemberBirth,
-    val profile: MemberProfile,
+    var birth: MemberBirth,
+    var profile: MemberProfile,
     val role: MemberRole,
     val loginId: MemberLoginId,
     val provider: MemberProvider,

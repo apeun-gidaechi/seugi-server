@@ -37,7 +37,6 @@ class CreateTokenService (
         saveTokenPort.saveToken(codeBuffer.toString(), tokenBuffer.toString())
         saveEmailPort.saveEmail(tokenBuffer.toString(), email)
 
-
         sendEmailUseCase.sendEmail(
             email,
             "테스트용입니다",

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import seugi.server.domain.member.adapter.`in`.dto.OAuth2MemberDTO
+import seugi.server.domain.member.application.exception.MemberErrorCode
 import seugi.server.domain.member.application.model.Member
 import seugi.server.domain.member.application.model.value.*
 import seugi.server.domain.member.port.`in`.OAuth2MemberUseCase
@@ -16,6 +18,7 @@ import seugi.server.domain.member.port.out.SaveMemberPort
 import seugi.server.global.auth.jwt.JwtInfo
 import seugi.server.global.auth.jwt.JwtUtils
 import seugi.server.global.auth.oauth.OAuth2Properties
+import seugi.server.global.exception.CustomException
 import seugi.server.global.response.BaseResponse
 
 @Service
@@ -29,7 +32,7 @@ class OAuth2MemberService (
     private val jwtUtils: JwtUtils
 ) : OAuth2MemberUseCase {
 
-    override fun process(code: String, registrationId: String): BaseResponse<JwtInfo> {
+    override fun process(code: String, provider: String): BaseResponse<JwtInfo> {
         val token = this.getAccessToken(code)
 
         val user = this.getUserResource(token)
@@ -37,10 +40,10 @@ class OAuth2MemberService (
         if (!existMemberPort.existMemberWithEmail(user.get("email").asText())) {
             val member = Member(
                 id = null,
-                name = MemberName(user.get("name").asText()),
+                name = MemberName(""),
                 email = MemberEmail(user.get("email").asText()),
                 password = MemberPassword(""),
-                birth = MemberBirth(user.get("birth").asText()),
+                birth = MemberBirth(""),
                 profile = MemberProfile(),
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
@@ -49,9 +52,18 @@ class OAuth2MemberService (
             )
 
             saveMemberPort.saveMember(member)
+
+            throw CustomException(MemberErrorCode.MEMBER_NOT_SUFFICIENT)
         }
 
         val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
+
+        if (
+            member.name.value.isBlank() ||
+            member.birth.value.isBlank()
+            ) {
+            throw CustomException(MemberErrorCode.MEMBER_NOT_SUFFICIENT)
+        }
 
         return BaseResponse (
             HttpStatus.OK.value(),
@@ -59,6 +71,31 @@ class OAuth2MemberService (
             "OK",
             "로그인 성공 !",
             jwtUtils.generate(member)
+        )
+    }
+
+    override fun complete(dto: OAuth2MemberDTO): BaseResponse<Unit> {
+        val member = loadMemberPort.loadMemberWithEmail(dto.email)
+
+        if (
+            member.name.value.isNotBlank() &&
+            member.birth.value.isNotBlank()
+            ) {
+            throw CustomException(MemberErrorCode.MEMBER_ALREADY_SUFFICIENT)
+        }
+
+        member.name = MemberName(dto.name)
+        member.birth = MemberBirth(dto.birth)
+
+        saveMemberPort.saveMember(
+            member
+        )
+
+        return BaseResponse (
+            HttpStatus.OK.value(),
+            true,
+            "OK",
+            "회원가입 완료 ~ !!",
         )
     }
 
