@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.domain.member.port.out.LoadMemberPort
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.crypto.SecretKey
@@ -16,7 +17,8 @@ import javax.crypto.spec.SecretKeySpec
 @Component
 class JwtUtils (
     private val jwtProperties: JwtProperties,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
+    private val loadMemberPort: LoadMemberPort
 ) {
 
     private val secretKey: SecretKey = SecretKeySpec(this.jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().algorithm)
@@ -26,6 +28,12 @@ class JwtUtils (
             "email",
             String::class.java
         )
+    }
+
+    fun getSubject(token: String): String {
+        return Jwts.parser().verifyWith(secretKey).build().
+        parseSignedClaims(token).
+        payload.subject
     }
 
     fun isExpired(token: String): Boolean {
