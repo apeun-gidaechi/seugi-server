@@ -8,8 +8,11 @@ import com.seugi.api.domain.chat.domain.joined.JoinedEntity
 import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.domain.joined.mapper.JoinedMapper
 import com.seugi.api.domain.chat.domain.joined.model.Joined
+import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
+import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
 @Service
@@ -87,6 +90,22 @@ class JoinedServiceImpl(
             success = true,
             message = "맴버 내보내기 성공"
         )
+    }
+
+    @Transactional
+    override fun tossMaster(userId: Long, tossMasterRequest: TossMasterRequest): BaseResponse<Unit> {
+        val joined: JoinedEntity = joinedRepository.findByChatRoomId(tossMasterRequest.roomId)
+        if (joined.roomAdmin == userId){
+            joined.roomAdmin = tossMasterRequest.tossUserId
+            joinedRepository.save(joined)
+            return BaseResponse(
+                status = HttpStatus.OK.value(),
+                state = "J1",
+                success = true,
+                message = "방장 전달 성공"
+            )
+        }
+        else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
     }
 
 }

@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.application.service.joined.JoinedService
 import com.seugi.api.domain.chat.domain.joined.model.Joined
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
+import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 
@@ -49,11 +50,11 @@ class JoinedController(
     }
 
     // 방장 위임
-//    @PatchMapping("/toss/master/{user}")
-//    fun tossMaster(
-//        @GetAuthenticatedId userId: Long,
-//        @PathVariable user: Long
-//    ): BaseResponse<Unit> {
-//        return joinedService.tossMaster(userId, user)
-//    }
+    @PatchMapping("/toss/master")
+    fun tossMaster(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody toosMaster: TossMasterRequest
+    ): BaseResponse<Unit> {
+        return joinedService.tossMaster(userId, toosMaster)
+    }
 }

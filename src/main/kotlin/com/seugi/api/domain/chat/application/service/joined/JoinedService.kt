@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.domain.joined.JoinedEntity
 import com.seugi.api.domain.chat.domain.joined.model.Joined
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
+import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
 import com.seugi.api.global.response.BaseResponse
 
 interface JoinedService {
@@ -15,4 +16,5 @@ interface JoinedService {
     fun save(joinedEntity: JoinedEntity)
     fun addJoined(userId: Long, addJoinedRequest: AddJoinedRequest): BaseResponse<Joined>
     fun outJoined(outJoinedRequest: OutJoinedRequest, userId: Long): BaseResponse<Unit>
+    fun tossMaster(userId: Long, tossMasterRequest: TossMasterRequest): BaseResponse<Unit>
 }

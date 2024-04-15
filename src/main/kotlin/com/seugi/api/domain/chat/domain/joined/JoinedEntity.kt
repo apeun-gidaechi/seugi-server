@@ -15,7 +15,7 @@ class JoinedEntity (
 
     val roomType: RoomType,
 
-    val roomAdmin: Long = -1,
+    var roomAdmin: Long = -1,
 
     var joinedUserId : MutableSet<Long> = emptyArray<Long>().toMutableSet(),
 )
