@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.application.service.message
 
-import com.seugi.api.domain.chat.application.service.message.MessageService
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
