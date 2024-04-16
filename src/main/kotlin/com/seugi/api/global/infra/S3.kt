@@ -29,14 +29,15 @@ class S3(
 
     fun uploadMultipleFile(
         @RequestPart file: MultipartFile,
+        fileName: String
     ) {
         val objectMetadata = ObjectMetadata().apply {
             this.contentType = file.contentType
             this.contentLength = file.size
         }
         val putObjectRequest = PutObjectRequest(
-            "bucketName",
-            "objectKey",
+            s3Properties.bucket,
+            fileName,
             file.inputStream,
             objectMetadata,
         )
