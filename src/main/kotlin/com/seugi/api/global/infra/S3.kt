@@ -30,7 +30,7 @@ class S3(
     fun uploadMultipleFile(
         @RequestPart file: MultipartFile,
         fileName: String
-    ) {
+    ): String {
         val objectMetadata = ObjectMetadata().apply {
             this.contentType = file.contentType
             this.contentLength = file.size
@@ -43,5 +43,9 @@ class S3(
         )
 
         amazonS3Client().putObject(putObjectRequest)
+
+        val fileUrl = "https://s3." + Regions.AP_NORTHEAST_2.name + ".amazonaws.com/" + s3Properties.bucket + "/" + fileName
+
+        return fileUrl
     }
 }
