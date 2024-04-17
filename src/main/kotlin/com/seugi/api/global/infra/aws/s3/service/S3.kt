@@ -20,7 +20,7 @@ import java.util.*
 
 @Configuration
 class S3(
-    val s3Properties: S3Properties
+    private val s3Properties: S3Properties
 ) {
     @Bean
     fun amazonS3Client(): AmazonS3 {
