@@ -11,6 +11,7 @@ data class Message(
     val type : Type,
     val author : MessageMember,
     val message: String,
+    val emoticon: String?,
     val emojiList: MutableList<Emoji> = MutableList(8) { Emoji(it+1) },
     val mention : List<MessageUserId> = emptyList(),
     val mentionAll : Boolean = false,

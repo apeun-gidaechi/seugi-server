@@ -20,6 +20,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = entity.chatRoomId!!,
             author = entity.author,
             message = entity.message,
+            emoticon = entity.emoticon,
             emojiList = entity.emojiList,
             timestamp = entity.timestamp.toString(),
             mention = entity.mention,
@@ -36,6 +37,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = domain.chatRoomId,
             author = domain.author,
             message = domain.message,
+            emoticon = domain.emoticon,
             mention = domain.mention,
             mentionALl = domain.mentionAll,
             joined = domain.joined
@@ -48,6 +50,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = chatMessageDto.roomId!!,
             author = toMember(author),
             message = chatMessageDto.message!!,
+            emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention!!,
             mentionAll = chatMessageDto.mentionAll,
             joined = joinedEntity.joinedUserId

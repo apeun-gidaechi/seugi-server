@@ -7,6 +7,7 @@ data class ChatMessageDto(
     var type : Type? = Type.MESSAGE,
     var roomId : Long? = null,
     var message : String? = null,
+    var emoticon : String? = null,
     var mention : List<MessageUserId>? = emptyList(),
     var mentionAll : Boolean = false,
 )
