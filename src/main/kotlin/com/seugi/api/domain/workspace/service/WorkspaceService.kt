@@ -8,5 +8,6 @@ interface WorkspaceService {
 
     fun createWorkspace(userId: Long, createWorkspace: CreateWorkspace): BaseResponse<Unit>
     fun getWorkspace(userId: Long) : BaseResponse<List<Workspace>>
+    fun searchWorkspace(code: String): BaseResponse<Workspace>
 
 }

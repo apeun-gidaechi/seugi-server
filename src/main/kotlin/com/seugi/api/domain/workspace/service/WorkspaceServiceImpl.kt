@@ -3,7 +3,9 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
+import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspace
+import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -52,5 +54,19 @@ class WorkspaceServiceImpl(
          )
 
      }
+
+    override fun searchWorkspace(code: String): BaseResponse<Workspace> {
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "W1",
+            success = true,
+            message = "워크스페이스 조회 성공",
+            data = workspaceMapper.toDomain(
+                workspaceRepository.findByWorkspaceCodeEquals(code) ?: throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+            )
+        )
+
+    }
 
 }

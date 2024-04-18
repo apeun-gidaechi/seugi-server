@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository
 
 interface WorkspaceRepository: MongoRepository<WorkspaceEntity, Long> {
     fun findByStudentEqualsAndTeacherEquals(userId: Long) : List<WorkspaceEntity>
+    fun findByWorkspaceCodeEquals(workspaceCode: String) : WorkspaceEntity?
 }
