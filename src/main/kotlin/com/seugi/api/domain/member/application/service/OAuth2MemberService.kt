@@ -42,6 +42,7 @@ class OAuth2MemberService (
                 id = null,
                 name = MemberName(""),
                 email = MemberEmail(user.get("email").asText()),
+                picture = MemberPicture(user.get("profile_img").asText()),
                 password = MemberPassword(""),
                 birth = MemberBirth(""),
                 profile = MemberProfile(),
