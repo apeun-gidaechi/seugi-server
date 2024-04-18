@@ -3,7 +3,9 @@ package com.seugi.api.domain.workspace.domain.mapper
 import com.seugi.api.domain.workspace.domain.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.global.common.Mapper
+import org.springframework.stereotype.Component
 
+@Component
 class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
 
     override fun toDomain(entity: WorkspaceEntity): Workspace {
