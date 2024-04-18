@@ -1,6 +1,6 @@
 package com.seugi.api.domain.workspace.domain.mapper
 
-import com.seugi.api.domain.workspace.domain.WorkspaceEntity
+import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspace
 import com.seugi.api.global.common.Mapper

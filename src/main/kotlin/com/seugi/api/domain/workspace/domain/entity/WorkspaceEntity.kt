@@ -1,4 +1,4 @@
-package com.seugi.api.domain.workspace.domain
+package com.seugi.api.domain.workspace.domain.entity
 
 import jakarta.persistence.*
 
