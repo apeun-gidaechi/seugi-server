@@ -76,7 +76,7 @@ class ChatRoomServiceImpl(
                     room.get().apply {
                         val member = memberRepository.findById(it.joinUserId.filter { id -> id != userId }[0]).get()
                         chatName = member.name
-//                        chatRoomImg = TODO("member.img 추가하기")
+                        chatRoomImg = member.picture
                     }
                 }
                 return BaseResponse(
