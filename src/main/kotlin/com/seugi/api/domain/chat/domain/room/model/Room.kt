@@ -8,6 +8,7 @@ data class Room(
     val type: RoomType,
     val chatName: String,
     val containUserCnt : Long,
+    val chatRoomImg: String,
     val createdAt: String? = null,
     val chatStatusEnum: ChatStatusEnum? = null
 )

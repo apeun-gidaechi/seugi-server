@@ -1,8 +1,5 @@
 package com.seugi.api.domain.chat.application.service.room
 
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import com.seugi.api.domain.chat.application.service.joined.JoinedService
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
@@ -17,6 +14,9 @@ import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -30,10 +30,7 @@ class ChatRoomServiceImpl(
     @Transactional
     override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long, type: RoomType): BaseResponse<Long> {
 
-        when(type){
-            PERSONAL ->
-                createRoomRequest.roomName = memberRepository.findById(createRoomRequest.joinUsers?.first()?.toLong()!!).get().name
-            GROUP ->
+        if(type == GROUP && createRoomRequest.roomName.isEmpty()){
                 if (createRoomRequest.roomName.isEmpty()){
                     createRoomRequest.roomName = createRoomRequest.joinUsers?.asSequence()
                         ?.map { memberRepository.findById(it).get().name }
@@ -71,16 +68,38 @@ class ChatRoomServiceImpl(
     override fun getRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
         val joined : List<Joined> = joinedService.findByJoinedUserId(userId, type)
-        val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
-        val data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
 
-        return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "C1",
-            message = "방 찾기 성공",
-            data = data
-        )
+        when(type){
+            PERSONAL -> {
+                val rooms: List<ChatRoomEntity> = joined.map {
+                    val room: Optional<ChatRoomEntity> = chatRoomRepository.findById(it.chatRoomId)
+                    room.get().apply {
+                        val member = memberRepository.findById(it.joinUserId.filter { id -> id != userId }[0]).get()
+                        chatName = member.name
+//                        chatRoomImg = TODO("member.img 추가하기")
+                    }
+                }
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = rooms.map { chatRoomMapper.toDomain(it) }
+                )
+            }
+
+            GROUP -> {
+                val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
+                )
+            }
+
+        }
 
     }
 
