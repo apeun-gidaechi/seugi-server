@@ -68,16 +68,38 @@ class ChatRoomServiceImpl(
     override fun getRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
         val joined : List<Joined> = joinedService.findByJoinedUserId(userId, type)
-        val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
-        val data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
 
-        return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "C1",
-            message = "방 찾기 성공",
-            data = data
-        )
+        when(type){
+            PERSONAL -> {
+                val rooms: List<ChatRoomEntity> = joined.map {
+                    val room: Optional<ChatRoomEntity> = chatRoomRepository.findById(it.chatRoomId)
+                    room.get().apply {
+                        val member = memberRepository.findById(it.joinUserId.filter { id -> id != userId }[0]).get()
+                        chatName = member.name
+//                        chatRoomImg = TODO("member.img 추가하기")
+                    }
+                }
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = rooms.map { chatRoomMapper.toDomain(it) }
+                )
+            }
+
+            GROUP -> {
+                val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
+                )
+            }
+
+        }
 
     }
 
