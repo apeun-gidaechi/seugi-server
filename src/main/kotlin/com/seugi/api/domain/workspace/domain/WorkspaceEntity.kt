@@ -17,6 +17,9 @@ class WorkspaceEntity (
     val workspaceImageUrl: String? = null,
 
     @Column(nullable = false)
-    val workspaceAdmin: Long? = null
+    val workspaceAdmin: Long? = null,
+
+    @Column(nullable = false)
+    val workspaceCode: String? = null
 
 )
