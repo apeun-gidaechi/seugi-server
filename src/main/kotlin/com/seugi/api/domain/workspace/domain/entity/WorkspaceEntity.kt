@@ -1,25 +1,26 @@
 package com.seugi.api.domain.workspace.domain.entity
 
 import jakarta.persistence.*
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.Document
 
 
-@Entity
+@Document(collection = "workspace")
 class WorkspaceEntity (
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val workspaceId: Long? = null,
+    val workspaceId: ObjectId? = null,
 
-    @Column(nullable = false)
     val workspaceName: String? = null,
 
-    @Column(nullable = false)
     val workspaceImageUrl: String? = null,
 
-    @Column(nullable = false)
     val workspaceAdmin: Long? = null,
 
-    @Column(nullable = false)
+    val student: MutableSet<Long> = emptySet<Long>().toMutableSet(),
+
+    val teacher: MutableSet<Long> = emptySet<Long>().toMutableSet(),
+
     val workspaceCode: String? = null
 
 )
