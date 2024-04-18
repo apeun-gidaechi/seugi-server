@@ -14,6 +14,7 @@ class RoomMapper: Mapper<Room, ChatRoomEntity> {
             id = entity.id!!,
             type = entity.roomType,
             chatName = entity.chatName,
+            chatRoomImg = entity.chatRoomImg,
             containUserCnt = entity.containUserCnt,
             createdAt = entity.createdAt.toString(),
             chatStatusEnum = entity.chatStatus,
@@ -32,7 +33,8 @@ class RoomMapper: Mapper<Room, ChatRoomEntity> {
         return Room(
             chatName = createRoomRequest.roomName,
             type = type,
-            containUserCnt = createRoomRequest.joinUsers?.size?.toLong()!!
+            containUserCnt = createRoomRequest.joinUsers?.size?.toLong()!!,
+            chatRoomImg = createRoomRequest.chatRoomImg
         )
     }
 }
