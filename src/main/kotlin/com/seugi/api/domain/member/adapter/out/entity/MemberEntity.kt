@@ -22,6 +22,9 @@ data class MemberEntity (
     var email: String = "",
 
     @Column(nullable = false)
+    var picture: String = "",
+
+    @Column(nullable = false)
     var password: String = "",
 
     @Column(nullable = false)
