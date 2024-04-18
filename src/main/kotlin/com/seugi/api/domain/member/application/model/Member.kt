@@ -7,6 +7,7 @@ data class Member (
     val id: MemberId?,
     var name: MemberName,
     val email: MemberEmail,
+    var picture: MemberPicture,
     val password: MemberPassword,
     var birth: MemberBirth,
     var profile: MemberProfile,

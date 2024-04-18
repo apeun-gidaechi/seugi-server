@@ -28,6 +28,7 @@ class RegisterMemberService (
             id = null,
             name = MemberName(memberDTO.name),
             email = MemberEmail(memberDTO.email),
+            picture = MemberPicture(""),
             password = MemberPassword(
                 bCryptPasswordEncoder.encode(memberDTO.password)
             ),
