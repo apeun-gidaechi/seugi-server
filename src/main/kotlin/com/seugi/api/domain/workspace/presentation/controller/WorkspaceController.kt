@@ -38,7 +38,7 @@ class WorkspaceController(
         return workspaceService.searchWorkspace(code = code)
     }
 
-    @PostMapping("/join/")
+    @PostMapping("/join")
     fun joinWorkspace(
         @GetAuthenticatedId userId: Long,
         @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest
