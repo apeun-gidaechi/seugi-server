@@ -88,6 +88,7 @@ class WorkspaceServiceImpl(
         when(joinWorkspaceRequest.role){
             WorkspaceRole.STUDENT -> workspace.studentWaitList.add(userId)
             WorkspaceRole.TEACHER -> workspace.teacherWaitList.add(userId)
+            WorkspaceRole.MIDDLE_ADMIN -> Unit
         }
 
         workspaceRepository.save(workspace)

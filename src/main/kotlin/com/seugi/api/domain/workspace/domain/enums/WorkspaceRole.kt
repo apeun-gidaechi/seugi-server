@@ -1,5 +1,5 @@
 package com.seugi.api.domain.workspace.domain.enums
 
 enum class WorkspaceRole {
-    STUDENT, TEACHER
+    STUDENT, TEACHER, MIDDLE_ADMIN
 }
