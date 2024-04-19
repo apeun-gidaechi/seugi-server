@@ -6,9 +6,7 @@ import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
-import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
-import com.seugi.api.domain.workspace.presentation.dto.request.GetWaitListRequest
-import com.seugi.api.domain.workspace.presentation.dto.request.JoinWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
@@ -110,7 +108,9 @@ class WorkspaceServiceImpl(
                 WorkspaceErrorCode.NOT_FOUND
             )
         }
-        if (workspaceEntity.workspaceAdmin==userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+
+        // 학생인 경우 확인 못하게 예외를 던짐
+        if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
         when(getWaitListRequest.role) {
             WorkspaceRole.STUDENT -> {
@@ -123,12 +123,25 @@ class WorkspaceServiceImpl(
                 )
             }
             WorkspaceRole.TEACHER -> {
+                // 워크스페이스 어드민과 중간관리자만 선생님 목록 확인 가능
+                if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
                     state = "OK",
                     success = true,
                     message = "선생님 대기명단 불러오기 성공",
                     data = workspaceEntity.teacherWaitList
+                )
+            }
+
+            WorkspaceRole.MIDDLE_ADMIN -> {
+                if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "선생님 대기명단 불러오기 성공",
+                    data = workspaceEntity.middleAdminWaitList
                 )
             }
         }
@@ -143,7 +156,7 @@ class WorkspaceServiceImpl(
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
 
-        if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
         when(waitSetWorkspaceMemberRequest.role){
             WorkspaceRole.STUDENT -> {
@@ -151,8 +164,17 @@ class WorkspaceServiceImpl(
                 workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
             WorkspaceRole.TEACHER -> {
+                // 워크스페이스 어드민과 중간관리자만 선생님 목록 추가 가능
+                if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+            }
+
+            WorkspaceRole.MIDDLE_ADMIN -> {
+                //어드민만 중간 관리자 추가 가능
+                if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
         }
 
