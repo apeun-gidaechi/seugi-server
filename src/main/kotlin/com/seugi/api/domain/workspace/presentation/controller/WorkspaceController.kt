@@ -25,6 +25,14 @@ class WorkspaceController(
         return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
     }
 
+    @DeleteMapping("/{workspaceId}")
+    fun deleteWorkspace(
+        @GetAuthenticatedId userId: Long,
+        @PathVariable workspaceId: String,
+    ): BaseResponse<Unit> {
+        return workspaceService.deleteWorkspace(userId = userId, workspaceId = workspaceId)
+    }
+
     @GetMapping("/")
     fun getWorkspace(
         @GetAuthenticatedId userId: Long,

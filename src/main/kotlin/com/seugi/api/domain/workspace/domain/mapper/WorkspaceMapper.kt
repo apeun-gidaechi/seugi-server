@@ -22,6 +22,7 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             student = entity.student,
             teacher = entity.teacher,
             workspaceCode = entity.workspaceCode,
+            workspaceStatus = entity.status
         )
     }
 
@@ -36,7 +37,8 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             teacherWaitList = domain.teacherWaitList,
             student = domain.student,
             teacher = domain.teacher,
-            workspaceCode = domain.workspaceCode
+            workspaceCode = domain.workspaceCode,
+            status = domain.workspaceStatus
         )
     }
 

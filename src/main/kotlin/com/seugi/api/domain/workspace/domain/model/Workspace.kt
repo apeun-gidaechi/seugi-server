@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.domain.model
 
+import com.seugi.api.domain.workspace.domain.enums.Status
 import org.bson.types.ObjectId
 
 data class Workspace (
@@ -14,4 +15,5 @@ data class Workspace (
     val student: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val teacher: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val workspaceCode: String? = null,
+    val workspaceStatus: Status = Status.ALIVE
 )

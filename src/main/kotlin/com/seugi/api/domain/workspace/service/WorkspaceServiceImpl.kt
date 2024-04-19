@@ -2,6 +2,7 @@ package com.seugi.api.domain.workspace.service
 
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
+import com.seugi.api.domain.workspace.domain.enums.Status
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
@@ -50,14 +51,33 @@ class WorkspaceServiceImpl(
         )
     }
 
-     override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
+
+    override fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit> {
+        val workspaceObjectId = ObjectId(workspaceId)
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
+        if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+
+        workspaceEntity.status = Status.DELETE
+
+        workspaceRepository.save(workspaceEntity)
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "워크스페이스 삭제 성공"
+        )
+    }
+
+
+    override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
 
          return BaseResponse(
              status = HttpStatus.OK.value(),
              state = "W1",
              success = true,
              message = "자신이 속한 워크스페이스 전체 불러오기 성공",
-             data = workspaceRepository.findByStudentEqualsAndTeacherEquals(userId)
+             data = workspaceRepository.findByStudentEqualsAndTeacherEqualsAndStatus(userId, Status.ALIVE)
                  .map { workspaceMapper.toDomain(it) }
          )
 
