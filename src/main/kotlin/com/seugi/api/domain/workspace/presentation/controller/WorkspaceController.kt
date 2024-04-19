@@ -51,7 +51,7 @@ class WorkspaceController(
         @GetAuthenticatedId userId: Long,
         @RequestBody getWaitListRequest: GetWaitListRequest
     ): BaseResponse<Set<Long>> {
-        return workspaceService.getWaitList(getWaitListRequest)
+        return workspaceService.getWaitList(userId, getWaitListRequest)
     }
 
 

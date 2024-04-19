@@ -100,7 +100,8 @@ class WorkspaceServiceImpl(
         )
     }
 
-    override fun getWaitList(getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
+    override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
+
         val workspaceId = ObjectId(getWaitListRequest.workspaceId)
 
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
@@ -108,6 +109,7 @@ class WorkspaceServiceImpl(
                 WorkspaceErrorCode.NOT_FOUND
             )
         }
+        if (workspaceEntity.workspaceAdmin==userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
         when(getWaitListRequest.role) {
             WorkspaceRole.STUDENT -> {
