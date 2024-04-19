@@ -79,4 +79,12 @@ class JwtUtils (
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 
+    fun refreshToken(token: String): JwtInfo {
+        val member = loadMemberPort.loadMemberWithEmail(
+            getSubject(getToken(token))
+        )
+
+        return generate(member)
+    }
+
 }
