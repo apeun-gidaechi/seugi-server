@@ -2,6 +2,7 @@ package com.seugi.api.domain.workspace.service
 
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
+import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
@@ -82,7 +83,13 @@ class WorkspaceServiceImpl(
         val workspace: WorkspaceEntity = workspaceRepository.findById(id).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
         if (workspace.workspaceCode==joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
 
-        workspace.waitList.add(userId)
+
+        when(joinWorkspaceRequest.role){
+            WorkspaceRole.STUDENT -> workspace.studentWaitList.add(userId)
+            WorkspaceRole.TEACHER -> workspace.teacherWaitList.add(userId)
+        }
+
+        workspaceRepository.save(workspace)
 
         return BaseResponse(
             status = HttpStatus.OK.value(),

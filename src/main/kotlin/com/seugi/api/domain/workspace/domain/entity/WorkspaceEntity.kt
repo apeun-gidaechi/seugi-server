@@ -17,7 +17,9 @@ class WorkspaceEntity (
 
     val workspaceAdmin: Long? = null,
 
-    val waitList: MutableSet<Long> = emptySet<Long>().toMutableSet(),
+    val studentWaitList: MutableSet<Long> = emptySet<Long>().toMutableSet(),
+
+    val teacherWaitList: MutableSet<Long> = emptySet<Long>().toMutableSet(),
 
     val student: MutableSet<Long> = emptySet<Long>().toMutableSet(),
 
