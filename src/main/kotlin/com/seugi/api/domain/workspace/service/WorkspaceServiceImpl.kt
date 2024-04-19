@@ -83,6 +83,23 @@ class WorkspaceServiceImpl(
 
      }
 
+    override fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String> {
+        val workspaceObjectId = ObjectId(workspaceId)
+        val workspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
+
+        if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId) && !workspaceEntity.teacher.contains(userId) ) throw CustomException(
+            WorkspaceErrorCode.FORBIDDEN
+        )
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "워크스페이스 코드 조회 성공",
+            data = workspaceEntity.workspaceCode
+        )
+
+    }
+
     override fun searchWorkspace(code: String): BaseResponse<Workspace> {
 
         return BaseResponse(
