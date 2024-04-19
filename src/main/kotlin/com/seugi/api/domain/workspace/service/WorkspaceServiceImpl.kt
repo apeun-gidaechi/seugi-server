@@ -4,7 +4,7 @@ import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
-import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspace
+import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
@@ -25,12 +25,12 @@ class WorkspaceServiceImpl(
              .joinToString("")
      }
 
-    override fun createWorkspace(userId: Long, createWorkspace: CreateWorkspace): BaseResponse<Unit> {
+    override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<Unit> {
         val workspaceCode: String = genCode()
 
         workspaceRepository.save(
             workspaceMapper.toEntity(
-                workspaceMapper.toWorkspace(createWorkspace, userId, workspaceCode)
+                workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
             )
         )
 

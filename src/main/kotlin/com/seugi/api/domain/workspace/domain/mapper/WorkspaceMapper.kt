@@ -2,7 +2,7 @@ package com.seugi.api.domain.workspace.domain.mapper
 
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.model.Workspace
-import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspace
+import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 
@@ -32,10 +32,10 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
         )
     }
 
-    fun toWorkspace(createWorkspace: CreateWorkspace, userId: Long, workspaceCode: String): Workspace {
+    fun toWorkspace(createWorkspaceRequest: CreateWorkspaceRequest, userId: Long, workspaceCode: String): Workspace {
         return Workspace(
-            workspaceName = createWorkspace.workspaceName,
-            workspaceImageUrl = createWorkspace.workspaceImageUrl,
+            workspaceName = createWorkspaceRequest.workspaceName,
+            workspaceImageUrl = createWorkspaceRequest.workspaceImageUrl,
             workspaceAdmin = userId,
             workspaceCode = workspaceCode
         )

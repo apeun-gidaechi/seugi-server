@@ -1,7 +1,7 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
 import com.seugi.api.domain.workspace.domain.model.Workspace
-import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspace
+import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -17,9 +17,9 @@ class WorkspaceController(
     @PostMapping("/")
     fun createWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody createWorkspace: CreateWorkspace
+        @RequestBody createWorkspaceRequest: CreateWorkspaceRequest
     ): BaseResponse<Unit> {
-        return workspaceService.createWorkspace(userId = userId, createWorkspace = createWorkspace)
+        return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
     }
 
     @GetMapping("/")
