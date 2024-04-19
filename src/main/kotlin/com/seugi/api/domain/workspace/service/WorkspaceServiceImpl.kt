@@ -10,6 +10,7 @@ import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import kotlin.random.Random
@@ -17,11 +18,11 @@ import kotlin.random.Random
 @Service
 class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
-    private val workspaceRepository: WorkspaceRepository
+    private val workspaceRepository: WorkspaceRepository,
+    @Value("\${workspace.code.secret}") private val charset: String
 ): WorkspaceService {
 
      private fun genCode(length: Int = 6): String {
-         val charset = "J2nUV6WX7TKAt5Thiu3NOLPZaBI4DMHoxyzQpqSkrs9ef0g8bcd0EF1GvwRlmC"
          return (1..length)
              .map { Random.nextInt(0, charset.length) }
              .map(charset::get)
