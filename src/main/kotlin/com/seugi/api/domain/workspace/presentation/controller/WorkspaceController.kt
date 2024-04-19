@@ -52,7 +52,7 @@ class WorkspaceController(
         @GetAuthenticatedId userId: Long,
         @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
     ): BaseResponse<Unit>{
-        return workspaceService.addWaitListToWorkspaceMember(userId, waitSetWorkspaceMemberRequest)
+        return workspaceService.addWaitListToWorkspaceMember(userId = userId, waitSetWorkspaceMemberRequest = waitSetWorkspaceMemberRequest)
     }
 
     @GetMapping("/waitList")
@@ -60,7 +60,7 @@ class WorkspaceController(
         @GetAuthenticatedId userId: Long,
         @RequestBody getWaitListRequest: GetWaitListRequest
     ): BaseResponse<Set<Long>> {
-        return workspaceService.getWaitList(userId, getWaitListRequest)
+        return workspaceService.getWaitList(userId = userId, getWaitListRequest = getWaitListRequest)
     }
 
 
