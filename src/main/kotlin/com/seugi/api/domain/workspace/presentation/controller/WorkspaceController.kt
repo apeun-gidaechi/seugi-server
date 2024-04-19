@@ -4,6 +4,7 @@ import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
 import com.seugi.api.domain.workspace.presentation.dto.request.GetWaitListRequest
 import com.seugi.api.domain.workspace.presentation.dto.request.JoinWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.request.WaitSetWorkspaceMemberRequest
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -44,6 +45,14 @@ class WorkspaceController(
         @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest
     ): BaseResponse<Unit> {
         return workspaceService.joinWorkspace(userId = userId, joinWorkspaceRequest = joinWorkspaceRequest)
+    }
+
+    @PostMapping("/add")
+    fun addWaitListToWorkspaceMember(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
+    ): BaseResponse<Unit>{
+        return workspaceService.addWaitListToWorkspaceMember(userId, waitSetWorkspaceMemberRequest)
     }
 
     @GetMapping("/waitList")

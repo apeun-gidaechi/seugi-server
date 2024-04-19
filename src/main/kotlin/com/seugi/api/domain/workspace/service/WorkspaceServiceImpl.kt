@@ -135,4 +135,33 @@ class WorkspaceServiceImpl(
 
     }
 
+    override fun addWaitListToWorkspaceMember(userId: Long, waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest): BaseResponse<Unit> {
+
+        val workspaceId = ObjectId(waitSetWorkspaceMemberRequest.workspaceId)
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
+            CustomException(WorkspaceErrorCode.NOT_FOUND)
+        }
+
+        if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+
+        when(waitSetWorkspaceMemberRequest.role){
+            WorkspaceRole.STUDENT -> {
+                workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+            }
+            WorkspaceRole.TEACHER -> {
+                workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+            }
+        }
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "${waitSetWorkspaceMemberRequest.role} 맴버 추가 성공"
+        )
+
+    }
+
 }
