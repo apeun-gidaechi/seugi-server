@@ -2,6 +2,7 @@ package com.seugi.api.domain.workspace.presentation.controller
 
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.request.JoinWorkspaceRequest
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -34,6 +35,14 @@ class WorkspaceController(
         @PathVariable code: String
     ): BaseResponse<Workspace> {
         return workspaceService.searchWorkspace(code = code)
+    }
+
+    @PostMapping("/join")
+    fun joinWorkspace(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest
+    ): BaseResponse<Unit> {
+        return workspaceService.joinWorkspace(userId = userId, joinWorkspaceRequest = joinWorkspaceRequest)
     }
 
 

@@ -7,6 +7,7 @@ data class Workspace (
     val workspaceName: String? = null,
     val workspaceImageUrl: String? = null,
     val workspaceAdmin: Long? = null,
+    val waitList: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val student: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val teacher: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val workspaceCode: String? = null,

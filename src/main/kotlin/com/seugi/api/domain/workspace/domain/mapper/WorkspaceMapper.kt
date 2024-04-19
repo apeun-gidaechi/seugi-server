@@ -15,6 +15,7 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             workspaceName = entity.workspaceName,
             workspaceImageUrl = entity.workspaceImageUrl,
             workspaceAdmin = entity.workspaceAdmin,
+            waitList = entity.waitList,
             student = entity.student,
             teacher = entity.teacher,
             workspaceCode = entity.workspaceCode,
@@ -26,6 +27,7 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             workspaceName = domain.workspaceName,
             workspaceImageUrl = domain.workspaceImageUrl,
             workspaceAdmin = domain.workspaceAdmin,
+            waitList = domain.waitList,
             student = domain.student,
             teacher = domain.teacher,
             workspaceCode = domain.workspaceCode

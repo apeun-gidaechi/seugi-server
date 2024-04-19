@@ -1,12 +1,15 @@
 package com.seugi.api.domain.workspace.service
 
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
+import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.request.JoinWorkspaceRequest
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import kotlin.random.Random
@@ -71,6 +74,22 @@ class WorkspaceServiceImpl(
             )
         )
 
+    }
+
+    override fun joinWorkspace(userId: Long, joinWorkspaceRequest: JoinWorkspaceRequest): BaseResponse<Unit> {
+
+        val id = ObjectId(joinWorkspaceRequest.workspaceId)
+        val workspace: WorkspaceEntity = workspaceRepository.findById(id).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
+        if (workspace.workspaceCode==joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
+
+        workspace.waitList.add(userId)
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "워크스페이스 참가 신청 성공"
+        )
     }
 
 }
