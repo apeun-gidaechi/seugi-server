@@ -26,7 +26,11 @@ class WorkspaceServiceImpl(
      }
 
     override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<Unit> {
-        val workspaceCode: String = genCode()
+        var workspaceCode: String
+
+        do {
+            workspaceCode = genCode()
+        } while (workspaceRepository.findByWorkspaceCodeExists(workspaceCode))
 
         workspaceRepository.save(
             workspaceMapper.toEntity(
