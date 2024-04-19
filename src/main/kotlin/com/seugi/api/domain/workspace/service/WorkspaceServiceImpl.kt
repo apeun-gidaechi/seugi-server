@@ -7,6 +7,7 @@ import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.request.GetWaitListRequest
 import com.seugi.api.domain.workspace.presentation.dto.request.JoinWorkspaceRequest
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -97,6 +98,39 @@ class WorkspaceServiceImpl(
             success = true,
             message = "워크스페이스 참가 신청 성공"
         )
+    }
+
+    override fun getWaitList(getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
+        val workspaceId = ObjectId(getWaitListRequest.workspaceId)
+
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
+            CustomException(
+                WorkspaceErrorCode.NOT_FOUND
+            )
+        }
+
+        when(getWaitListRequest.role) {
+            WorkspaceRole.STUDENT -> {
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "학생 대기명단 불러오기 성공",
+                    data =  workspaceEntity.studentWaitList
+                )
+            }
+            WorkspaceRole.TEACHER -> {
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "선생님 대기명단 불러오기 성공",
+                    data = workspaceEntity.teacherWaitList
+                )
+            }
+        }
+
+
     }
 
 }
