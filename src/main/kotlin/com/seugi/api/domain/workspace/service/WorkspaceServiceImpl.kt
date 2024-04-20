@@ -14,6 +14,7 @@ import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import kotlin.random.Random
 
 @Service
@@ -30,6 +31,7 @@ class WorkspaceServiceImpl(
              .joinToString("")
      }
 
+    @Transactional
     override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<Unit> {
         var workspaceCode: String
 
@@ -51,7 +53,7 @@ class WorkspaceServiceImpl(
         )
     }
 
-
+    @Transactional
     override fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit> {
         val workspaceObjectId = ObjectId(workspaceId)
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
@@ -69,7 +71,7 @@ class WorkspaceServiceImpl(
         )
     }
 
-
+    @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
 
          return BaseResponse(
@@ -83,6 +85,7 @@ class WorkspaceServiceImpl(
 
      }
 
+    @Transactional(readOnly = true)
     override fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String> {
         val workspaceObjectId = ObjectId(workspaceId)
         val workspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
@@ -100,6 +103,7 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional(readOnly = true)
     override fun searchWorkspace(code: String): BaseResponse<Workspace> {
 
         return BaseResponse(
@@ -114,6 +118,7 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional
     override fun joinWorkspace(userId: Long, joinWorkspaceRequest: JoinWorkspaceRequest): BaseResponse<Unit> {
 
         val id = ObjectId(joinWorkspaceRequest.workspaceId)
@@ -137,6 +142,7 @@ class WorkspaceServiceImpl(
         )
     }
 
+    @Transactional(readOnly = true)
     override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
 
         val workspaceId = ObjectId(getWaitListRequest.workspaceId)
@@ -187,6 +193,7 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional
     override fun addWaitListToWorkspaceMember(userId: Long, waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest): BaseResponse<Unit> {
 
         val workspaceId = ObjectId(waitSetWorkspaceMemberRequest.workspaceId)
