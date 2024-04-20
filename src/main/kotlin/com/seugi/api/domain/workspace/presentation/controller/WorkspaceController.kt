@@ -68,7 +68,7 @@ class WorkspaceController(
         return workspaceService.addWaitListToWorkspaceMember(userId = userId, waitSetWorkspaceMemberRequest = waitSetWorkspaceMemberRequest)
     }
 
-    @GetMapping("/waitList")
+    @GetMapping("/wait-list")
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
         @RequestBody getWaitListRequest: GetWaitListRequest
