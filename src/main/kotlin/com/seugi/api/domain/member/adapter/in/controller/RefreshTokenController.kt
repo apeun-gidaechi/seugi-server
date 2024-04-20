@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/member")
-class RefreshMemberController (
+class RefreshTokenController (
     private val refreshTokenUseCase: RefreshTokenUseCase
 ) {
 
