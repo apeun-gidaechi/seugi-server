@@ -146,7 +146,7 @@ class WorkspaceServiceImpl(
 
         val id = ObjectId(joinWorkspaceRequest.workspaceId)
         val workspace: WorkspaceEntity = workspaceRepository.findById(id).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
-        if (workspace.workspaceCode==joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
+        if (workspace.workspaceCode!=joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
 
 
         when(joinWorkspaceRequest.role){
