@@ -30,12 +30,6 @@ class JwtUtils (
         )
     }
 
-    fun getSubject(token: String): String {
-        return Jwts.parser().verifyWith(secretKey).build().
-        parseSignedClaims(token).
-        payload.subject
-    }
-
     fun isExpired(token: String): Boolean {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
@@ -81,7 +75,7 @@ class JwtUtils (
 
     fun refreshToken(token: String): JwtInfo {
         val member = loadMemberPort.loadMemberWithEmail(
-            getSubject(getToken(token))
+            getUsername(getToken(token))
         )
 
         return generate(member)
