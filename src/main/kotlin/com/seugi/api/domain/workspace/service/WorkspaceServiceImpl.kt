@@ -5,7 +5,6 @@ import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.enums.Status
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
-import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse

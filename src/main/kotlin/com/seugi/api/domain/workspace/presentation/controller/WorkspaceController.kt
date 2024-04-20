@@ -1,6 +1,5 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
-import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.domain.workspace.service.WorkspaceService
