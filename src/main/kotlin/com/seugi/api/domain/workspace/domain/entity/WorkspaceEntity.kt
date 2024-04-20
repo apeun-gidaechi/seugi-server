@@ -12,11 +12,11 @@ class WorkspaceEntity (
     @Id
     val workspaceId: ObjectId? = null,
 
-    val workspaceName: String? = null,
+    var workspaceName: String? = null,
 
-    val workspaceImageUrl: String? = null,
+    var workspaceImageUrl: String? = null,
 
-    val workspaceAdmin: Long? = null,
+    var workspaceAdmin: Long? = null,
 
     var middleAdmin: MutableSet<Long> = emptySet<Long>().toMutableSet(),
 
@@ -32,6 +32,6 @@ class WorkspaceEntity (
 
     val workspaceCode: String? = null,
 
-    var status: Status,
+    var status: Status
 
-    )
+)

@@ -71,6 +71,30 @@ class WorkspaceServiceImpl(
         )
     }
 
+    @Transactional
+    override fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit> {
+
+        val workspaceObjectId = ObjectId(updateWorkspaceRequest.workspaceId)
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
+        if (workspaceEntity.workspaceAdmin!=userId || !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+
+        if(updateWorkspaceRequest.workspaceName.isNotEmpty()){
+            workspaceEntity.workspaceName = updateWorkspaceRequest.workspaceName
+        }
+        if(updateWorkspaceRequest.workspaceImgUrl.isNotEmpty()){
+            workspaceEntity.workspaceImageUrl = updateWorkspaceRequest.workspaceImgUrl
+        }
+        workspaceRepository.save(workspaceEntity)
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "워크스페이스 업데이트성공"
+        )
+
+    }
+
     @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
 
