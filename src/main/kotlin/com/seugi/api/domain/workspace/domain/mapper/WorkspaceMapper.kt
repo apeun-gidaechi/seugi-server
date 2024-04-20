@@ -11,7 +11,7 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
 
     override fun toDomain(entity: WorkspaceEntity): Workspace {
         return Workspace(
-            workspaceId = entity.workspaceId,
+            workspaceId = entity.id.toString(),
             workspaceName = entity.workspaceName,
             workspaceImageUrl = entity.workspaceImageUrl,
             workspaceAdmin = entity.workspaceAdmin,

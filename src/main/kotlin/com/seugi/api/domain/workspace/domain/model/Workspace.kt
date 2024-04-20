@@ -4,7 +4,7 @@ import com.seugi.api.domain.workspace.domain.enums.Status
 import org.bson.types.ObjectId
 
 data class Workspace (
-    val workspaceId: ObjectId? = null,
+    val workspaceId: String? = null,
     val workspaceName: String? = null,
     val workspaceImageUrl: String? = null,
     val workspaceAdmin: Long? = null,

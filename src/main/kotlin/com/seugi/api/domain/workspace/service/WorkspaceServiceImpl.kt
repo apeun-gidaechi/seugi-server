@@ -97,13 +97,12 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
-
          return BaseResponse(
              status = HttpStatus.OK.value(),
              state = "W1",
              success = true,
              message = "자신이 속한 워크스페이스 전체 불러오기 성공",
-             data = workspaceRepository.findByStudentEqualsAndTeacherEqualsAndStatus(userId, Status.ALIVE)
+             data = workspaceRepository.findByUserIdAndStatus(userId, Status.ALIVE)
                  .map { workspaceMapper.toDomain(it) }
          )
 

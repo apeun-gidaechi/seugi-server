@@ -1,7 +1,7 @@
 package com.seugi.api.domain.workspace.domain.entity
 
 import com.seugi.api.domain.workspace.domain.enums.Status
-import jakarta.persistence.*
+import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 class WorkspaceEntity (
 
     @Id
-    val workspaceId: ObjectId? = null,
+    val id: ObjectId? = null,
 
     var workspaceName: String? = null,
 
