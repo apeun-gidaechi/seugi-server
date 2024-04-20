@@ -46,7 +46,7 @@ class WorkspaceController(
         return workspaceService.getWorkspaceCode(userId = userId, workspaceId = workspaceId)
     }
 
-    @PostMapping("/{code}")
+    @GetMapping("/{code}")
     fun searchWorkspace(
         @PathVariable code: String
     ): BaseResponse<WorkspaceResponse> {
