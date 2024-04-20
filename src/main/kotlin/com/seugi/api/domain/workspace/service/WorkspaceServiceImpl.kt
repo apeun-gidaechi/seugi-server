@@ -8,6 +8,7 @@ import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.*
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
@@ -96,14 +97,14 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWorkspace(userId: Long): BaseResponse<List<Workspace>> {
+    override fun getWorkspace(userId: Long): BaseResponse<List<WorkspaceResponse>> {
          return BaseResponse(
              status = HttpStatus.OK.value(),
              state = "W1",
              success = true,
              message = "자신이 속한 워크스페이스 전체 불러오기 성공",
              data = workspaceRepository.findByUserIdAndStatus(userId, Status.ALIVE)
-                 .map { workspaceMapper.toDomain(it) }
+                 .map { workspaceMapper.toWorkspaceResponse(it) }
          )
 
      }
@@ -127,14 +128,14 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun searchWorkspace(code: String): BaseResponse<Workspace> {
+    override fun searchWorkspace(code: String): BaseResponse<WorkspaceResponse> {
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "W1",
             success = true,
             message = "워크스페이스 조회 성공",
-            data = workspaceMapper.toDomain(
+            data = workspaceMapper.toWorkspaceResponse(
                 workspaceRepository.findByWorkspaceCodeEquals(code) ?: throw CustomException(WorkspaceErrorCode.NOT_FOUND)
             )
         )
