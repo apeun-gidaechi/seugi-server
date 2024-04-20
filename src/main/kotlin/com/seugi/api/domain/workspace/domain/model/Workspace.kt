@@ -1,7 +1,6 @@
 package com.seugi.api.domain.workspace.domain.model
 
 import com.seugi.api.domain.workspace.domain.enums.Status
-import org.bson.types.ObjectId
 
 data class Workspace (
     val workspaceId: String? = null,
