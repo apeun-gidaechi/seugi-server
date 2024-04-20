@@ -60,7 +60,7 @@ class WorkspaceController(
         return workspaceService.joinWorkspace(userId = userId, joinWorkspaceRequest = joinWorkspaceRequest)
     }
 
-    @PostMapping("/add")
+    @PatchMapping("/add")
     fun addWaitListToWorkspaceMember(
         @GetAuthenticatedId userId: Long,
         @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
@@ -76,7 +76,7 @@ class WorkspaceController(
         return workspaceService.getWaitList(userId = userId, getWaitListRequest = getWaitListRequest)
     }
 
-    @PutMapping("/")
+    @PatchMapping("/")
     fun updateWorkspace(
         @GetAuthenticatedId userId: Long,
         @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest
