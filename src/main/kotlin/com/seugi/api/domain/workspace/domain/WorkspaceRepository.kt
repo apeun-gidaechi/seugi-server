@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 interface WorkspaceRepository: MongoRepository<WorkspaceEntity, ObjectId> {
     fun findByStudentEqualsAndTeacherEqualsAndStatus(userId: Long, status: Status) : List<WorkspaceEntity>
     fun findByWorkspaceCodeEquals(workspaceCode: String) : WorkspaceEntity?
-    fun findByWorkspaceCodeExists(workspaceCode: String) : Boolean
+    fun existsByWorkspaceCode(workspaceCode: String) : Boolean
 }

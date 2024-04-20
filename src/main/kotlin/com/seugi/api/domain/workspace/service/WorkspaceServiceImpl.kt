@@ -37,7 +37,7 @@ class WorkspaceServiceImpl(
 
         do {
             workspaceCode = genCode()
-        } while (workspaceRepository.findByWorkspaceCodeExists(workspaceCode))
+        } while (workspaceRepository.existsByWorkspaceCode(workspaceCode))
 
         workspaceRepository.save(
             workspaceMapper.toEntity(
