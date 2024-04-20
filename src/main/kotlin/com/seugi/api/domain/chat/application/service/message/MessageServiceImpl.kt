@@ -48,35 +48,35 @@ class MessageServiceImpl(
     @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
 
-        if (joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)){
-            val read : Set<Long> = setOf(userId)
-            val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
+        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
-            val data : MutableMap<String, Any> = emptyMap<String, List<Message>>().toMutableMap()
+        val read : Set<Long> = setOf(userId)
+        val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
 
-            if (messages.isNotEmpty()){
-                messages.map {
-                    it.read.add(userId)
-                }
-                val id = messageRepository.saveAll(messages).last()
-                data["firstMessageId"] = messages.first().id?:id
-                data["messages"] = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
-            } else {
-                val readMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
-                data["firstMessageId"] = readMessages.last().id!!
-                data["messages"] = readMessages
+        val data : MutableMap<String, Any> = emptyMap<String, List<Message>>().toMutableMap()
+
+        if (messages.isNotEmpty()){
+            messages.map {
+                it.read.add(userId)
             }
+            val id = messageRepository.saveAll(messages).last()
+            data["firstMessageId"] = messages.first().id?:id
+            data["messages"] = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+        } else {
+            val readMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+            data["firstMessageId"] = readMessages.last().id!!
+            data["messages"] = readMessages
+        }
 
 
-            return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "M1",
-                message = "채팅 불러오기 성공",
-                data = data
-            )
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            success = true,
+            state = "M1",
+            message = "채팅 불러오기 성공",
+            data = data
+        )
 
-        } else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
     }
 
