@@ -76,7 +76,7 @@ class WorkspaceServiceImpl(
 
         val workspaceObjectId = ObjectId(updateWorkspaceRequest.workspaceId)
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
-        if (workspaceEntity.workspaceAdmin!=userId || !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
         if(updateWorkspaceRequest.workspaceName.isNotEmpty()){
             workspaceEntity.workspaceName = updateWorkspaceRequest.workspaceName
