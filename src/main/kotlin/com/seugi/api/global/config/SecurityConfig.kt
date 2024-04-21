@@ -12,12 +12,14 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import com.seugi.api.global.auth.jwt.JwtAuthenticationFilter
 import com.seugi.api.global.auth.jwt.JwtUtils
+import org.springframework.beans.factory.annotation.Value
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig (
     private val jwtUtils: JwtUtils,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    @Value("\${management.endpoints.web.base-path}") private val actuatorUrl : String
 ) {
 
     @Bean
@@ -41,6 +43,7 @@ class SecurityConfig (
                 it
                     .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
                     .requestMatchers("/stomp/**").permitAll()
+                    .requestMatchers("$actuatorUrl/**").permitAll()
                     .anyRequest().authenticated()
             }
 
