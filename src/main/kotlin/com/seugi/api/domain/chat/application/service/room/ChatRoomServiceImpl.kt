@@ -52,7 +52,8 @@ class ChatRoomServiceImpl(
             chatRoomId = chatRoomId!!,
             roomAdmin = if (type == GROUP) userId else 0,
             type = type,
-            joinedUserId = createRoomRequest.joinUsers!!
+            joinedUserId = createRoomRequest.joinUsers!!,
+            workspaceId = createRoomRequest.workspaceId,
         )
 
         return BaseResponse(
@@ -65,9 +66,9 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getRooms(userId: Long, type: RoomType): BaseResponse<List<Room>> {
+    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
-        val joined : List<Joined> = joinedService.findByJoinedUserId(userId, type)
+        val joined : List<Joined> = joinedService.findByJoinedUserId(workspaceId, userId, type)
 
         when(type){
             PERSONAL -> {
