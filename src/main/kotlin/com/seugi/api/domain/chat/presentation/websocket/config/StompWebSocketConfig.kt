@@ -25,7 +25,7 @@ import com.seugi.api.global.auth.jwt.JwtUtils
 @EnableWebSocketMessageBroker
 class StompWebSocketConfig(
     private val jwtUtils: JwtUtils,
-    @Value("\${spring.rabbitmq.host:}") private val rabbitmqHost: String
+    @Value("\${spring.rabbitmq.host}") private val rabbitmqHost: String
 ) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {

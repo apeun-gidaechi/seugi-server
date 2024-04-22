@@ -11,6 +11,8 @@ class JoinedEntity (
     @Id
     val id:ObjectId? = null,
 
+    val workspaceID: String,
+
     val chatRoomId: Long? = null,
 
     val roomType: RoomType,

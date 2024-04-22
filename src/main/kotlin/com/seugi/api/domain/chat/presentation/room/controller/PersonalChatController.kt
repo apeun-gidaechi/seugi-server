@@ -28,11 +28,12 @@ class PersonalChatController(
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.PERSONAL)
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/{workspaceId}")
     fun getRooms(
-        @GetAuthenticatedId userid: Long
+        @GetAuthenticatedId userid: Long,
+        @PathVariable workspaceId: String
     ) : BaseResponse<List<Room>> {
-        return chatRoomService.getRooms(userid, RoomType.PERSONAL)
+        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
     }
 
 }

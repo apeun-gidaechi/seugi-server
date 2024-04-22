@@ -22,9 +22,9 @@ class JoinedServiceImpl(
 ) : JoinedService {
 
     @Transactional
-    override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType, roomAdmin: Long) {
+    override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType, roomAdmin: Long, workspaceId: String) {
         joinedRepository.save(
-            joinedMapper.toEntity(chatRoomId, joinedUserId, type, roomAdmin)
+            joinedMapper.toEntity(chatRoomId, joinedUserId, type, roomAdmin, workspaceId)
         )
     }
 
@@ -40,8 +40,8 @@ class JoinedServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun findByJoinedUserId(userId: Long, roomType: RoomType): List<Joined> {
-        return joinedRepository.findByJoinedUserIdEqualsAndRoomType(userId, roomType).map { joinedMapper.toDomain(it) }
+    override fun findByJoinedUserId(workspaceId: String, userId: Long, roomType: RoomType): List<Joined> {
+        return joinedRepository.findByWorkspaceIDAndJoinedUserIdContainsAndRoomType(workspaceId, userId, roomType).map { joinedMapper.toDomain(it) }
     }
 
     @Transactional(readOnly = true)

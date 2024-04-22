@@ -27,11 +27,12 @@ class GroupChatController(
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/{workspaceID}")
     fun getRooms(
-        @GetAuthenticatedId userid: Long
+        @GetAuthenticatedId userid: Long,
+        @PathVariable workspaceID: String,
     ) : BaseResponse<List<Room>> {
-        return chatRoomService.getRooms(userid, RoomType.GROUP)
+        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
     }
 
 

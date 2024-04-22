@@ -6,5 +6,5 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType
 
 interface JoinedRepository : MongoRepository<JoinedEntity, ObjectId>{
     fun findByChatRoomId(chatRoomId: Long) : JoinedEntity
-    fun findByJoinedUserIdEqualsAndRoomType(joinedUserId: Long, roomType: RoomType) : List<JoinedEntity>
+    fun findByWorkspaceIDAndJoinedUserIdContainsAndRoomType(workspaceID: String, userId: Long, roomType:RoomType) : List<JoinedEntity>
 }
