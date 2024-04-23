@@ -11,13 +11,13 @@ class ChatRoomRepositoryCustomImpl(
 
     private val chatRoomEntity: QChatRoomEntity = QChatRoomEntity.chatRoomEntity
 
-    override fun searchRoom(input: String): List<Room> {
-        val rooms = jpaQueryFactory
+    override fun searchRoom(chatRoomId: Long ,input: String): Room? {
+        val room = jpaQueryFactory
             .selectFrom(chatRoomEntity)
-            .where(chatRoomEntity.chatName.contains(input))
-            .fetch()
+            .where(chatRoomEntity.id.eq(chatRoomId), chatRoomEntity.chatName.contains(input))
+            .fetchFirst()
 
-        return rooms.map { chatRoomMapper.toDomain(it) }
+        return room?.let { chatRoomMapper.toDomain(it) }
     }
 
 }
