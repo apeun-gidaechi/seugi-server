@@ -12,6 +12,7 @@ import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
+import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
@@ -124,6 +125,37 @@ class ChatRoomServiceImpl(
             success = true,
             message = "방 나가기 성공"
         )
+    }
+
+    @Transactional(readOnly = true)
+    override fun searchRoomNameIn(searchRoomRequest: SearchRoomRequest, type: RoomType, userId: Long): BaseResponse<List<Room>> {
+        val joined: List<Joined> = joinedService.findByJoinedUserId(userId = userId, roomType = type, workspaceId = searchRoomRequest.workspaceId)
+
+        when(type){
+            PERSONAL -> {
+
+
+
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "방 찾기 성공"
+                )
+            }
+            GROUP -> {
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "방 찾기 성공",
+                    data = joined.mapNotNull { chatRoomRepository.searchRoom(it.chatRoomId, searchRoomRequest.word) }
+                )
+            }
+
+        }
+
+
     }
 
 }
