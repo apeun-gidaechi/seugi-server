@@ -21,7 +21,8 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             role = MemberRole(entity.role),
             loginId = MemberLoginId(entity.loginId),
             provider = MemberProvider(entity.provider),
-            providerId = MemberProviderId(entity.providerId)
+            providerId = MemberProviderId(entity.providerId),
+            refreshToken = MemberRefreshToken(entity.refreshToken)
         )
     }
 
@@ -36,7 +37,8 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             profile = domain.profile,
             loginId = domain.loginId.value,
             provider = domain.provider.value,
-            providerId = domain.providerId.value
+            providerId = domain.providerId.value,
+            refreshToken = domain.refreshToken.value
         )
     }
 
