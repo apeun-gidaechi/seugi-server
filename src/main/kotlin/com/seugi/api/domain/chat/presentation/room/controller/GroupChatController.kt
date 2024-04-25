@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.application.service.room.ChatRoomService
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
+import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 
@@ -25,6 +26,14 @@ class GroupChatController(
         @RequestBody createRoomRequest: CreateRoomRequest
     ) : BaseResponse<Long> {
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
+    }
+
+    @GetMapping("/search")
+    fun searchRoom(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody searchRoomRequest: SearchRoomRequest
+    ): BaseResponse<List<Room>> {
+        return chatRoomService.searchRoomNameIn(searchRoomRequest, RoomType.GROUP, userId)
     }
 
     @GetMapping("/search/{workspaceID}")
