@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.domain.member.application.model.value.MemberRefreshToken
 import com.seugi.api.domain.member.port.out.LoadMemberPort
+import com.seugi.api.domain.member.port.out.SaveMemberPort
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.crypto.SecretKey
@@ -18,7 +20,8 @@ import javax.crypto.spec.SecretKeySpec
 class JwtUtils (
     private val jwtProperties: JwtProperties,
     private val userDetailsService: UserDetailsService,
-    private val loadMemberPort: LoadMemberPort
+    private val loadMemberPort: LoadMemberPort,
+    private val saveMemberPort: SaveMemberPort
 ) {
 
     private val secretKey: SecretKey = SecretKeySpec(this.jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().algorithm)
@@ -64,6 +67,9 @@ class JwtUtils (
             .signWith(secretKey)
             .compact()
 
+        member.refreshToken = MemberRefreshToken(refreshToken)
+        saveMemberPort.saveMember(member)
+
         return JwtInfo("Bearer $accessToken", "Bearer $refreshToken")
     }
 
@@ -75,7 +81,7 @@ class JwtUtils (
 
     fun refreshToken(token: String): JwtInfo {
         val member = loadMemberPort.loadMemberWithEmail(
-            getUsername(getToken(token))
+            getUsername(token)
         )
 
         return generate(member)
