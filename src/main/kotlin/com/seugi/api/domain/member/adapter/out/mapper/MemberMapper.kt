@@ -27,7 +27,7 @@ class MemberMapper: Mapper<Member, MemberEntity> {
 
     override fun toEntity(domain: Member): MemberEntity {
         return MemberEntity(
-            id = domain.id!!.value,
+            id = domain.id?.value ?: 0,
             name = domain.name.value,
             email = domain.email.value,
             picture = domain.picture.value,
