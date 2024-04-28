@@ -6,6 +6,7 @@ import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.common.property.TestMemberProperty
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -17,7 +18,7 @@ class TestMemberController (
     private val loginMemberUseCase: LoginMemberUseCase
 ) {
 
-    @PostMapping("/test")
+    @GetMapping("/test")
     fun testLogin(): BaseResponse<JwtInfo> {
         return loginMemberUseCase.loginMember(
             LoginMemberDTO(
