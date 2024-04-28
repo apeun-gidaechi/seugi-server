@@ -59,7 +59,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
 
      fun toMember(entity: MemberEntity): MessageMember {
         return MessageMember (
-            id =  entity.id,
+            id =  entity.id!!,
             name = entity.name
         )
     }
