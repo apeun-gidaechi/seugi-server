@@ -1,5 +1,6 @@
 package com.seugi.api.domain.chat.domain.chat.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageUserId
@@ -11,6 +12,8 @@ data class Message(
     val type : Type,
     val author : MessageMember,
     val message: String,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val eventList: MutableList<Long>? = null,
     val emoticon: String?,
     val emojiList: MutableList<Emoji> = MutableList(8) { Emoji(it+1) },
     val mention : List<MessageUserId> = emptyList(),
