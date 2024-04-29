@@ -66,6 +66,9 @@ class JoinedServiceImpl(
         joinedEntity.joinedUserId.addAll(
             addJoinedRequest.joinUserIds
         )
+
+        joinedRepository.save(joinedEntity)
+
         messageService.sendMessage(
             ChatMessageDto(
                 type = Type.ENTER,
