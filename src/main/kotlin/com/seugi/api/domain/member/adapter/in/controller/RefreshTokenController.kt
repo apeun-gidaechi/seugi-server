@@ -14,7 +14,7 @@ class RefreshTokenController (
 ) {
 
     @GetMapping("/refresh")
-    fun refreshToken(token: String): BaseResponse<JwtInfo> {
+    fun refreshToken(token: String): BaseResponse<String> {
         return refreshTokenUseCase.refreshToken(token)
     }
 
