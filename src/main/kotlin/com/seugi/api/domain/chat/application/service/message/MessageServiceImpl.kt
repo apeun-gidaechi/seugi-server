@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.domain.chat.MessageRepository
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
 import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
+import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
@@ -31,6 +32,19 @@ class MessageServiceImpl(
     override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long){
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
+        )
+    }
+
+    @Transactional
+    override fun toMessage(type: Type, chatRoomId: Long, eventList: MutableList<Long>, userId: Long){
+        sendMessage(
+            ChatMessageDto(
+                type = type,
+                roomId = chatRoomId,
+                message = "",
+                eventList = eventList
+            ),
+            userId
         )
     }
 

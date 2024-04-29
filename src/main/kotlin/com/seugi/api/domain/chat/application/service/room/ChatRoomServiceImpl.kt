@@ -16,7 +16,6 @@ import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
-import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -63,14 +62,11 @@ class ChatRoomServiceImpl(
             workspaceId = createRoomRequest.workspaceId,
         )
 
-        messageService.sendMessage(
-            ChatMessageDto(
-                type = Type.ENTER,
-                roomId = chatRoomId,
-                message = "",
-                eventList = createRoomRequest.joinUsers
-            ),
-            userId
+        messageService.toMessage(
+            type = Type.ENTER,
+            chatRoomId = chatRoomId,
+            eventList = createRoomRequest.joinUsers,
+            userId = userId
         )
 
         return BaseResponse(
@@ -137,15 +133,13 @@ class ChatRoomServiceImpl(
 
         val eventList: List<Long> = listOf(userId)
 
-        messageService.sendMessage(
-            ChatMessageDto(
-                type = Type.LEFT,
-                roomId = roomId,
-                message = "",
-                eventList = eventList.toMutableList()
-            ),
-            userId
+        messageService.toMessage(
+            type = Type.LEFT,
+            chatRoomId = roomId,
+            userId = userId,
+            eventList = eventList.toMutableList()
         )
+
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
