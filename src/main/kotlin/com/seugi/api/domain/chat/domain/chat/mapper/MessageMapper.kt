@@ -57,20 +57,11 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         )
     }
 
-     fun toMember(entity: MemberEntity): MessageMember {
+     private fun toMember(entity: MemberEntity): MessageMember {
         return MessageMember (
             id =  entity.id,
             name = entity.name
         )
     }
-
-//
-//    fun toJoined(entity: JoinedEntity) :Joined{
-//        return Joined(
-//            chatRoomId = entity.chatRoomId!!,
-//            joinUserId = entity.joinedUserId
-//        )
-//    }
-
 
 }
