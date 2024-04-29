@@ -1,10 +1,6 @@
 package com.seugi.api.domain.chat.application.service.message
 
 import com.seugi.api.domain.chat.application.service.joined.JoinedService
-import org.bson.types.ObjectId
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
@@ -16,8 +12,12 @@ import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.http.HttpStatus
 import org.springframework.messaging.simp.SimpAttributesContextHolder
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MessageServiceImpl(
@@ -30,19 +30,19 @@ class MessageServiceImpl(
 
     @Transactional
     override fun sendMessage(chatMessageDto: ChatMessageDto){
+        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+        val userId = simpAttributes.getAttribute("user-id") as String?
         rabbitTemplate.convertAndSend(
-            "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto)
+            "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId?.toLong()!!)
         )
     }
 
     @Transactional
-    override fun savaMessage(chatMessageDto: ChatMessageDto) : Message {
-        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-        val userId = simpAttributes.getAttribute("user-id") as String?
+    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message {
 
         val joinedEntity = joinedService.findByRoomId(chatMessageDto.roomId!!)
 
-        val memberEntity = memberRepository.findById(userId!!.toLong())
+        val memberEntity = memberRepository.findById(userId)
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
         return messageMapper.toDomain(

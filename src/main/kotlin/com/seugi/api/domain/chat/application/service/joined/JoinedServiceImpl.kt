@@ -67,8 +67,7 @@ class JoinedServiceImpl(
             status = HttpStatus.OK.value(),
             success = true,
             state = "J1",
-            message = "유저 채팅방에 추가 성공",
-            data = joinedMapper.toDomain(joinedRepository.save(joinedEntity))
+            message = "유저 채팅방에 추가 성공"
 
         )
 

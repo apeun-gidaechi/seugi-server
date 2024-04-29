@@ -8,7 +8,7 @@ import com.seugi.api.global.response.BaseResponse
 interface MessageService {
 
     fun sendMessage(chatMessageDto: ChatMessageDto)
-    fun savaMessage(chatMessageDto: ChatMessageDto): Message
+    fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message
     fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>>
 
     fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji) : BaseResponse<Unit>
