@@ -97,7 +97,18 @@ class JoinedServiceImpl(
         if (joined.roomAdmin == userId){
             joined.joinedUserId = (joined.joinedUserId - outJoinedRequest.outJoinedUsers.toSet()).toMutableSet()
         }
+
         joinedRepository.save(joined)
+
+        messageService.sendMessage(
+            ChatMessageDto(
+                type = Type.LEFT,
+                roomId = outJoinedRequest.roomId,
+                message = "",
+                eventList = outJoinedRequest.outJoinedUsers.toMutableList()
+            ),
+            userId
+        )
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
