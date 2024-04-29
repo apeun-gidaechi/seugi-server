@@ -3,6 +3,7 @@ package com.seugi.api.domain.chat.presentation.websocket.controller
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.simp.SimpAttributesContextHolder
 import org.springframework.stereotype.Controller
 
 
@@ -13,7 +14,9 @@ class StompRabbitMQController(
 
     @MessageMapping("chat.message")
     fun send(chat: ChatMessageDto) {
-        messageService.sendMessage(chat)
+        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+        val userId = simpAttributes.getAttribute("user-id") as String?
+        messageService.sendMessage(chat, userId!!.toLong())
     }
 
 }
