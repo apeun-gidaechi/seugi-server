@@ -7,7 +7,7 @@ import com.seugi.api.global.response.BaseResponse
 
 interface MessageService {
 
-    fun message(chatMessageDto: ChatMessageDto)
+    fun sendMessage(chatMessageDto: ChatMessageDto)
     fun savaMessage(chatMessageDto: ChatMessageDto): Message
     fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>>
 

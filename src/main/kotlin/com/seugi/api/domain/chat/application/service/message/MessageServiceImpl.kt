@@ -29,7 +29,7 @@ class MessageServiceImpl(
 ) : MessageService {
 
     @Transactional
-    override fun message(chatMessageDto: ChatMessageDto){
+    override fun sendMessage(chatMessageDto: ChatMessageDto){
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto)
         )

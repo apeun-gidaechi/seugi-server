@@ -13,7 +13,7 @@ class StompRabbitMQController(
 
     @MessageMapping("chat.message")
     fun send(chat: ChatMessageDto) {
-        messageService.message(chat)
+        messageService.sendMessage(chat)
     }
 
 }
