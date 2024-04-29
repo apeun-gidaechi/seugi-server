@@ -1,5 +1,7 @@
 package com.seugi.api.domain.chat.application.service.joined
 
+import com.seugi.api.domain.chat.application.service.message.MessageService
+import com.seugi.api.domain.chat.domain.chat.model.Type
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,13 +14,15 @@ import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
 @Service
 class JoinedServiceImpl(
     private val joinedRepository: JoinedRepository,
-    private val joinedMapper: JoinedMapper
+    private val joinedMapper: JoinedMapper,
+    private val messageService: MessageService
 ) : JoinedService {
 
     @Transactional
@@ -61,6 +65,15 @@ class JoinedServiceImpl(
 
         joinedEntity.joinedUserId.addAll(
             addJoinedRequest.joinUserIds
+        )
+        messageService.sendMessage(
+            ChatMessageDto(
+                type = Type.ENTER,
+                roomId = addJoinedRequest.chatRoomId,
+                message = "",
+                eventList = addJoinedRequest.joinUserIds.toMutableList()
+            ),
+            userId
         )
 
         return BaseResponse(

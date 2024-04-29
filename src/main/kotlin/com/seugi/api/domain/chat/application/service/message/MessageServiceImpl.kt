@@ -1,12 +1,12 @@
 package com.seugi.api.domain.chat.application.service.message
 
-import com.seugi.api.domain.chat.application.service.joined.JoinedService
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
 import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
+import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
@@ -15,7 +15,6 @@ import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.http.HttpStatus
-import org.springframework.messaging.simp.SimpAttributesContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,23 +23,21 @@ class MessageServiceImpl(
     private val messageRepository: MessageRepository,
     private val memberRepository: MemberRepository,
     private val messageMapper: MessageMapper,
-    private val joinedService: JoinedService,
+    private val joinedRepository: JoinedRepository,
     private val rabbitTemplate: RabbitTemplate
 ) : MessageService {
 
     @Transactional
-    override fun sendMessage(chatMessageDto: ChatMessageDto){
-        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-        val userId = simpAttributes.getAttribute("user-id") as String?
+    override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long){
         rabbitTemplate.convertAndSend(
-            "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId?.toLong()!!)
+            "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
         )
     }
 
     @Transactional
     override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message {
 
-        val joinedEntity = joinedService.findByRoomId(chatMessageDto.roomId!!)
+        val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
         val memberEntity = memberRepository.findById(userId)
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
@@ -62,7 +59,7 @@ class MessageServiceImpl(
     @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
 
-        if (!joinedService.findByRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
         val read : Set<Long> = setOf(userId)
         val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
