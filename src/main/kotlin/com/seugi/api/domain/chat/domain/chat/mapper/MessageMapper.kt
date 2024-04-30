@@ -20,6 +20,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = entity.chatRoomId!!,
             author = entity.author,
             message = entity.message,
+            eventList = entity.eventList,
             emoticon = entity.emoticon,
             emojiList = entity.emojiList,
             timestamp = entity.timestamp.toString(),
@@ -37,6 +38,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = domain.chatRoomId,
             author = domain.author,
             message = domain.message,
+            eventList = domain.eventList,
             emoticon = domain.emoticon,
             mention = domain.mention,
             mentionALl = domain.mentionAll,
@@ -50,6 +52,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = chatMessageDto.roomId!!,
             author = toMember(author),
             message = chatMessageDto.message!!,
+            eventList = chatMessageDto.eventList,
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention!!,
             mentionAll = chatMessageDto.mentionAll,
@@ -57,20 +60,11 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         )
     }
 
-     fun toMember(entity: MemberEntity): MessageMember {
+     private fun toMember(entity: MemberEntity): MessageMember {
         return MessageMember (
             id =  entity.id!!,
             name = entity.name
         )
     }
-
-//
-//    fun toJoined(entity: JoinedEntity) :Joined{
-//        return Joined(
-//            chatRoomId = entity.chatRoomId!!,
-//            joinUserId = entity.joinedUserId
-//        )
-//    }
-
 
 }

@@ -1,6 +1,8 @@
 package com.seugi.api.domain.chat.application.service.room
 
 import com.seugi.api.domain.chat.application.service.joined.JoinedService
+import com.seugi.api.domain.chat.application.service.message.MessageService
+import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.enums.type.RoomType.GROUP
@@ -27,7 +29,8 @@ class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val memberRepository: MemberRepository,
     private val joinedService: JoinedService,
-    private val chatRoomMapper: RoomMapper
+    private val chatRoomMapper: RoomMapper,
+    private val messageService: MessageService
 ) : ChatRoomService {
 
     @Transactional
@@ -57,6 +60,13 @@ class ChatRoomServiceImpl(
             type = type,
             joinedUserId = createRoomRequest.joinUsers!!,
             workspaceId = createRoomRequest.workspaceId,
+        )
+
+        messageService.toMessage(
+            type = Type.ENTER,
+            chatRoomId = chatRoomId,
+            eventList = createRoomRequest.joinUsers,
+            userId = userId
         )
 
         return BaseResponse(
@@ -120,6 +130,16 @@ class ChatRoomServiceImpl(
         }
 
         joinedService.save(joinedEntity)
+
+        val eventList: List<Long> = listOf(userId)
+
+        messageService.toMessage(
+            type = Type.LEFT,
+            chatRoomId = roomId,
+            userId = userId,
+            eventList = eventList.toMutableList()
+        )
+
 
         return BaseResponse(
             status = HttpStatus.OK.value(),

@@ -28,6 +28,8 @@ data class MessageEntity(
 
     val message : String = "",
 
+    val eventList: MutableList<Long>?,
+
     val emoticon : String?,
 
     val emojiList: MutableList<Emoji> = MutableList(8) { Emoji(it+1) },
