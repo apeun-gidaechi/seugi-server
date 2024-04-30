@@ -16,20 +16,16 @@ import org.springframework.stereotype.Service
 class RefreshTokenService (
     private val jwtUtils: JwtUtils,
     private val loadMemberPort: LoadMemberPort,
-    private val saveMemberPort: SaveMemberPort
 ) : RefreshTokenUseCase {
 
-    override fun refreshToken(token: String): BaseResponse<JwtInfo> {
-        val rToken = jwtUtils.getToken(token)
-
+    override fun refreshToken(token: String): BaseResponse<String> {
         val member = loadMemberPort.loadMemberWithEmail(
-            jwtUtils.getUsername(rToken)
+            jwtUtils.getUsername(
+                jwtUtils.getToken(token)
+            )
         )
 
-        if (member.refreshToken.value == rToken) {
-            member.refreshToken = MemberRefreshToken("")
-            saveMemberPort.saveMember(member)
-        } else {
+        if (member.refreshToken.value != token) {
             throw CustomException(JwtErrorCode.JWT_REFRESH_NOT_MATCH)
         }
 
@@ -38,7 +34,7 @@ class RefreshTokenService (
             true,
             "OK",
             "리프레시 성공 !",
-            jwtUtils.refreshToken(rToken)
+            jwtUtils.refreshToken(member)
         )
 
     }
