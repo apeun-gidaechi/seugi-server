@@ -248,6 +248,8 @@ class WorkspaceServiceImpl(
             }
         }
 
+        workspaceRepository.save(workspaceEntity)
+
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "OK",
