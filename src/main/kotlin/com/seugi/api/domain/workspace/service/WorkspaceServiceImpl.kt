@@ -168,6 +168,8 @@ class WorkspaceServiceImpl(
     @Transactional(readOnly = true)
     override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
 
+        if (getWaitListRequest.workspaceId.isEmpty() or getWaitListRequest.role.name.isEmpty()) throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+
         val workspaceId = ObjectId(getWaitListRequest.workspaceId)
 
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
