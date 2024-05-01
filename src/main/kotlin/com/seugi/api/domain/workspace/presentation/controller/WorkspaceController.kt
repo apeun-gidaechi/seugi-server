@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
+import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.domain.workspace.service.WorkspaceService
@@ -71,9 +72,15 @@ class WorkspaceController(
     @GetMapping("/wait-list")
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
-        @RequestBody getWaitListRequest: GetWaitListRequest
+        @RequestParam("workspace" , defaultValue = "") workspaceId: String,
+        @RequestParam("role", defaultValue = "STUDENT") role: String
     ): BaseResponse<Set<Long>> {
-        return workspaceService.getWaitList(userId = userId, getWaitListRequest = getWaitListRequest)
+        println(workspaceId)
+        println(role)
+        return workspaceService.getWaitList(
+            userId = userId,
+            getWaitListRequest = GetWaitListRequest(workspaceId = workspaceId, role = WorkspaceRole.valueOf(role))
+        )
     }
 
     @PatchMapping("/")
