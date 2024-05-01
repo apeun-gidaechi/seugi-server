@@ -32,9 +32,15 @@ class PersonalChatController(
     @GetMapping("/search")
     fun searchRoom(
         @GetAuthenticatedId userId: Long,
-        @RequestBody searchRoomRequest: SearchRoomRequest
+        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+        @RequestParam("word", defaultValue = "") word: String
     ): BaseResponse<List<Room>> {
-        return chatRoomService.searchRoomNameIn(searchRoomRequest, RoomType.PERSONAL, userId)
+
+        return chatRoomService.searchRoomNameIn(
+            SearchRoomRequest(workspaceId = workspaceId, word = word),
+            RoomType.PERSONAL,
+            userId
+        )
     }
 
     @GetMapping("/search/{workspaceId}")
