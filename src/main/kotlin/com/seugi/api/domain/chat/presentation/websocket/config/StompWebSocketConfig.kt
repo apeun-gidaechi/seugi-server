@@ -1,5 +1,7 @@
 package com.seugi.api.domain.chat.presentation.websocket.config
 
+import com.seugi.api.global.auth.jwt.JwtUserDetails
+import com.seugi.api.global.auth.jwt.JwtUtils
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
@@ -12,13 +14,10 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.messaging.support.MessageHeaderAccessor
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
-import com.seugi.api.global.auth.jwt.JwtUserDetails
-import com.seugi.api.global.auth.jwt.JwtUtils
 
 
 @Configuration
@@ -69,31 +68,13 @@ class StompWebSocketConfig(
                             }
                         }
                     }
-                    StompCommand.SEND -> {
-                        val auth = SecurityContextHolder.getContext().authentication
-                        if (auth != null) {
-                            val userDetails = auth.principal as? JwtUserDetails
-                            val userId: String = userDetails?.id?.value.toString()
-                            accessor.setLeaveMutable(true)
-                            accessor.setHeader("user-id", userId)
-
-                            return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
-                        }
-                    }
+                    StompCommand.SEND,
                     StompCommand.DISCONNECT,
                     StompCommand.SUBSCRIBE,
                     StompCommand.STOMP,
-                    StompCommand.UNSUBSCRIBE -> {
-                        val auth = SecurityContextHolder.getContext().authentication
-                        if (auth != null) {
-                            val userId: String = (auth.principal as JwtUserDetails).id?.value.toString()
-                            accessor.setLeaveMutable(true)
-                            accessor.setHeader("user-id", userId)
-                        }
-                        return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
-                    }
+                    StompCommand.UNSUBSCRIBE,
                     null -> {
-                        //뭔지 모르겠는데 stomp 일땐 null 요청이 없었는데 rabbitmq 에선 null 이 넘어오네
+                        //아마 하트비트 같음 근데 스프링에서 인지 못하는?? 그런거
                     }
                     else -> {
                         throw IllegalArgumentException("지원하지 않는 STOMP 명령어: ${accessor.command}")
