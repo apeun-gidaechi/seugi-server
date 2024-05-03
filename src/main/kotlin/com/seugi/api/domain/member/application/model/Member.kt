@@ -15,6 +15,5 @@ data class Member (
     val loginId: MemberLoginId,
     val provider: MemberProvider,
     val providerId: MemberProviderId,
-    var refreshToken: MemberRefreshToken
 
 )

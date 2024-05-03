@@ -43,6 +43,4 @@ data class MemberEntity (
 
     var providerId: String = "",
 
-    var refreshToken: String = ""
-
 )

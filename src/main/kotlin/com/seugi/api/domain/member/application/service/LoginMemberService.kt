@@ -32,8 +32,6 @@ class LoginMemberService (
 
         val jwtInfo = jwtUtils.generate(member)
 
-        member.refreshToken = MemberRefreshToken(jwtInfo.refreshToken)
-
         saveMemberPort.saveMember(member)
 
         return BaseResponse (

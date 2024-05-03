@@ -38,7 +38,6 @@ class RegisterMemberService (
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
             providerId = MemberProviderId(""),
-            refreshToken = MemberRefreshToken("")
         )
 
         if (existMemberPort.existMemberWithEmail(member.email.value)) {

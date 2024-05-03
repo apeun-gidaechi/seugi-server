@@ -25,9 +25,6 @@ class RefreshTokenService (
             )
         )
 
-        if (member.refreshToken.value != token) {
-            throw CustomException(JwtErrorCode.JWT_REFRESH_NOT_MATCH)
-        }
 
         return BaseResponse (
             HttpStatus.OK.value(),
