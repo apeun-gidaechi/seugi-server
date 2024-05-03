@@ -13,6 +13,7 @@ data class Member (
     val role: MemberRole,
     val loginId: MemberLoginId,
     val provider: MemberProvider,
-    val providerId: MemberProviderId
+    val providerId: MemberProviderId,
+    var profiles: List<MemberProfile>
 
 )
