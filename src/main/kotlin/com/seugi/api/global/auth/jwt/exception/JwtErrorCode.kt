@@ -12,6 +12,6 @@ enum class JwtErrorCode (
     JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "J1", "토큰 만료다"),
     JWT_MEMBER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "J2", "비밀번호 일치 노노"),
     JWT_NULL_EXCEPTION(HttpStatus.SERVICE_UNAVAILABLE, "J3", "어떻게 지평좌표계로 고정을 하셨죠?"),
-    JWT_REFRESH_NOT_MATCH(HttpStatus.BAD_REQUEST, "J4", "리프레시 토큰이 일치하지 않음")
+    JWT_TOKEN_NOT_VALID(HttpStatus.BAD_REQUEST, "J4", "토큰이 올바르지 않음")
 
 }
