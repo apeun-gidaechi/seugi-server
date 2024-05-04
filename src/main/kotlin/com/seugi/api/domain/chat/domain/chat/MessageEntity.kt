@@ -19,12 +19,12 @@ data class MessageEntity(
     @Id
     val id: ObjectId? = null,
 
-    var chatRoomId: Long? = null,
+    val chatRoomId: Long? = null,
 
     @Enumerated(EnumType.ORDINAL)
     val type : Type,
 
-    var author : MessageMember,
+    val author : MessageMember,
 
     val message : String = "",
 
@@ -40,9 +40,9 @@ data class MessageEntity(
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    var read: MutableSet<Long> = mutableSetOf(),
+    val read: MutableSet<Long> = mutableSetOf(),
 
-    var joined: Set<Long>,
+    val joined: Set<Long>,
 
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 

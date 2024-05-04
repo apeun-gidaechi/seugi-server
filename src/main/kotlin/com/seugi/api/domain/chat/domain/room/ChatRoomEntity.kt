@@ -11,7 +11,7 @@ class ChatRoomEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
-    var id: Long? = null,
+    val id: Long? = null,
 
     @Enumerated(EnumType.ORDINAL)
     val roomType: RoomType,
