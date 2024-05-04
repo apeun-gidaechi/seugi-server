@@ -36,7 +36,8 @@ class RegisterMemberService (
             role = MemberRole("ROLE_USER"),
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
-            providerId = MemberProviderId("")
+            providerId = MemberProviderId(""),
+            profiles = listOf()
         )
 
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
