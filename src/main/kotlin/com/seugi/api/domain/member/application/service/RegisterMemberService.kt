@@ -9,9 +9,9 @@ import com.seugi.api.domain.member.adapter.`in`.dto.RegisterMemberDTO
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
-import com.seugi.api.domain.member.port.`in`.RegisterMemberUseCase
-import com.seugi.api.domain.member.port.out.ExistMemberPort
-import com.seugi.api.domain.member.port.out.SaveMemberPort
+import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
+import com.seugi.api.domain.member.application.port.out.ExistMemberPort
+import com.seugi.api.domain.member.application.port.out.SaveMemberPort
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
