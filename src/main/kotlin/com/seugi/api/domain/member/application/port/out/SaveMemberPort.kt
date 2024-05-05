@@ -1,4 +1,4 @@
-package com.seugi.api.domain.member.port.out
+package com.seugi.api.domain.member.application.port.out
 
 import com.seugi.api.domain.member.application.model.Member
 

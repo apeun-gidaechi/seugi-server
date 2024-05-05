@@ -1,4 +1,4 @@
-package com.seugi.api.domain.member.port.`in`
+package com.seugi.api.domain.member.application.port.`in`
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.seugi.api.domain.member.adapter.`in`.dto.OAuth2MemberDTO
