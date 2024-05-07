@@ -15,9 +15,6 @@ class RetrieveTokenService (
 
     override fun retrieveToken(code: String): BaseResponse<String> {
         val data = loadTokenPort.loadToken(code)
-            .orElseThrow {
-                CustomException(EmailErrorCode.CODE_NOT_EXIST)
-            }
 
         return BaseResponse (
             success = true,

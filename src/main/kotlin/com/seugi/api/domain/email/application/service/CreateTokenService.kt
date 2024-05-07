@@ -20,6 +20,7 @@ class CreateTokenService (
     val alphaNumber = "0123456789"
 
     val random = Random()
+
     override fun createToken(email: String): BaseResponse<Unit> {
         val tokenBuffer = StringBuffer()
         val codeBuffer = StringBuffer()

@@ -13,13 +13,9 @@ class ConfirmTokenService (
 
     override fun confirmToken(token: String, email: String) {
         val loadEmail = loadEmailPort.loadEmail(token)
-            .orElseThrow {
-                CustomException(EmailErrorCode.EMAIL_NOT_LOADED)
-            }
 
         if (loadEmail != email) {
             throw CustomException(EmailErrorCode.EMAIL_NOT_MATCH)
         }
     }
-
 }
