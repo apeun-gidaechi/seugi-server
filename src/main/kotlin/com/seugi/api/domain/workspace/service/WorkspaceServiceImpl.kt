@@ -102,8 +102,7 @@ class WorkspaceServiceImpl(
              state = "W1",
              success = true,
              message = "자신이 속한 워크스페이스 전체 불러오기 성공",
-             data = workspaceRepository.findByStatusAndStudentEqualsOrTeacherEqualsOrMiddleAdminEqualsOrWorkspaceAdminEquals(
-                 Status.ALIVE, setOf(userId).toMutableSet() , setOf(userId).toMutableSet(), setOf(userId).toMutableSet(), userId)
+             data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
                  .map { workspaceMapper.toWorkspaceResponse(it) }
          )
 
