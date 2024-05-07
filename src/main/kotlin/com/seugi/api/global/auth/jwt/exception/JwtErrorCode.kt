@@ -9,9 +9,9 @@ enum class JwtErrorCode (
     override val message: String,
 ): CustomErrorCode {
 
-    JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "J1", "토큰 만료다"),
-    JWT_MEMBER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "J2", "비밀번호 일치 노노"),
-    JWT_NULL_EXCEPTION(HttpStatus.SERVICE_UNAVAILABLE, "J3", "어떻게 지평좌표계로 고정을 하셨죠?"),
-    JWT_TOKEN_NOT_VALID(HttpStatus.BAD_REQUEST, "J4", "토큰이 올바르지 않음")
+    JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "J1", "토큰이 만료되었어요"),
+    JWT_MEMBER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "J2", "비밀번호가 일치하지 않아요"),
+    JWT_NULL_EXCEPTION(HttpStatus.SERVICE_UNAVAILABLE, "J3", "알 수 없는 오류가 발생했어요"),
+    JWT_TOKEN_NOT_VALID(HttpStatus.BAD_REQUEST, "J4", "토큰이 올바르지 않아요")
 
 }
