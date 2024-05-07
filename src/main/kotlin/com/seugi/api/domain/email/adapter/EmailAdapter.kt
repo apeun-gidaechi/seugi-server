@@ -12,7 +12,6 @@ import com.seugi.api.domain.email.port.out.SaveEmailPort
 import com.seugi.api.domain.email.port.out.SaveTokenPort
 import com.seugi.api.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
-import java.util.Optional
 
 @Component
 class EmailAdapter (
