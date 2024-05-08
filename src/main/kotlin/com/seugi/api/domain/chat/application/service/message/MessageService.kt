@@ -16,4 +16,7 @@ interface MessageService {
     fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji) : BaseResponse<Unit>
     fun deleteMessage(userId: Long, messageId: String) : BaseResponse<Unit>
 
+    fun sub(userId: Long, roomId: String)
+    fun unsub(userId: Long, roomId: String)
+
 }

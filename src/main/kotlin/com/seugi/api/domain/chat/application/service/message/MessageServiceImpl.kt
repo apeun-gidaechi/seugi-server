@@ -141,4 +141,24 @@ class MessageServiceImpl(
             message = "메시지 지워짐으로 상태변경 성공"
         )
     }
+
+    @Transactional
+    override fun sub(userId: Long, roomId: String) {
+        if (roomId != "message") {
+            sendMessage(
+                userId = userId,
+                chatMessageDto = ChatMessageDto(
+                    type = Type.ENTER,
+                    roomId = roomId.toLong(),
+                    message = "subscription 테스트중입니다",
+                    eventList = listOf(userId).toMutableList()
+                )
+            )
+        }
+    }
+
+    override fun unsub(userId: Long, roomId: String) {
+        TODO("Not yet implemented")
+    }
+
 }
