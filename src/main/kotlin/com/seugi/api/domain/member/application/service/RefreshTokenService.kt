@@ -1,6 +1,5 @@
 package com.seugi.api.domain.member.application.service
 
-import com.seugi.api.domain.member.adapter.out.entity.MemberTokenEntity
 import com.seugi.api.domain.member.adapter.out.repository.MemberTokenRepository
 import com.seugi.api.domain.member.port.`in`.RefreshTokenUseCase
 import com.seugi.api.domain.member.port.out.LoadMemberPort
@@ -19,23 +18,13 @@ class RefreshTokenService (
     private val memberTokenRepository: MemberTokenRepository
 ) : RefreshTokenUseCase {
 
-    override fun saveToken(accessToken: String, refreshToken: String) {
-        memberTokenRepository.save(
-            MemberTokenEntity(accessToken, refreshToken)
-        )
-    }
-
-    override fun loadToken(accessToken: String): String {
-        val tokenEntity: MemberTokenEntity = memberTokenRepository.findByIdOrNull(accessToken)
+    override fun refreshToken(token: String): BaseResponse<String> {
+        val refreshToken: String = memberTokenRepository.findByIdOrNull(token)?.refreshToken
             ?: throw CustomException(JwtErrorCode.JWT_TOKEN_NOT_VALID)
 
-        return tokenEntity.refreshToken
-    }
-
-    override fun refreshToken(token: String): BaseResponse<String> {
         val member = loadMemberPort.loadMemberWithEmail(
             jwtUtils.getUsername(
-                jwtUtils.getToken(token)
+                jwtUtils.getToken(refreshToken)
             )
         )
 
