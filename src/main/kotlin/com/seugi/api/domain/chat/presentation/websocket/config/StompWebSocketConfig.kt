@@ -68,7 +68,7 @@ class StompWebSocketConfig(
 
                                 return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
                             } else {
-                                throw IllegalStateException("유저 아이디를 찾을 수 없습니다.")
+                                throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                             }
                         }
                     }
