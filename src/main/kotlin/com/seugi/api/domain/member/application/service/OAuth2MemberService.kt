@@ -45,7 +45,6 @@ class OAuth2MemberService (
                 picture = MemberPicture(user.get("profile_img").asText()),
                 password = MemberPassword(""),
                 birth = MemberBirth(""),
-                profile = MemberProfile(),
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
                 provider = MemberProvider(user.get("provider").asText()),
