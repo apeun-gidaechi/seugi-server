@@ -73,7 +73,11 @@ class StompWebSocketConfig(
                         }
                     }
                     StompCommand.SEND,
-                    StompCommand.DISCONNECT,
+                    StompCommand.DISCONNECT -> {
+                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                        val userId = simpAttributes.getAttribute("user-id") as String
+                        messageService.unsub(userId.toLong())
+                    }
                     StompCommand.SUBSCRIBE -> {
                         if (accessor.destination!=null) {
                             val simpAttributes = SimpAttributesContextHolder.currentAttributes()
@@ -84,9 +88,7 @@ class StompWebSocketConfig(
                             )
                         }
                     }
-                    StompCommand.UNSUBSCRIBE -> {
-                        println(accessor.destination?.substringAfterLast(".") + "================================")
-                    }
+                    StompCommand.UNSUBSCRIBE,
                     StompCommand.STOMP,
                     null -> {
                         //아마 하트비트 같음 근데 스프링에서 인지 못하는?? 그런거
