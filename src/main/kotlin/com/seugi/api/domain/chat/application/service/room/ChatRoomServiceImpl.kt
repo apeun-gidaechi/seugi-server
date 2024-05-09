@@ -86,8 +86,8 @@ class ChatRoomServiceImpl(
         when(type){
             PERSONAL -> {
                 val rooms: List<ChatRoomEntity> = joined.map {
-                    val room: Optional<ChatRoomEntity> = chatRoomRepository.findById(it.chatRoomId)
-                    room.get().apply {
+                    val room = chatRoomRepository.findById(it.chatRoomId).orElseThrow{CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)}
+                    room.apply {
                         val member = memberRepository.findById(it.joinUserId.filter { id -> id != userId }[0]).get()
                         chatName = member.name
                         chatRoomImg = member.picture

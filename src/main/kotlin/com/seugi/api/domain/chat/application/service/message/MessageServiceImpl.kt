@@ -8,6 +8,8 @@ import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.joined.JoinedRepository
+import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
+import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
@@ -25,6 +27,7 @@ class MessageServiceImpl(
     private val memberRepository: MemberRepository,
     private val messageMapper: MessageMapper,
     private val joinedRepository: JoinedRepository,
+    private val roomInfoRepository: RoomInfoRepository,
     private val rabbitTemplate: RabbitTemplate
 ) : MessageService {
 
@@ -56,6 +59,9 @@ class MessageServiceImpl(
         val memberEntity = memberRepository.findById(userId)
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
+        val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
+        val readUsers = readUser.map { it.userId }
+
         return messageMapper.toDomain(
             messageRepository.save(
                 messageMapper.toEntity(
@@ -63,6 +69,7 @@ class MessageServiceImpl(
                         chatMessageDto = chatMessageDto,
                         author = memberEntity,
                         joinedEntity = joinedEntity,
+                        readUsers = readUsers
                     )
                 )
             )
@@ -141,4 +148,41 @@ class MessageServiceImpl(
             message = "메시지 지워짐으로 상태변경 성공"
         )
     }
+
+    @Transactional
+    override fun sub(userId: Long, roomId: String) {
+        if (roomId != "message") {
+            sendMessage(
+                userId = userId,
+                chatMessageDto = ChatMessageDto(
+                    type = Type.SUB,
+                    roomId = roomId.toLong(),
+                    message = "",
+                    eventList = listOf(userId).toMutableList()
+                )
+            )
+            roomInfoRepository.save(
+                RoomInfoEntity(
+                    userId = userId,
+                    roomId = roomId
+                )
+            )
+        }
+    }
+
+    @Transactional
+    override fun unsub(userId: Long) {
+        val roomId = roomInfoRepository.findById(userId).get().roomId
+        sendMessage(
+            userId = userId,
+            chatMessageDto = ChatMessageDto(
+                type = Type.UNSUB,
+                roomId = roomId.toLong(),
+                message = "",
+                eventList = listOf(userId).toMutableList()
+            )
+        )
+        roomInfoRepository.deleteById(userId)
+    }
+
 }
