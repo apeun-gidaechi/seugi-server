@@ -2,26 +2,27 @@ package com.seugi.api.domain.member.adapter.out.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.domain.member.adapter.out.entity.MemberProfileEntity
-import com.seugi.api.domain.member.adapter.out.entity.QMemberProfileEntity
-import com.seugi.api.domain.member.application.exception.MemberErrorCode
-import com.seugi.api.global.exception.CustomException
+import com.seugi.api.domain.member.adapter.out.entity.ProfileEntity
+import com.seugi.api.domain.member.adapter.out.entity.QProfileEntity
 import org.springframework.stereotype.Repository
+import java.util.Optional
 
 @Repository
-class MemberProfileRepositoryCustomImpl (
+class ProfileRepositoryCustomImpl (
     private val jpaQueryFactory: JPAQueryFactory
-) : MemberProfileRepositoryCustom {
+) : ProfileRepositoryCustom {
 
-    override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): MemberProfileEntity {
-        val memberProfile = QMemberProfileEntity.memberProfileEntity
+    override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity> {
+        val memberProfile = QProfileEntity.profileEntity
 
-        return jpaQueryFactory
+        val result = jpaQueryFactory
             .select(memberProfile)
             .from(memberProfile)
             .where(memberProfile.memberId.eq(memberId)
                 .and(memberProfile.workspaceId.eq(workspaceId)))
-            .fetchOne() ?: throw CustomException(MemberErrorCode.PROFILE_NOT_FOUND)
+            .fetchOne()
+
+        return Optional.ofNullable(result)
     }
 
 }
