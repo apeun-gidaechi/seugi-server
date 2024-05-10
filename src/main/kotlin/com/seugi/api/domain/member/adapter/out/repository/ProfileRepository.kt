@@ -1,13 +1,14 @@
 package com.seugi.api.domain.member.adapter.out.repository
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.domain.member.adapter.out.entity.MemberProfileEntity
+import com.seugi.api.domain.member.adapter.out.entity.ProfileEntity
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import java.util.Optional
 
 @Repository
-interface MemberProfileRepository : CrudRepository<MemberProfileEntity, Long>, MemberProfileRepositoryCustom {
+interface ProfileRepository : CrudRepository<ProfileEntity, Long>, ProfileRepositoryCustom {
 
-    override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): MemberProfileEntity
+    override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity>
 
 }
