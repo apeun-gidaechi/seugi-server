@@ -11,6 +11,7 @@ import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
+import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
@@ -32,14 +33,14 @@ class MessageServiceImpl(
 ) : MessageService {
 
     @Transactional
-    override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long){
+    override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
         )
     }
 
     @Transactional
-    override fun toMessage(type: Type, chatRoomId: Long, eventList: MutableList<Long>, userId: Long){
+    override fun toMessage(type: Type, chatRoomId: Long, eventList: MutableList<Long>, userId: Long) {
         sendMessage(
             ChatMessageDto(
                 type = type,
@@ -52,7 +53,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message {
+    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
         val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
@@ -78,38 +79,44 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
+    override fun getMessages(chatRoomId: Long, userId: Long): BaseResponse<GetMessageResponse> {
 
-        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
-
-        val read : Set<Long> = setOf(userId)
-        val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
-
-        val data : MutableMap<String, Any> = emptyMap<String, List<Message>>().toMutableMap()
-
-        if (messages.isNotEmpty()){
-            messages.map {
-                it.read.add(userId)
-            }
-            val id = messageRepository.saveAll(messages).last()
-            data["firstMessageId"] = messages.first().id?:id
-            data["messages"] = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
-        } else {
-            val readMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
-            data["firstMessageId"] = readMessages.last().id!!
-            data["messages"] = readMessages
+        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) {
+            throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
         }
 
+        val allMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
 
-        return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "M1",
-            message = "채팅 불러오기 성공",
-            data = data
-        )
+        val unreadMessages: List<MessageEntity> =
+            messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))
 
+        if (unreadMessages.isNotEmpty()) {
+            unreadMessages.map { it.read.add(userId) }
 
+            messageRepository.saveAll(unreadMessages).last()
+
+            return BaseResponse(
+                status = HttpStatus.OK.value(),
+                success = true,
+                state = "M1",
+                message = "채팅 불러오기 성공",
+                data = GetMessageResponse(
+                    firstMessageId = unreadMessages.first().id?.toString(),
+                    messages = allMessages
+                )
+            )
+        } else {
+            return BaseResponse(
+                status = HttpStatus.OK.value(),
+                success = true,
+                state = "M1",
+                message = "채팅 불러오기 성공",
+                data = GetMessageResponse(
+                    firstMessageId = if (allMessages.isEmpty()) null else allMessages.last().id,
+                    messages = allMessages
+                )
+            )
+        }
     }
 
     @Transactional
@@ -152,14 +159,11 @@ class MessageServiceImpl(
     @Transactional
     override fun sub(userId: Long, roomId: String) {
         if (roomId != "message") {
-            sendMessage(
-                userId = userId,
-                chatMessageDto = ChatMessageDto(
-                    type = Type.SUB,
-                    roomId = roomId.toLong(),
-                    message = "",
-                    eventList = listOf(userId).toMutableList()
-                )
+            toMessage(
+                type = Type.SUB,
+                chatRoomId = roomId.toLong(),
+                eventList = listOf(userId).toMutableList(),
+                userId = userId
             )
             roomInfoRepository.save(
                 RoomInfoEntity(
@@ -173,14 +177,11 @@ class MessageServiceImpl(
     @Transactional
     override fun unsub(userId: Long) {
         val roomId = roomInfoRepository.findById(userId).get().roomId
-        sendMessage(
-            userId = userId,
-            chatMessageDto = ChatMessageDto(
-                type = Type.UNSUB,
-                roomId = roomId.toLong(),
-                message = "",
-                eventList = listOf(userId).toMutableList()
-            )
+        toMessage(
+            type = Type.UNSUB,
+            chatRoomId = roomId.toLong(),
+            eventList = listOf(userId).toMutableList(),
+            userId = userId
         )
         roomInfoRepository.deleteById(userId)
     }

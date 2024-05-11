@@ -3,6 +3,7 @@ package com.seugi.api.domain.chat.presentation.message.controller
 import org.springframework.web.bind.annotation.*
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
+import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 
@@ -44,7 +45,7 @@ class MessageController(
     fun getMessages(
         @GetAuthenticatedId userId: Long,
         @PathVariable roomId: Long
-    ) : BaseResponse<MutableMap<String, Any>> {
+    ) : BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
             userId = userId
