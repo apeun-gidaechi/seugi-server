@@ -1,6 +1,5 @@
 package com.seugi.api.domain.member.adapter.out.entity
 
-import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -9,7 +8,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 
 @Entity
-class MemberProfileEntity (
+class ProfileEntity (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
