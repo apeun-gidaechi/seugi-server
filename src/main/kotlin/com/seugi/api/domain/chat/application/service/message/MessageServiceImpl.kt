@@ -13,11 +13,13 @@ import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
+import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -79,13 +81,10 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getMessages(chatRoomId: Long, userId: Long): BaseResponse<GetMessageResponse> {
+    override fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
-        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) {
-            throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
-        }
-
-        val allMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+        val allMessages = messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 
         val unreadMessages: List<MessageEntity> =
             messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))

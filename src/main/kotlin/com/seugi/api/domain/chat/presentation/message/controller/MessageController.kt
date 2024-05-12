@@ -6,6 +6,9 @@ import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
 import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 
 /**
  * 메시지 삭제, 이모지 달기, 읽음표시
@@ -44,11 +47,13 @@ class MessageController(
     @GetMapping("/search/{roomId}")
     fun getMessages(
         @GetAuthenticatedId userId: Long,
-        @PathVariable roomId: Long
+        @PathVariable roomId: Long,
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
     ) : BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
-            userId = userId
+            userId = userId,
+            pageable = pageable
         )
     }
 
