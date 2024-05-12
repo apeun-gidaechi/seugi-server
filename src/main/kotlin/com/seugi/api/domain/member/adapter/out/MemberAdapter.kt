@@ -6,9 +6,9 @@ import com.seugi.api.domain.member.adapter.out.mapper.MemberMapper
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
-import com.seugi.api.domain.member.port.out.ExistMemberPort
-import com.seugi.api.domain.member.port.out.LoadMemberPort
-import com.seugi.api.domain.member.port.out.SaveMemberPort
+import com.seugi.api.domain.member.application.port.out.ExistMemberPort
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.application.port.out.SaveMemberPort
 import com.seugi.api.global.exception.CustomException
 
 @Component
