@@ -158,11 +158,8 @@ class MessageServiceImpl(
     @Transactional
     override fun sub(userId: Long, roomId: String) {
         if (roomId != "message") {
-            toMessage(
-                type = Type.SUB,
-                chatRoomId = roomId.toLong(),
-                eventList = listOf(userId).toMutableList(),
-                userId = userId
+            rabbitTemplate.convertAndSend(
+                "chat.exchange", "room.${roomId}", MessageEventDto(type = Type.SUB, subUserId = userId)
             )
             roomInfoRepository.save(
                 RoomInfoEntity(
@@ -175,13 +172,6 @@ class MessageServiceImpl(
 
     @Transactional
     override fun unsub(userId: Long) {
-        val roomId = roomInfoRepository.findById(userId).get().roomId
-        toMessage(
-            type = Type.UNSUB,
-            chatRoomId = roomId.toLong(),
-            eventList = listOf(userId).toMutableList(),
-            userId = userId
-        )
         roomInfoRepository.deleteById(userId)
     }
 
