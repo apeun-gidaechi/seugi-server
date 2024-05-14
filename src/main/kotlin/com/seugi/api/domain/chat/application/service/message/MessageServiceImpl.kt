@@ -140,12 +140,10 @@ class MessageServiceImpl(
         val id = ObjectId(messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
-        if (message.author.id == userId) {
-            message.messageStatus = ChatStatusEnum.DELETE
-            messageRepository.save(message)
-        } else {
-            throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
-        }
+        if (message.author.id != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
+
+        message.messageStatus = ChatStatusEnum.DELETE
+        messageRepository.save(message)
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
