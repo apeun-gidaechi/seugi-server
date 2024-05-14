@@ -35,22 +35,16 @@ class MessageServiceImpl(
 ) : MessageService {
 
     @Transactional
-    override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long) {
+    override fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
         )
     }
 
     @Transactional
-    override fun toMessage(type: Type, chatRoomId: Long, eventList: MutableList<Long>, userId: Long) {
-        sendMessage(
-            ChatMessageDto(
-                type = type,
-                roomId = chatRoomId,
-                message = "",
-                eventList = eventList
-            ),
-            userId
+    override fun sendEventMessage(message: MessageEventDto, roomId: Long) {
+        rabbitTemplate.convertAndSend(
+            "chat.exchange", "room.${roomId}", message
         )
     }
 
@@ -156,8 +150,12 @@ class MessageServiceImpl(
     @Transactional
     override fun sub(userId: Long, roomId: String) {
         if (roomId != "message") {
-            rabbitTemplate.convertAndSend(
-                "chat.exchange", "room.${roomId}", MessageEventDto(type = Type.SUB, subUserId = userId)
+            sendEventMessage(
+                message = MessageEventDto(
+                    type = Type.SUB,
+                    eventList = listOf(userId)
+                ),
+                roomId = roomId.toLong()
             )
             roomInfoRepository.save(
                 RoomInfoEntity(
