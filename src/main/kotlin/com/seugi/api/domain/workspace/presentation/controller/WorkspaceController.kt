@@ -91,6 +91,4 @@ class WorkspaceController(
         return workspaceService.updateWorkspace(userId = userId, updateWorkspaceRequest = updateWorkspaceRequest)
     }
 
-
-
 }
