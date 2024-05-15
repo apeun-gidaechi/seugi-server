@@ -13,6 +13,7 @@ data class Emoji(
 )
 
 data class AddEmoji(
+    val messageId: String? = null,
     val roomId: Long? = null,
     val emojiId : Int? = null,
     val userId: MutableSet<Long> = mutableSetOf()

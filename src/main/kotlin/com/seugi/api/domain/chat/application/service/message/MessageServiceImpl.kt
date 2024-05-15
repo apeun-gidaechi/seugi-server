@@ -114,8 +114,8 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun addEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji): BaseResponse<Unit> {
-        val id = ObjectId(messageId)
+    override fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit> {
+        val id = ObjectId(emoji.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
         message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.add(userId)
@@ -126,7 +126,7 @@ class MessageServiceImpl(
             MessageEventDto(
                 type = Type.ADD_EMOJI,
                 eventList = listOf(userId),
-                messageId = messageId,
+                messageId = emoji.messageId,
                 emojiId = emoji.emojiId
             ),
             roomId = emoji.roomId!!
@@ -141,8 +141,8 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun deleteEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji): BaseResponse<Unit> {
-        val id = ObjectId(messageId)
+    override fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit> {
+        val id = ObjectId(emoji.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
         message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.remove(userId)
@@ -153,7 +153,7 @@ class MessageServiceImpl(
             MessageEventDto(
                 type = Type.REMOVE_EMOJI,
                 eventList = listOf(userId),
-                messageId = messageId,
+                messageId = emoji.messageId,
                 emojiId = emoji.emojiId
             ),
             roomId = emoji.roomId!!

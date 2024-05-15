@@ -21,27 +21,23 @@ class MessageController(
     private val messageService: MessageService
 ) {
 
-    @PutMapping("/emoji/{messageId}")
+    @PutMapping("/emoji/")
     fun addEmojiToMessage(
-        @PathVariable messageId: String,
         @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.addEmojiToMessage(
-            messageId = messageId,
             userId = userId,
             emoji = emoji
         )
     }
 
-    @DeleteMapping("/emoji/{messageId}")
+    @DeleteMapping("/emoji/")
     fun deleteEmojiToMessage(
-        @PathVariable messageId: String,
         @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.addEmojiToMessage(
-            messageId = messageId,
             userId = userId,
             emoji = emoji
         )
