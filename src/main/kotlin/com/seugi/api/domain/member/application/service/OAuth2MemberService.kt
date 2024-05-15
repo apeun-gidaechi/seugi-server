@@ -44,7 +44,6 @@ class OAuth2MemberService (
                 email = MemberEmail(user.get("email").asText()),
                 picture = MemberPicture(user.get("profile_img").asText()),
                 password = MemberPassword(""),
-                birth = MemberBirth(""),
                 profile = MemberProfile(),
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
@@ -59,10 +58,7 @@ class OAuth2MemberService (
 
         val member = loadMemberPort.loadMemberWithEmail(user.get("email").asText())
 
-        if (
-            member.name.value.isBlank() ||
-            member.birth.value.isBlank()
-            ) {
+        if (member.name.value.isBlank()) {
             throw CustomException(MemberErrorCode.MEMBER_NOT_SUFFICIENT)
         }
 
@@ -78,15 +74,11 @@ class OAuth2MemberService (
     override fun complete(dto: OAuth2MemberDTO): BaseResponse<Unit> {
         val member = loadMemberPort.loadMemberWithEmail(dto.email)
 
-        if (
-            member.name.value.isNotBlank() &&
-            member.birth.value.isNotBlank()
-            ) {
+        if (member.name.value.isNotBlank()) {
             throw CustomException(MemberErrorCode.MEMBER_ALREADY_SUFFICIENT)
         }
 
         member.name = MemberName(dto.name)
-        member.birth = MemberBirth(dto.birth)
 
         saveMemberPort.saveMember(
             member
