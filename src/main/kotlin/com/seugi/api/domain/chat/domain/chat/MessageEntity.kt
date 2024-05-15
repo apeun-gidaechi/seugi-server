@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 
 @Document(collection = "messages")
-data class MessageEntity(
+class MessageEntity(
 
     @Id
     val id: ObjectId? = null,
@@ -28,11 +28,11 @@ data class MessageEntity(
 
     val message : String = "",
 
-    val eventList: MutableList<Long>?,
+    val eventList: List<Long>?,
 
     val emoticon : String?,
 
-    val emojiList: MutableList<Emoji> = MutableList(8) { Emoji(it+1) },
+    val emojiList: List<Emoji> = MutableList(8) { Emoji(it+1) },
 
     val mention : List<MessageUserId> = emptyList(),
 
