@@ -2,6 +2,7 @@ package com.seugi.api.domain.chat.presentation.message.controller
 
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -46,13 +47,13 @@ class MessageController(
         )
     }
 
-    @DeleteMapping("/delete/{messageId}")
+    @DeleteMapping("/delete/")
     fun deleteMessage(
-        @PathVariable messageId: String,
+        @RequestBody deleteMessage: DeleteMessage,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.deleteMessage(
-            messageId = messageId,
+            deleteMessage = deleteMessage,
             userId = userId
         )
     }

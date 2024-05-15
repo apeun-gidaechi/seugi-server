@@ -1,6 +1,7 @@
 package com.seugi.api.domain.chat.application.service.message
 
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
@@ -17,7 +18,7 @@ interface MessageService {
 
     fun addEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji) : BaseResponse<Unit>
     fun deleteEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji) : BaseResponse<Unit>
-    fun deleteMessage(userId: Long, messageId: String) : BaseResponse<Unit>
+    fun deleteMessage(userId: Long, deleteMessage: DeleteMessage) : BaseResponse<Unit>
 
     fun sub(userId: Long, roomId: String)
     fun unsub(userId: Long)

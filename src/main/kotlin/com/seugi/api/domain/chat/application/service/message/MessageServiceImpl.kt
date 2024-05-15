@@ -3,6 +3,7 @@ package com.seugi.api.domain.chat.application.service.message
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
@@ -167,14 +168,23 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun deleteMessage(userId: Long, messageId: String): BaseResponse<Unit> {
-        val id = ObjectId(messageId)
+    override fun deleteMessage(userId: Long, deleteMessage: DeleteMessage): BaseResponse<Unit> {
+        val id = ObjectId(deleteMessage.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
         if (message.author.id != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
 
         message.messageStatus = ChatStatusEnum.DELETE
         messageRepository.save(message)
+
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.DELETE_MESSAGE,
+                eventList = listOf(userId),
+                messageId = deleteMessage.messageId,
+            ),
+            deleteMessage.roomId!!
+        )
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
