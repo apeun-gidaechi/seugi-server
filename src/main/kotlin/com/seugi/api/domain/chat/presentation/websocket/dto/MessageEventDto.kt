@@ -8,5 +8,5 @@ data class MessageEventDto(
     val type: Type? = null,
     val eventList: List<Long> = emptyList(),
     val messageId: String? = null,
-    val emojiId: Long? = null
+    val emojiId: Int? = null
 )

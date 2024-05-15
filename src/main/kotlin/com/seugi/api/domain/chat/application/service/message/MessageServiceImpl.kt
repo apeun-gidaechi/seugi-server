@@ -2,7 +2,7 @@ package com.seugi.api.domain.chat.application.service.message
 
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
-import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
@@ -113,7 +113,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji): BaseResponse<Unit> {
+    override fun addEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji): BaseResponse<Unit> {
         val id = ObjectId(messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
@@ -121,11 +121,48 @@ class MessageServiceImpl(
 
         messageRepository.save(message)
 
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.ADD_EMOJI,
+                eventList = listOf(userId),
+                messageId = messageId,
+                emojiId = emoji.emojiId
+            ),
+            roomId = emoji.roomId!!
+        )
+
         return BaseResponse(
             status = HttpStatus.OK.value(),
-            state = "M1",
+            state = "OK",
             success = true,
             message = "이모지 추가 성공"
+        )
+    }
+
+    @Transactional
+    override fun deleteEmojiToMessage(userId: Long, messageId: String, emoji: AddEmoji): BaseResponse<Unit> {
+        val id = ObjectId(messageId)
+        val message: MessageEntity = messageRepository.findById(id).get()
+
+        message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.remove(userId)
+
+        messageRepository.save(message)
+
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.REMOVE_EMOJI,
+                eventList = listOf(userId),
+                messageId = messageId,
+                emojiId = emoji.emojiId
+            ),
+            roomId = emoji.roomId!!
+        )
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "이모지 삭제 성공"
         )
     }
 
