@@ -14,6 +14,4 @@ enum class MemberErrorCode (
     MEMBER_NOT_SUFFICIENT(HttpStatus.PARTIAL_CONTENT, "MEMBER-003", "멤버의 정보가 부족하다"),
     MEMBER_ALREADY_SUFFICIENT(HttpStatus.ALREADY_REPORTED, "MEMBER-004", "가입이 완료된 계정"),
 
-    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER-005", "프로필을 찾을 수 없음")
-
 }
