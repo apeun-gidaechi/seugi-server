@@ -32,7 +32,7 @@ class RegisterMemberService (
             password = MemberPassword(
                 bCryptPasswordEncoder.encode(memberDTO.password)
             ),
-            birth = MemberBirth(memberDTO.birth),
+            birth = MemberBirth(""),
             role = MemberRole("ROLE_USER"),
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
