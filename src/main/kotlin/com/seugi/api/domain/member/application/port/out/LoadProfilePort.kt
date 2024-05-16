@@ -4,6 +4,6 @@ import com.seugi.api.domain.member.adapter.out.entity.ProfileEntity
 
 interface LoadProfilePort {
 
-    fun loadProfileWithMemberIdAndWorkspaceId(memberId: Long, workspaceId: String): ProfileEntity
+    fun loadProfile(memberId: Long, workspaceId: String): ProfileEntity
 
 }
