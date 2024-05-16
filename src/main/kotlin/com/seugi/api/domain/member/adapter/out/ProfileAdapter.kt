@@ -16,7 +16,7 @@ class ProfileAdapter (
     private val profileRepository: ProfileRepository
 ) : LoadProfilePort, SaveProfilePort {
 
-    override fun loadProfileWithMemberIdAndWorkspaceId(memberId: Long, workspaceId: String): ProfileEntity {
+    override fun loadProfile(memberId: Long, workspaceId: String): ProfileEntity {
         val member: MemberEntity = memberRepository.findById(memberId)
             .orElseThrow {
                 throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
@@ -31,4 +31,5 @@ class ProfileAdapter (
     override fun saveProfile(profile: ProfileEntity) {
         profileRepository.save(profile)
     }
+
 }
