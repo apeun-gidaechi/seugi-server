@@ -2,7 +2,8 @@ package com.seugi.api.domain.chat.application.service.message
 
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
-import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
@@ -11,12 +12,15 @@ import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
+import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
+import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,27 +36,21 @@ class MessageServiceImpl(
 ) : MessageService {
 
     @Transactional
-    override fun sendMessage(chatMessageDto: ChatMessageDto, userId: Long){
+    override fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
         )
     }
 
     @Transactional
-    override fun toMessage(type: Type, chatRoomId: Long, eventList: MutableList<Long>, userId: Long){
-        sendMessage(
-            ChatMessageDto(
-                type = type,
-                roomId = chatRoomId,
-                message = "",
-                eventList = eventList
-            ),
-            userId
+    override fun sendEventMessage(message: MessageEventDto, roomId: Long) {
+        rabbitTemplate.convertAndSend(
+            "chat.exchange", "room.${roomId}", message
         )
     }
 
     @Transactional
-    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long) : Message {
+    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
         val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
 
@@ -78,68 +76,115 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getMessages(chatRoomId: Long, userId: Long) : BaseResponse<MutableMap<String, Any>> {
+    override fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
         if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+        val allMessages = messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 
-        val read : Set<Long> = setOf(userId)
-        val messages : List<MessageEntity> = messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, read)
+        val unreadMessages: List<MessageEntity> =
+            messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))
 
-        val data : MutableMap<String, Any> = emptyMap<String, List<Message>>().toMutableMap()
+        if (unreadMessages.isNotEmpty()) {
+            unreadMessages.map { it.read.add(userId) }
 
-        if (messages.isNotEmpty()){
-            messages.map {
-                it.read.add(userId)
-            }
-            val id = messageRepository.saveAll(messages).last()
-            data["firstMessageId"] = messages.first().id?:id
-            data["messages"] = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
+            messageRepository.saveAll(unreadMessages).last()
+
+            return BaseResponse(
+                status = HttpStatus.OK.value(),
+                success = true,
+                state = "M1",
+                message = "채팅 불러오기 성공",
+                data = GetMessageResponse(
+                    firstMessageId = unreadMessages.first().id?.toString(),
+                    messages = allMessages
+                )
+            )
         } else {
-            val readMessages = messageRepository.findByChatRoomIdEquals(chatRoomId).map { messageMapper.toDomain(it) }
-            data["firstMessageId"] = readMessages.last().id!!
-            data["messages"] = readMessages
+            return BaseResponse(
+                status = HttpStatus.OK.value(),
+                success = true,
+                state = "M1",
+                message = "채팅 불러오기 성공",
+                data = GetMessageResponse(
+                    firstMessageId = if (allMessages.isEmpty()) null else allMessages.last().id,
+                    messages = allMessages
+                )
+            )
         }
-
-
-        return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "M1",
-            message = "채팅 불러오기 성공",
-            data = data
-        )
-
-
     }
 
     @Transactional
-    override fun addEmojiToMessage(userId: Long, messageId: String, emoji: Emoji): BaseResponse<Unit> {
-        val id = ObjectId(messageId)
+    override fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit> {
+        val id = ObjectId(emoji.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
         message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.add(userId)
 
         messageRepository.save(message)
 
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.ADD_EMOJI,
+                eventList = listOf(userId),
+                messageId = emoji.messageId,
+                emojiId = emoji.emojiId
+            ),
+            roomId = emoji.roomId!!
+        )
+
         return BaseResponse(
             status = HttpStatus.OK.value(),
-            state = "M1",
+            state = "OK",
             success = true,
             message = "이모지 추가 성공"
         )
     }
 
     @Transactional
-    override fun deleteMessage(userId: Long, messageId: String): BaseResponse<Unit> {
-        val id = ObjectId(messageId)
+    override fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit> {
+        val id = ObjectId(emoji.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
-        if (message.author.id == userId) {
-            message.messageStatus = ChatStatusEnum.DELETE
-            messageRepository.save(message)
-        } else {
-            throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
-        }
+        message.emojiList.firstOrNull { it.emojiId == emoji.emojiId }?.userId?.remove(userId)
+
+        messageRepository.save(message)
+
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.REMOVE_EMOJI,
+                eventList = listOf(userId),
+                messageId = emoji.messageId,
+                emojiId = emoji.emojiId
+            ),
+            roomId = emoji.roomId!!
+        )
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "이모지 삭제 성공"
+        )
+    }
+
+    @Transactional
+    override fun deleteMessage(userId: Long, deleteMessage: DeleteMessage): BaseResponse<Unit> {
+        val id = ObjectId(deleteMessage.messageId)
+        val message: MessageEntity = messageRepository.findById(id).get()
+
+        if (message.author.id != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
+
+        message.messageStatus = ChatStatusEnum.DELETE
+        messageRepository.save(message)
+
+        sendEventMessage(
+            MessageEventDto(
+                type = Type.DELETE_MESSAGE,
+                eventList = listOf(userId),
+                messageId = deleteMessage.messageId,
+            ),
+            deleteMessage.roomId!!
+        )
 
         return BaseResponse(
             status = HttpStatus.OK.value(),
@@ -152,14 +197,12 @@ class MessageServiceImpl(
     @Transactional
     override fun sub(userId: Long, roomId: String) {
         if (roomId != "message") {
-            sendMessage(
-                userId = userId,
-                chatMessageDto = ChatMessageDto(
+            sendEventMessage(
+                message = MessageEventDto(
                     type = Type.SUB,
-                    roomId = roomId.toLong(),
-                    message = "",
-                    eventList = listOf(userId).toMutableList()
-                )
+                    eventList = listOf(userId)
+                ),
+                roomId = roomId.toLong()
             )
             roomInfoRepository.save(
                 RoomInfoEntity(
@@ -172,16 +215,6 @@ class MessageServiceImpl(
 
     @Transactional
     override fun unsub(userId: Long) {
-        val roomId = roomInfoRepository.findById(userId).get().roomId
-        sendMessage(
-            userId = userId,
-            chatMessageDto = ChatMessageDto(
-                type = Type.UNSUB,
-                roomId = roomId.toLong(),
-                message = "",
-                eventList = listOf(userId).toMutableList()
-            )
-        )
         roomInfoRepository.deleteById(userId)
     }
 
