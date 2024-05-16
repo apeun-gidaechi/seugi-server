@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.SimpAttributesContextHolder
+import org.springframework.messaging.simp.SimpMessageType
 import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
-import org.springframework.messaging.simp.stomp.StompCommand
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageBuilder
@@ -44,14 +44,13 @@ class StompWebSocketConfig(
             .setVirtualHost("/")
     }
 
-
     override fun configureClientInboundChannel(registration: ChannelRegistration) {
         registration.interceptors(object : ChannelInterceptor {
             override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
                 val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)!!
 
-                when (accessor.command) {
-                    StompCommand.CONNECT -> {
+                when (accessor.messageType) {
+                    SimpMessageType.CONNECT -> {
                         val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
 
                         if (authToken != null && authToken.startsWith("Bearer ")) {
@@ -72,14 +71,11 @@ class StompWebSocketConfig(
                             }
                         }
                     }
-                    StompCommand.SEND,
-                    StompCommand.DISCONNECT -> {
-                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                        val userId = simpAttributes.getAttribute("user-id") as String
-                        messageService.unsub(userId.toLong())
-                    }
-                    StompCommand.SUBSCRIBE -> {
-                        if (accessor.destination!=null) {
+
+                    SimpMessageType.CONNECT_ACK,
+                    SimpMessageType.MESSAGE,
+                    SimpMessageType.SUBSCRIBE -> {
+                        if (accessor.destination != null) {
                             val simpAttributes = SimpAttributesContextHolder.currentAttributes()
                             val userId = simpAttributes.getAttribute("user-id") as String
                             messageService.sub(
@@ -88,16 +84,26 @@ class StompWebSocketConfig(
                             )
                         }
                     }
-                    StompCommand.UNSUBSCRIBE,
-                    StompCommand.STOMP,
-                    null -> {
-                        //아마 하트비트 같음 근데 스프링에서 인지 못하는?? 그런거
+
+                    SimpMessageType.UNSUBSCRIBE -> {
+                        if (accessor.destination != null) {
+                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                            val userId = simpAttributes.getAttribute("user-id") as String
+                            messageService.unsub(
+                                userId = userId.toLong()
+                            )
+                        }
                     }
-                    else -> {
-                        throw IllegalArgumentException("지원하지 않는 STOMP 명령어: ${accessor.command}")
-                    }
+
+                    SimpMessageType.HEARTBEAT,
+                    SimpMessageType.DISCONNECT,
+                    SimpMessageType.DISCONNECT_ACK,
+                    SimpMessageType.OTHER,
+                    null -> {}
                 }
+
                 return message
+
             }
         })
     }

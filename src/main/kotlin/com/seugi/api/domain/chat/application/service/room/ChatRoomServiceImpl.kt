@@ -16,6 +16,7 @@ import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -62,10 +63,12 @@ class ChatRoomServiceImpl(
             workspaceId = createRoomRequest.workspaceId,
         )
 
-        messageService.toMessage(
-            type = Type.ENTER,
-            chatRoomId = chatRoomId,
-            eventList = createRoomRequest.joinUsers,
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.ENTER,
+                roomId = chatRoomId,
+                eventList = createRoomRequest.joinUsers,
+            ),
             userId = userId
         )
 
@@ -133,11 +136,13 @@ class ChatRoomServiceImpl(
 
         val eventList: List<Long> = listOf(userId)
 
-        messageService.toMessage(
-            type = Type.LEFT,
-            chatRoomId = roomId,
-            userId = userId,
-            eventList = eventList.toMutableList()
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.LEFT,
+                roomId = roomId,
+                eventList = eventList.toMutableList()
+            ),
+            userId = userId
         )
 
 

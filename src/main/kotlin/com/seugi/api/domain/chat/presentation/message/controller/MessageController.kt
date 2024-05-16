@@ -1,10 +1,15 @@
 package com.seugi.api.domain.chat.presentation.message.controller
 
-import org.springframework.web.bind.annotation.*
 import com.seugi.api.domain.chat.application.service.message.MessageService
-import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
+import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
+import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 
 /**
  * 메시지 삭제, 이모지 달기, 읽음표시
@@ -16,26 +21,35 @@ class MessageController(
     private val messageService: MessageService
 ) {
 
-    @PostMapping("/emoji/{messageId}")
+    @PutMapping("/emoji")
     fun addEmojiToMessage(
-        @PathVariable messageId: String,
-        @RequestBody emoji: Emoji,
+        @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.addEmojiToMessage(
-            messageId = messageId,
             userId = userId,
             emoji = emoji
         )
     }
 
-    @DeleteMapping("/delete/{messageId}")
+    @DeleteMapping("/emoji")
+    fun deleteEmojiToMessage(
+        @RequestBody emoji: AddEmoji,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<Unit> {
+        return messageService.addEmojiToMessage(
+            userId = userId,
+            emoji = emoji
+        )
+    }
+
+    @DeleteMapping("/delete")
     fun deleteMessage(
-        @PathVariable messageId: String,
+        @RequestBody deleteMessage: DeleteMessage,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
         return messageService.deleteMessage(
-            messageId = messageId,
+            deleteMessage = deleteMessage,
             userId = userId
         )
     }
@@ -43,11 +57,13 @@ class MessageController(
     @GetMapping("/search/{roomId}")
     fun getMessages(
         @GetAuthenticatedId userId: Long,
-        @PathVariable roomId: Long
-    ) : BaseResponse<MutableMap<String, Any>> {
+        @PathVariable roomId: Long,
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
+    ) : BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
-            userId = userId
+            userId = userId,
+            pageable = pageable
         )
     }
 
