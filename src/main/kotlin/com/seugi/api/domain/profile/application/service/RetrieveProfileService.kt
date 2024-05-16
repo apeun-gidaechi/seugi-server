@@ -1,8 +1,8 @@
-package com.seugi.api.domain.member.application.service
+package com.seugi.api.domain.profile.application.service
 
-import com.seugi.api.domain.member.adapter.`in`.dto.RetrieveProfileDTO
-import com.seugi.api.domain.member.application.port.`in`.RetrieveProfileUseCase
-import com.seugi.api.domain.member.application.port.out.LoadProfilePort
+import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileDTO
+import com.seugi.api.domain.profile.application.port.`in`.RetrieveProfileUseCase
+import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service

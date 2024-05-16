@@ -1,5 +1,6 @@
-package com.seugi.api.domain.member.adapter.out.entity
+package com.seugi.api.domain.profile.adapter.out.entity
 
+import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType

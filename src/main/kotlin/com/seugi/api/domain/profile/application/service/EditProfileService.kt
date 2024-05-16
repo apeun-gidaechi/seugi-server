@@ -1,9 +1,9 @@
-package com.seugi.api.domain.member.application.service
+package com.seugi.api.domain.profile.application.service
 
-import com.seugi.api.domain.member.adapter.`in`.dto.EditProfileDTO
-import com.seugi.api.domain.member.application.port.`in`.EditProfileUseCase
-import com.seugi.api.domain.member.application.port.out.LoadProfilePort
-import com.seugi.api.domain.member.application.port.out.SaveProfilePort
+import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileDTO
+import com.seugi.api.domain.profile.application.port.`in`.EditProfileUseCase
+import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
+import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service

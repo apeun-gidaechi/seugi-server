@@ -1,12 +1,13 @@
-package com.seugi.api.domain.member.adapter.out
+package com.seugi.api.domain.profile.adapter.out
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.domain.member.adapter.out.entity.ProfileEntity
+import com.seugi.api.domain.profile.adapter.out.entity.ProfileEntity
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
-import com.seugi.api.domain.member.adapter.out.repository.ProfileRepository
+import com.seugi.api.domain.profile.adapter.out.repository.ProfileRepository
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
-import com.seugi.api.domain.member.application.port.out.LoadProfilePort
-import com.seugi.api.domain.member.application.port.out.SaveProfilePort
+import com.seugi.api.domain.profile.application.exception.ProfileErrorCode
+import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
+import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
 import com.seugi.api.global.exception.CustomException
 import org.springframework.stereotype.Component
 
@@ -24,7 +25,7 @@ class ProfileAdapter (
 
         return profileRepository.findByMemberIdAndWorkspaceId(member, workspaceId)
             .orElseThrow {
-                throw CustomException(MemberErrorCode.PROFILE_NOT_FOUND)
+                throw CustomException(ProfileErrorCode.PROFILE_NOT_FOUND)
             }
     }
 

@@ -1,4 +1,4 @@
-package com.seugi.api.domain.member.adapter.`in`.dto
+package com.seugi.api.domain.profile.adapter.`in`.response
 
 class RetrieveProfileDTO (
 

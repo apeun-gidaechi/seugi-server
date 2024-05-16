@@ -1,7 +1,7 @@
-package com.seugi.api.domain.member.adapter.`in`.controller
+package com.seugi.api.domain.profile.adapter.`in`.controller
 
-import com.seugi.api.domain.member.adapter.`in`.dto.EditProfileDTO
-import com.seugi.api.domain.member.application.port.`in`.EditProfileUseCase
+import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileDTO
+import com.seugi.api.domain.profile.application.port.`in`.EditProfileUseCase
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.PatchMapping
