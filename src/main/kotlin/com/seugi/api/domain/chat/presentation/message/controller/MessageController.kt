@@ -21,7 +21,7 @@ class MessageController(
     private val messageService: MessageService
 ) {
 
-    @PutMapping("/emoji/")
+    @PutMapping("/emoji")
     fun addEmojiToMessage(
         @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
@@ -32,7 +32,7 @@ class MessageController(
         )
     }
 
-    @DeleteMapping("/emoji/")
+    @DeleteMapping("/emoji")
     fun deleteEmojiToMessage(
         @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
@@ -43,7 +43,7 @@ class MessageController(
         )
     }
 
-    @DeleteMapping("/delete/")
+    @DeleteMapping("/delete")
     fun deleteMessage(
         @RequestBody deleteMessage: DeleteMessage,
         @GetAuthenticatedId userId: Long
