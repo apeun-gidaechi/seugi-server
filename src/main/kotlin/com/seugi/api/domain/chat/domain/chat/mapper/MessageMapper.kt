@@ -46,7 +46,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         )
     }
 
-    fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, author: MemberEntity) : Message{
+    fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, author: MemberEntity, readUsers:List<Long>) : Message{
         return Message(
             type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
@@ -56,7 +56,8 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention!!,
             mentionAll = chatMessageDto.mentionAll,
-            joined = joinedEntity.joinedUserId
+            joined = joinedEntity.joinedUserId,
+            read = readUsers
         )
     }
 

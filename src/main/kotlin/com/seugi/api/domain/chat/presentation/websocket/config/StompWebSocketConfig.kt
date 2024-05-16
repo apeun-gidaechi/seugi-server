@@ -1,7 +1,10 @@
 package com.seugi.api.domain.chat.presentation.websocket.config
 
+import com.seugi.api.domain.chat.application.service.message.MessageService
+import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.global.auth.jwt.JwtUserDetails
 import com.seugi.api.global.auth.jwt.JwtUtils
+import com.seugi.api.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
@@ -24,6 +27,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 class StompWebSocketConfig(
     private val jwtUtils: JwtUtils,
+    private val messageService: MessageService,
     @Value("\${spring.rabbitmq.host}") private val rabbitmqHost: String
 ) : WebSocketMessageBrokerConfigurer {
 
@@ -64,15 +68,28 @@ class StompWebSocketConfig(
 
                                 return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
                             } else {
-                                throw IllegalStateException("유저 아이디를 찾을 수 없습니다.")
+                                throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                             }
                         }
                     }
                     StompCommand.SEND,
-                    StompCommand.DISCONNECT,
-                    StompCommand.SUBSCRIBE,
-                    StompCommand.STOMP,
+                    StompCommand.DISCONNECT -> {
+                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                        val userId = simpAttributes.getAttribute("user-id") as String
+                        messageService.unsub(userId.toLong())
+                    }
+                    StompCommand.SUBSCRIBE -> {
+                        if (accessor.destination!=null) {
+                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                            val userId = simpAttributes.getAttribute("user-id") as String
+                            messageService.sub(
+                                userId = userId.toLong(),
+                                roomId = accessor.destination?.substringAfterLast(".").toString()
+                            )
+                        }
+                    }
                     StompCommand.UNSUBSCRIBE,
+                    StompCommand.STOMP,
                     null -> {
                         //아마 하트비트 같음 근데 스프링에서 인지 못하는?? 그런거
                     }
