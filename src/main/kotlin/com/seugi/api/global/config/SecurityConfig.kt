@@ -30,19 +30,23 @@ class SecurityConfig (
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .cors {
-                it.disable()
+                corsConfigurationSource()
             }
+
             .csrf {
                 it.disable()
             }
+
             .formLogin {
                 it.disable()
             }
+
             .sessionManagement { session ->
                 session.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS
                 )
             }
+
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
@@ -58,7 +62,6 @@ class SecurityConfig (
             }
 
             .build()
-
     }
 
     @Bean

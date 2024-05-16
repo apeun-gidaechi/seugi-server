@@ -78,15 +78,11 @@ class OAuth2MemberService (
     override fun complete(dto: OAuth2MemberDTO): BaseResponse<Unit> {
         val member = loadMemberPort.loadMemberWithEmail(dto.email)
 
-        if (
-            member.name.value.isNotBlank() &&
-            member.birth.value.isNotBlank()
-            ) {
+        if (member.name.value.isNotBlank()) {
             throw CustomException(MemberErrorCode.MEMBER_ALREADY_SUFFICIENT)
         }
 
         member.name = MemberName(dto.name)
-        member.birth = MemberBirth(dto.birth)
 
         saveMemberPort.saveMember(
             member
