@@ -33,12 +33,11 @@ class RegisterMemberService (
                 bCryptPasswordEncoder.encode(memberDTO.password)
             ),
             birth = MemberBirth(""),
-            profile = MemberProfile(),
+            profiles = listOf(),
             role = MemberRole("ROLE_USER"),
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
             providerId = MemberProviderId(""),
-            profiles = listOf()
         )
 
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
