@@ -1,6 +1,6 @@
 package com.seugi.api.domain.profile.adapter.`in`.request
 
-class EditProfileDTO (
+data class EditProfileRequest (
 
     val status: String = "", // 상태메시지
     val nick: String = "", // 닉네임
