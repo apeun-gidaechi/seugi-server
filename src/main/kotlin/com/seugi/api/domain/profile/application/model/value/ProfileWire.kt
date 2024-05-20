@@ -1,4 +1,7 @@
 package com.seugi.api.domain.profile.application.model.value
 
-class ProfileWire {
-}
+class ProfileWire (
+
+    val value: String
+
+)

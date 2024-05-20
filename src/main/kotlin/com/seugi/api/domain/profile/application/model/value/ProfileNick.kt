@@ -1,4 +1,7 @@
 package com.seugi.api.domain.profile.application.model.value
 
-class ProfileNick {
-}
+class ProfileNick (
+
+    val value: String
+
+)

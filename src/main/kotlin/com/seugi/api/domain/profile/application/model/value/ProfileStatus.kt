@@ -1,4 +1,7 @@
 package com.seugi.api.domain.profile.application.model.value
 
-class ProfileStatus {
-}
+class ProfileStatus (
+
+    val value: String
+
+)
