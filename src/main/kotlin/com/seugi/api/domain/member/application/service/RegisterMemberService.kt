@@ -33,7 +33,6 @@ class RegisterMemberService (
                 bCryptPasswordEncoder.encode(memberDTO.password)
             ),
             birth = MemberBirth(""),
-            profiles = listOf(),
             role = MemberRole("ROLE_USER"),
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
