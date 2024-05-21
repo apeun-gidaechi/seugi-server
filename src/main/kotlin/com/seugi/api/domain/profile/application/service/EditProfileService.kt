@@ -1,6 +1,7 @@
 package com.seugi.api.domain.profile.application.service
 
-import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileDTO
+import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileRequest
+import com.seugi.api.domain.profile.application.model.Profile
 import com.seugi.api.domain.profile.application.port.`in`.EditProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
@@ -14,16 +15,10 @@ class EditProfileService (
     private val saveProfilePort: SaveProfilePort
 ) : EditProfileUseCase {
 
-    override fun editProfile(dto: EditProfileDTO, workspaceId: String, id: Long): BaseResponse<Unit> {
-        val profile = loadProfilePort.loadProfile(id, workspaceId)
+    override fun editProfile(dto: EditProfileRequest, workspaceId: String, id: Long): BaseResponse<Unit> {
+        val profile: Profile = loadProfilePort.loadProfile(id, workspaceId)
 
-        profile.status = dto.status
-        profile.nick = dto.nick
-        profile.belong = dto.belong
-        profile.location = dto.location
-        profile.phone = dto.phone
-        profile.spot = dto.spot
-        profile.wire = dto.wire
+        profile.editProfile(dto)
 
         saveProfilePort.saveProfile(profile)
 
@@ -32,6 +27,6 @@ class EditProfileService (
             success = true,
             message = "프로필 수정 성공 !!",
         )
-
     }
+
 }
