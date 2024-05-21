@@ -13,13 +13,13 @@ class ProfileRepositoryCustomImpl (
 ) : ProfileRepositoryCustom {
 
     override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity> {
-        val memberProfile = QProfileEntity.profileEntity
+        val profileEntity = QProfileEntity.profileEntity
 
         val result = jpaQueryFactory
-            .select(memberProfile)
-            .from(memberProfile)
-            .where(memberProfile.memberId.eq(memberId)
-                .and(memberProfile.workspaceId.eq(workspaceId)))
+            .select(profileEntity)
+            .from(profileEntity)
+            .where(profileEntity.memberId.eq(memberId)
+                .and(profileEntity.workspaceId.eq(workspaceId)))
             .fetchOne()
 
         return Optional.ofNullable(result)
