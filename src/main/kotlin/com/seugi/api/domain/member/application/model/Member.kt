@@ -10,10 +10,9 @@ data class Member (
     var picture: MemberPicture,
     val password: MemberPassword,
     var birth: MemberBirth,
-    var profile: MemberProfile,
     val role: MemberRole,
     val loginId: MemberLoginId,
     val provider: MemberProvider,
-    val providerId: MemberProviderId
+    val providerId: MemberProviderId,
 
 )

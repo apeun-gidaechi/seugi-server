@@ -11,10 +11,10 @@ import com.seugi.api.domain.member.adapter.`in`.dto.OAuth2MemberDTO
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
-import com.seugi.api.domain.member.port.`in`.OAuth2MemberUseCase
-import com.seugi.api.domain.member.port.out.ExistMemberPort
-import com.seugi.api.domain.member.port.out.LoadMemberPort
-import com.seugi.api.domain.member.port.out.SaveMemberPort
+import com.seugi.api.domain.member.application.port.`in`.OAuth2MemberUseCase
+import com.seugi.api.domain.member.application.port.out.ExistMemberPort
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.application.port.out.SaveMemberPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.oauth.OAuth2Properties
@@ -45,11 +45,10 @@ class OAuth2MemberService (
                 picture = MemberPicture(user.get("profile_img").asText()),
                 password = MemberPassword(""),
                 birth = MemberBirth(""),
-                profile = MemberProfile(),
                 role = MemberRole("ROLE_USER"),
                 loginId = MemberLoginId(user.get("provider").asText() + "_" + user.get("provider_id").asText()),
                 provider = MemberProvider(user.get("provider").asText()),
-                providerId = MemberProviderId(user.get("provider").asText())
+                providerId = MemberProviderId(user.get("provider").asText()),
             )
 
             saveMemberPort.saveMember(member)

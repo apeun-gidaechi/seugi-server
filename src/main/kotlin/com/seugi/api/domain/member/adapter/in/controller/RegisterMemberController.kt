@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import com.seugi.api.domain.member.adapter.`in`.dto.RegisterMemberDTO
-import com.seugi.api.domain.member.port.`in`.RegisterMemberUseCase
+import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
 import com.seugi.api.global.response.BaseResponse
 
 @RestController

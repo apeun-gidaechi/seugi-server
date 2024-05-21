@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.port.out.LoadMemberPort
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.crypto.SecretKey
