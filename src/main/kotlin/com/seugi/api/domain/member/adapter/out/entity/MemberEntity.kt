@@ -39,7 +39,4 @@ data class MemberEntity (
 
     var providerId: String = "",
 
-    @OneToMany(mappedBy = "memberId")
-    var profiles: List<ProfileEntity>
-
 )
