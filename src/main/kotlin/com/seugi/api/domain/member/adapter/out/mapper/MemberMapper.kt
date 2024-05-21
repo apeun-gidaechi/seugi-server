@@ -22,20 +22,6 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             loginId = MemberLoginId(entity.loginId),
             provider = MemberProvider(entity.provider),
             providerId = MemberProviderId(entity.providerId),
-            profiles = entity.profiles.map {
-                MemberProfile (
-                    it.id,
-                    it.memberId,
-                    it.workspaceId,
-                    it.status,
-                    it.nick,
-                    it.spot,
-                    it.belong,
-                    it.phone,
-                    it.wire,
-                    it.location
-                )
-            }
         )
     }
 
@@ -50,20 +36,6 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             loginId = domain.loginId.value,
             provider = domain.provider.value,
             providerId = domain.providerId.value,
-            profiles = domain.profiles.map {
-                ProfileEntity (
-                    it.id,
-                    it.memberId,
-                    it.workspaceId,
-                    it.status,
-                    it.nick,
-                    it.spot,
-                    it.belong,
-                    it.phone,
-                    it.wire,
-                    it.location
-                )
-            }
         )
     }
 
