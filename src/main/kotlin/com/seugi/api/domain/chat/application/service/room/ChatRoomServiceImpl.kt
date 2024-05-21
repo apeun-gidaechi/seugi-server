@@ -67,6 +67,7 @@ class ChatRoomServiceImpl(
             chatMessageDto = ChatMessageDto(
                 type = Type.ENTER,
                 roomId = chatRoomId,
+                message = "",
                 eventList = createRoomRequest.joinUsers,
             ),
             userId = userId
@@ -140,6 +141,7 @@ class ChatRoomServiceImpl(
             chatMessageDto = ChatMessageDto(
                 type = Type.LEFT,
                 roomId = roomId,
+                message = "",
                 eventList = eventList.toMutableList()
             ),
             userId = userId
