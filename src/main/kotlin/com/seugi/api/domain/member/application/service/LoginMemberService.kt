@@ -3,7 +3,7 @@ package com.seugi.api.domain.member.application.service
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import com.seugi.api.domain.member.adapter.`in`.dto.LoginMemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.LoginMemberRequest
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.`in`.LoginMemberUseCase
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
@@ -20,7 +20,7 @@ class LoginMemberService (
     private val loadMemberPort: LoadMemberPort
 ) : LoginMemberUseCase {
 
-    override fun loginMember(memberDTO: LoginMemberDTO): BaseResponse<JwtInfo> {
+    override fun loginMember(memberDTO: LoginMemberRequest): BaseResponse<JwtInfo> {
         val member: Member = loadMemberPort.loadMemberWithEmail(memberDTO.email)
 
         if (!bCryptPasswordEncoder.matches(memberDTO.password, member.password.value)) {
