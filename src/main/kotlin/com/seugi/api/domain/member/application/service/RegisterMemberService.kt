@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 import com.seugi.api.domain.email.application.service.ConfirmTokenService
-import com.seugi.api.domain.member.adapter.`in`.dto.RegisterMemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
@@ -23,7 +23,7 @@ class RegisterMemberService (
     private val confirmTokenService: ConfirmTokenService
 ): RegisterMemberUseCase {
 
-    override fun registerMember(@RequestBody memberDTO: RegisterMemberDTO): BaseResponse<String> {
+    override fun registerMember(@RequestBody memberDTO: RegisterMemberRequest): BaseResponse<String> {
         val member = Member(
             id = null,
             name = MemberName(memberDTO.name),

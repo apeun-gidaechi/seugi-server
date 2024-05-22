@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import com.seugi.api.domain.member.adapter.`in`.dto.RegisterMemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
 import com.seugi.api.global.response.BaseResponse
 
@@ -15,7 +15,7 @@ class RegisterMemberController (
 ) {
 
     @PostMapping("/register")
-    fun createMember(@RequestBody memberDTO: RegisterMemberDTO): BaseResponse<String> {
+    fun createMember(@RequestBody memberDTO: RegisterMemberRequest): BaseResponse<String> {
         return registerMemberUseCase.registerMember(memberDTO)
     }
 
