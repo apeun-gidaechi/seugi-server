@@ -1,8 +1,8 @@
-package com.seugi.api.domain.member.adapter.`in`.dto
+package com.seugi.api.domain.member.adapter.`in`.dto.req
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class RegisterMemberDTO (
+data class RegisterMemberRequest (
 
     @JsonProperty("name") val name: String,
     @JsonProperty("email") val email: String,
