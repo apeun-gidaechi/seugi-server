@@ -9,11 +9,13 @@ import com.seugi.api.global.response.BaseResponse
 
 interface ChatRoomService {
 
-    fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long, type:RoomType) : BaseResponse<Long>
+    fun createChatRoom(createRoomRequest: CreateRoomRequest, userId: Long, type: RoomType): BaseResponse<Long>
 
-    fun getRooms(workspaceId: String, userId: Long, type: RoomType) : BaseResponse<List<Room>>
+    fun getRoom(roomId: Long, userId: Long): BaseResponse<Room>
 
-    fun leftRoom(userId: Long, roomId: Long) : BaseResponse<Unit>
+    fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>>
+
+    fun leftRoom(userId: Long, roomId: Long): BaseResponse<Unit>
 
     fun searchRoomNameIn(searchRoomRequest: SearchRoomRequest, type: RoomType, userId: Long): BaseResponse<List<Room>>
 

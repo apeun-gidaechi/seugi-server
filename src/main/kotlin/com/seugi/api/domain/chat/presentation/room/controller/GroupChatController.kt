@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.presentation.room.controller
 
-import org.springframework.web.bind.annotation.*
 import com.seugi.api.domain.chat.application.service.room.ChatRoomService
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.room.model.Room
@@ -8,6 +7,7 @@ import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.web.bind.annotation.*
 
 /**
  * 그룹
@@ -24,7 +24,7 @@ class GroupChatController(
     fun createRoom(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
-    ) : BaseResponse<Long> {
+    ): BaseResponse<Long> {
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
     }
 
@@ -41,11 +41,22 @@ class GroupChatController(
         )
     }
 
+    @GetMapping("/search/room/{roomId}")
+    fun getRoom(
+        @PathVariable("roomId") roomId: Long,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<Room> {
+        return chatRoomService.getRoom(
+            roomId = roomId,
+            userId = userId
+        )
+    }
+
     @GetMapping("/search/{workspaceID}")
     fun getRooms(
         @GetAuthenticatedId userid: Long,
         @PathVariable workspaceID: String,
-    ) : BaseResponse<List<Room>> {
+    ): BaseResponse<List<Room>> {
         return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
     }
 
@@ -53,10 +64,10 @@ class GroupChatController(
     //나가기
     @PatchMapping("/left/{roomId}")
     fun leftRoom(
-        @GetAuthenticatedId userId:Long,
+        @GetAuthenticatedId userId: Long,
         @PathVariable roomId: Long,
     ): BaseResponse<Unit> {
-        return chatRoomService.leftRoom(userId,roomId)
+        return chatRoomService.leftRoom(userId, roomId)
     }
 
 }
