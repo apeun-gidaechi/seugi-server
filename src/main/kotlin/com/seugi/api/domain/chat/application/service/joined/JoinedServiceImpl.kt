@@ -11,6 +11,7 @@ import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
 import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
@@ -68,10 +69,14 @@ class JoinedServiceImpl(
 
         joinedRepository.save(joinedEntity)
 
-        messageService.toMessage(
-            type = Type.ENTER,
-            chatRoomId = addJoinedRequest.chatRoomId,
-            eventList = addJoinedRequest.joinUserIds.toMutableList(),
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.ENTER,
+                roomId = addJoinedRequest.chatRoomId,
+                eventList = addJoinedRequest.joinUserIds.toMutableList(),
+                message = ""
+
+            ),
             userId = userId
         )
 
@@ -96,10 +101,13 @@ class JoinedServiceImpl(
 
         joinedRepository.save(joined)
 
-        messageService.toMessage(
-            type = Type.LEFT,
-            chatRoomId = outJoinedRequest.roomId,
-            eventList = outJoinedRequest.outJoinedUsers.toMutableList(),
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.LEFT,
+                roomId = outJoinedRequest.roomId,
+                eventList = outJoinedRequest.outJoinedUsers.toMutableList(),
+                message = ""
+            ),
             userId = userId
         )
 

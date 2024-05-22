@@ -14,25 +14,25 @@ import java.time.LocalDateTime
 
 
 @Document(collection = "messages")
-data class MessageEntity(
+class MessageEntity(
 
     @Id
     val id: ObjectId? = null,
 
-    var chatRoomId: Long? = null,
+    val chatRoomId: Long? = null,
 
     @Enumerated(EnumType.ORDINAL)
     val type : Type,
 
-    var author : MessageMember,
+    val author : MessageMember,
 
     val message : String = "",
 
-    val eventList: MutableList<Long>?,
+    val eventList: List<Long>?,
 
     val emoticon : String?,
 
-    val emojiList: MutableList<Emoji> = MutableList(8) { Emoji(it+1) },
+    val emojiList: List<Emoji> = MutableList(8) { Emoji(it+1) },
 
     val mention : List<MessageUserId> = emptyList(),
 
@@ -40,9 +40,9 @@ data class MessageEntity(
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    var read: MutableSet<Long> = mutableSetOf(),
+    val read: MutableSet<Long> = mutableSetOf(),
 
-    var joined: Set<Long>,
+    val joined: Set<Long>,
 
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 

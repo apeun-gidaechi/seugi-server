@@ -1,6 +1,6 @@
 package com.seugi.api.domain.member.adapter.`in`.controller
 
-import com.seugi.api.domain.member.port.`in`.RefreshTokenUseCase
+import com.seugi.api.domain.member.application.port.`in`.RefreshTokenUseCase
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.GetMapping

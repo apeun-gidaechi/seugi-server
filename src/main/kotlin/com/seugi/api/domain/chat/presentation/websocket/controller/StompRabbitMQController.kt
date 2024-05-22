@@ -16,7 +16,7 @@ class StompRabbitMQController(
     fun send(chat: ChatMessageDto) {
         val simpAttributes = SimpAttributesContextHolder.currentAttributes()
         val userId = simpAttributes.getAttribute("user-id") as String?
-        messageService.sendMessage(chat, userId!!.toLong())
+        messageService.sendAndSaveMessage(chat, userId!!.toLong())
     }
 
 }

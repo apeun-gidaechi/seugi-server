@@ -102,7 +102,7 @@ class WorkspaceServiceImpl(
              state = "W1",
              success = true,
              message = "자신이 속한 워크스페이스 전체 불러오기 성공",
-             data = workspaceRepository.findByStudentEqualsOrTeacherEqualsOrMiddleAdminEqualsOrWorkspaceAdminEqualsAndStatus(userId, userId, userId, userId, Status.ALIVE)
+             data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
                  .map { workspaceMapper.toWorkspaceResponse(it) }
          )
 
@@ -167,6 +167,8 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
+
+        if (getWaitListRequest.workspaceId.isEmpty() or getWaitListRequest.role.name.isEmpty()) throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
 
         val workspaceId = ObjectId(getWaitListRequest.workspaceId)
 
@@ -245,6 +247,8 @@ class WorkspaceServiceImpl(
                 workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
         }
+
+        workspaceRepository.save(workspaceEntity)
 
         return BaseResponse(
             status = HttpStatus.OK.value(),

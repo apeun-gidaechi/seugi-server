@@ -1,9 +1,6 @@
-package com.seugi.api.domain.member.application.model.value
+package com.seugi.api.domain.profile.adapter.`in`.request
 
-import jakarta.persistence.Embeddable
-
-@Embeddable
-data class MemberProfile (
+data class EditProfileRequest (
 
     val status: String = "", // 상태메시지
     val nick: String = "", // 닉네임

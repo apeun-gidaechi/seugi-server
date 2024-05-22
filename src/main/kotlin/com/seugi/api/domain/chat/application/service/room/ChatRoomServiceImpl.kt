@@ -16,9 +16,12 @@ import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
+import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -62,10 +65,13 @@ class ChatRoomServiceImpl(
             workspaceId = createRoomRequest.workspaceId,
         )
 
-        messageService.toMessage(
-            type = Type.ENTER,
-            chatRoomId = chatRoomId,
-            eventList = createRoomRequest.joinUsers,
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.ENTER,
+                roomId = chatRoomId,
+                message = "",
+                eventList = createRoomRequest.joinUsers,
+            ),
             userId = userId
         )
 
@@ -86,9 +92,9 @@ class ChatRoomServiceImpl(
         when(type){
             PERSONAL -> {
                 val rooms: List<ChatRoomEntity> = joined.map {
-                    val room: Optional<ChatRoomEntity> = chatRoomRepository.findById(it.chatRoomId)
-                    room.get().apply {
-                        val member = memberRepository.findById(it.joinUserId.filter { id -> id != userId }[0]).get()
+                    val room = chatRoomRepository.findById(it.chatRoomId).orElseThrow{CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)}
+                    room.apply {
+                        val member = memberRepository.findByIdOrNull(it.joinUserId.filter { id -> id != userId }[0])?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                         chatName = member.name
                         chatRoomImg = member.picture
                     }
@@ -133,11 +139,14 @@ class ChatRoomServiceImpl(
 
         val eventList: List<Long> = listOf(userId)
 
-        messageService.toMessage(
-            type = Type.LEFT,
-            chatRoomId = roomId,
-            userId = userId,
-            eventList = eventList.toMutableList()
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.LEFT,
+                roomId = roomId,
+                message = "",
+                eventList = eventList.toMutableList()
+            ),
+            userId = userId
         )
 
 

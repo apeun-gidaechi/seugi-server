@@ -1,4 +1,4 @@
-package com.seugi.api.domain.member.port.`in`
+package com.seugi.api.domain.member.application.port.`in`
 
 import com.seugi.api.domain.member.adapter.`in`.dto.LoginMemberDTO
 import com.seugi.api.global.auth.jwt.JwtInfo

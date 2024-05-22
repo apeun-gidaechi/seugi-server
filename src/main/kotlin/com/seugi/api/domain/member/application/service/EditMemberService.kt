@@ -1,18 +1,15 @@
 package com.seugi.api.domain.member.application.service
 
 import com.seugi.api.domain.member.adapter.out.MemberAdapter
-import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.model.value.MemberPicture
-import com.seugi.api.domain.member.port.`in`.EditMemberUseCase
-import com.seugi.api.global.exception.CustomException
+import com.seugi.api.domain.member.application.port.`in`.EditMemberUseCase
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import java.io.File
 
 @Service
 class EditMemberService (
-    private val memberAdapter: MemberAdapter
+    private val memberAdapter: MemberAdapter,
 ) : EditMemberUseCase {
 
     override fun editPicture(url: String, id: Long): BaseResponse<Unit> {

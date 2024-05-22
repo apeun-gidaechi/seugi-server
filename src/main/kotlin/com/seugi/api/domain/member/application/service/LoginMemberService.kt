@@ -7,8 +7,8 @@ import com.seugi.api.domain.member.adapter.`in`.dto.LoginMemberDTO
 import com.seugi.api.domain.member.adapter.out.entity.MemberTokenEntity
 import com.seugi.api.domain.member.adapter.out.repository.MemberTokenRepository
 import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.port.`in`.LoginMemberUseCase
-import com.seugi.api.domain.member.port.out.LoadMemberPort
+import com.seugi.api.domain.member.application.port.`in`.LoginMemberUseCase
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.jwt.exception.JwtErrorCode

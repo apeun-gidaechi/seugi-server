@@ -1,8 +1,7 @@
 package com.seugi.api.domain.member.application.service
 
-import com.seugi.api.domain.member.adapter.out.repository.MemberTokenRepository
-import com.seugi.api.domain.member.port.`in`.RefreshTokenUseCase
-import com.seugi.api.domain.member.port.out.LoadMemberPort
+import com.seugi.api.domain.member.application.port.`in`.RefreshTokenUseCase
+import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
 import com.seugi.api.global.exception.CustomException
@@ -36,4 +35,5 @@ class RefreshTokenService (
             jwtUtils.refreshToken(member)
         )
     }
+
 }

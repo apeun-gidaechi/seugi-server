@@ -1,12 +1,12 @@
 package com.seugi.api.domain.member.adapter.out.entity
 
+import com.seugi.api.domain.profile.adapter.out.entity.ProfileEntity
 import jakarta.persistence.Column
-import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import com.seugi.api.domain.member.application.model.value.MemberProfile
+import jakarta.persistence.OneToMany
 
 @Entity
 data class MemberEntity (
@@ -29,10 +29,6 @@ data class MemberEntity (
 
     @Column(nullable = false)
     var birth: String = "",
-
-    @Embedded
-    @Column(nullable = false)
-    val profile: MemberProfile,
 
     @Column(nullable = false)
     var role: String = "ROLE_USER",

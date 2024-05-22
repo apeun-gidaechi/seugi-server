@@ -31,9 +31,14 @@ class GroupChatController(
     @GetMapping("/search")
     fun searchRoom(
         @GetAuthenticatedId userId: Long,
-        @RequestBody searchRoomRequest: SearchRoomRequest
+        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+        @RequestParam("word", defaultValue = "") word: String
     ): BaseResponse<List<Room>> {
-        return chatRoomService.searchRoomNameIn(searchRoomRequest, RoomType.GROUP, userId)
+        return chatRoomService.searchRoomNameIn(
+            SearchRoomRequest(workspaceId = workspaceId, word = word),
+            RoomType.GROUP,
+            userId
+        )
     }
 
     @GetMapping("/search/{workspaceID}")
