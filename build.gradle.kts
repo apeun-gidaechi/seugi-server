@@ -37,6 +37,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.springframework.security:spring-security-test")
     implementation("org.webjars:stomp-websocket:2.3.4")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
@@ -57,8 +58,6 @@ dependencies {
     implementation("io.projectreactor.netty:reactor-netty")
 
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.701")
-
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
 

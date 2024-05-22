@@ -10,6 +10,7 @@ import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
 import com.seugi.api.global.exception.CustomException
+import org.springframework.data.repository.findByIdOrNull
 
 @Component
 class MemberAdapter (
@@ -27,10 +28,8 @@ class MemberAdapter (
     @Transactional(readOnly = true)
     override fun loadMemberWithId(id: Long): Member {
         return memberMapper.toDomain(
-            memberRepository.findById(id)
-                .orElseThrow {
-                    CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-                }
+            memberRepository.findByIdOrNull(id)
+                ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
         )
     }
 
@@ -38,9 +37,7 @@ class MemberAdapter (
     override fun loadMemberWithEmail(email: String): Member {
         return memberMapper.toDomain(
             memberRepository.findByEmail(email)
-                .orElseThrow {
-                    CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-                }
+                ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
         )
     }
 

@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import com.seugi.api.domain.member.adapter.`in`.dto.LoginMemberDTO
+import com.seugi.api.domain.member.adapter.out.entity.MemberTokenEntity
+import com.seugi.api.domain.member.adapter.out.repository.MemberTokenRepository
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.`in`.LoginMemberUseCase
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
@@ -14,10 +16,11 @@ import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
 @Service
-class LoginMemberService (
+class LoginMemberService(
     private val jwtUtils: JwtUtils,
     private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-    private val loadMemberPort: LoadMemberPort
+    private val loadMemberPort: LoadMemberPort,
+    private val memberTokenRepository: MemberTokenRepository
 ) : LoginMemberUseCase {
 
     override fun loginMember(memberDTO: LoginMemberDTO): BaseResponse<JwtInfo> {
@@ -27,11 +30,20 @@ class LoginMemberService (
             throw CustomException(JwtErrorCode.JWT_MEMBER_NOT_MATCH)
         }
 
+        val jwtInfo = jwtUtils.generate(member)
+
+        memberTokenRepository.save (
+            MemberTokenEntity(
+                jwtInfo.accessToken,
+                jwtInfo.refreshToken
+            )
+        )
+
         return BaseResponse (
             status = HttpStatus.OK.value(),
             success = true,
             message = "토큰 발급 성공 !!",
-            data = jwtUtils.generate(member)
+            data = jwtInfo
         )
     }
 }

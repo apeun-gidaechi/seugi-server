@@ -73,12 +73,19 @@ class JwtUtils (
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 
-    fun refreshToken(token: String): JwtInfo {
-        val member = loadMemberPort.loadMemberWithEmail(
-            getUsername(getToken(token))
-        )
+    fun refreshToken(member: Member): String {
+        val now: Long = Date().time
 
-        return generate(member)
+        val accessToken = Jwts.builder()
+            .claim("id", member.id?.value)
+            .claim("email", member.email.value)
+            .claim("role", member.role.value)
+            .issuedAt(Date(now))
+            .expiration(Date(now + jwtProperties.refreshExpired))
+            .signWith(secretKey)
+            .compact()
+
+        return accessToken
     }
 
 }
