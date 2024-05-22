@@ -1,7 +1,8 @@
 package com.seugi.api.domain.member.application.service
 
+import com.seugi.api.domain.member.adapter.out.repository.MemberTokenRepository
 import com.seugi.api.domain.member.application.port.`in`.RefreshTokenUseCase
-import com.seugi.api.global.auth.jwt.JwtInfo
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
 import com.seugi.api.global.exception.CustomException
@@ -13,8 +14,8 @@ import org.springframework.stereotype.Service
 @Service
 class RefreshTokenService (
     private val jwtUtils: JwtUtils,
-    private val loadMemberPort: LoadMemberPort,
-    private val memberTokenRepository: MemberTokenRepository
+    private val memberTokenRepository: MemberTokenRepository,
+    private val loadMemberPort: LoadMemberPort
 ) : RefreshTokenUseCase {
 
     override fun refreshToken(token: String): BaseResponse<String> {
