@@ -20,7 +20,7 @@ class RetrieveMemberService (
             status = HttpStatus.OK.value(),
             success = true,
             message = "멤버 정보 조회 성공 !!",
-            data = RetrieveMemberResponse.toResponse(member)
+            data = RetrieveMemberResponse(member)
         )
     }
 }

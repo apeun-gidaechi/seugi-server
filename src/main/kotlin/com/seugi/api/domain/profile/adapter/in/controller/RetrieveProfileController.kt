@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class RetrieveProfileController (
     private val retrieveMemberUseCase: RetrieveProfileUseCase
 ) {
+
     @GetMapping("/me")
     fun getMyProfile(
         @RequestParam workspaceId: String,
