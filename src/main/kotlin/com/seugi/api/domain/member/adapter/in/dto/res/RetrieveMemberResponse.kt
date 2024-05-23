@@ -11,17 +11,13 @@ data class RetrieveMemberResponse (
     val picture: String,
 
 ) {
-    companion object {
+    
+    constructor (member: Member) : this (
+        id = member.id!!.value,
+        email = member.email.value,
+        birth = member.birth.value,
+        name = member.name.value,
+        picture = member.picture.value
+    )
 
-        fun toResponse(member: Member): RetrieveMemberResponse {
-            return RetrieveMemberResponse (
-                id = member.id!!.value,
-                email = member.email.value,
-                birth = member.birth.value,
-                name = member.name.value,
-                picture = member.picture.value
-            )
-        }
-
-    }
 }
