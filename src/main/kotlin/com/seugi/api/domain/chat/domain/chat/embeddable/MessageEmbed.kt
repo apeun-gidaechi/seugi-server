@@ -8,14 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 @JsonSerialize(using = EmojiSerializer::class)
 data class Emoji(
-    val emojiId : Int? = null,
+    val emojiId: Int? = null,
     val userId: MutableSet<Long> = mutableSetOf()
 )
 
 data class AddEmoji(
     val messageId: String? = null,
     val roomId: Long? = null,
-    val emojiId : Int? = null,
+    val emojiId: Int? = null,
     val userId: MutableSet<Long> = mutableSetOf()
 )
 

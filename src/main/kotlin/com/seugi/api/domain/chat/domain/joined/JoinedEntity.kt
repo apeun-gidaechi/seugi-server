@@ -1,15 +1,15 @@
 package com.seugi.api.domain.chat.domain.joined
 
-import jakarta.persistence.*
+import com.seugi.api.domain.chat.domain.enums.type.RoomType
+import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
-import com.seugi.api.domain.chat.domain.enums.type.RoomType
 
 
 @Document(collection = "join")
-class JoinedEntity (
+class JoinedEntity(
     @Id
-    val id:ObjectId? = null,
+    val id: ObjectId? = null,
 
     val workspaceID: String,
 
@@ -19,5 +19,5 @@ class JoinedEntity (
 
     var roomAdmin: Long = -1,
 
-    var joinedUserId : MutableSet<Long> = emptyArray<Long>().toMutableSet(),
+    var joinedUserId: MutableSet<Long> = emptyArray<Long>().toMutableSet(),
 )

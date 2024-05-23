@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.presentation.room.controller
 
-import org.springframework.web.bind.annotation.*
 import com.seugi.api.domain.chat.application.service.room.ChatRoomService
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.room.model.Room
@@ -8,6 +7,7 @@ import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.web.bind.annotation.*
 
 
 /**
@@ -25,7 +25,7 @@ class PersonalChatController(
     fun createRoom(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
-    ) : BaseResponse<Long> {
+    ): BaseResponse<Long> {
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.PERSONAL)
     }
 
@@ -58,7 +58,7 @@ class PersonalChatController(
     fun getRooms(
         @GetAuthenticatedId userid: Long,
         @PathVariable workspaceId: String
-    ) : BaseResponse<List<Room>> {
+    ): BaseResponse<List<Room>> {
         return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
     }
 

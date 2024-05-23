@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.presentation.joined.controller
 
-import org.springframework.web.bind.annotation.*
 import com.seugi.api.domain.chat.application.service.joined.JoinedService
 import com.seugi.api.domain.chat.domain.joined.model.Joined
 import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
@@ -8,6 +7,7 @@ import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedReques
 import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.web.bind.annotation.*
 
 /**
  * 참가자 추가, 삭제, 확인
@@ -24,7 +24,7 @@ class JoinedController(
     @GetMapping("/{roomId}")
     fun getUsersInfo(
         @PathVariable roomId: Long
-        ): BaseResponse<Joined> {
+    ): BaseResponse<Joined> {
         return joinedService.getUsersInfo(roomId)
     }
 

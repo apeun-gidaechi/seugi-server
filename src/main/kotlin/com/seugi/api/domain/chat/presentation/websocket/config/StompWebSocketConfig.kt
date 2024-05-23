@@ -99,7 +99,8 @@ class StompWebSocketConfig(
                     SimpMessageType.DISCONNECT,
                     SimpMessageType.DISCONNECT_ACK,
                     SimpMessageType.OTHER,
-                    null -> {}
+                    null -> {
+                    }
                 }
 
                 return message

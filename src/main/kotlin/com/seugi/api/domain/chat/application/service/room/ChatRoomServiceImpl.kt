@@ -37,17 +37,21 @@ class ChatRoomServiceImpl(
 ) : ChatRoomService {
 
     @Transactional
-    override fun createChatRoom(createRoomRequest: CreateRoomRequest, userId:Long, type: RoomType): BaseResponse<Long> {
+    override fun createChatRoom(
+        createRoomRequest: CreateRoomRequest,
+        userId: Long,
+        type: RoomType
+    ): BaseResponse<Long> {
 
-        if(type == GROUP && createRoomRequest.roomName.isEmpty()){
-                if (createRoomRequest.roomName.isEmpty()){
-                    createRoomRequest.roomName = createRoomRequest.joinUsers?.asSequence()
-                        ?.map { memberRepository.findById(it).get().name }
-                        ?.takeWhile { (createRoomRequest.roomName + it).length <= 10 }
-                        ?.joinToString(separator = ", ")
-                        ?: createRoomRequest.roomName
+        if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
+            if (createRoomRequest.roomName.isEmpty()) {
+                createRoomRequest.roomName = createRoomRequest.joinUsers?.asSequence()
+                    ?.map { memberRepository.findById(it).get().name }
+                    ?.takeWhile { (createRoomRequest.roomName + it).length <= 10 }
+                    ?.joinToString(separator = ", ")
+                    ?: createRoomRequest.roomName
 
-                }
+            }
         }
 
         createRoomRequest.joinUsers?.add(userId)
@@ -86,7 +90,8 @@ class ChatRoomServiceImpl(
 
     override fun getRoom(roomId: Long, userId: Long): BaseResponse<Room> {
 
-        val data = chatRoomMapper.toDomain(chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
+        val data = chatRoomMapper.toDomain(
+            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
         val joined = joinedService.findByRoomId(roomId).joinedUserId
 
         if (!joined.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
@@ -104,14 +109,16 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
-        val joined : List<Joined> = joinedService.findByJoinedUserId(workspaceId, userId, type)
+        val joined: List<Joined> = joinedService.findByJoinedUserId(workspaceId, userId, type)
 
-        when(type){
+        when (type) {
             PERSONAL -> {
                 val rooms: List<ChatRoomEntity> = joined.map {
-                    val room = chatRoomRepository.findById(it.chatRoomId).orElseThrow{CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)}
+                    val room = chatRoomRepository.findById(it.chatRoomId)
+                        .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
                     room.apply {
-                        val member = memberRepository.findByIdOrNull(it.joinUserId.filter { id -> id != userId }[0])?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+                        val member = memberRepository.findByIdOrNull(it.joinUserId.filter { id -> id != userId }[0])
+                            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
                         chatName = member.name
                         chatRoomImg = member.picture
                     }
@@ -126,7 +133,7 @@ class ChatRoomServiceImpl(
             }
 
             GROUP -> {
-                val rooms : List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId)}
+                val rooms: List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId) }
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
                     success = true,
@@ -146,7 +153,7 @@ class ChatRoomServiceImpl(
         val joinedEntity: JoinedEntity = joinedService.findByRoomId(roomId)
         joinedEntity.joinedUserId -= userId
 
-        if (joinedEntity.joinedUserId.isEmpty()){
+        if (joinedEntity.joinedUserId.isEmpty()) {
             val chatRoomEntity: ChatRoomEntity = chatRoomRepository.findById(roomId).get()
             chatRoomEntity.chatStatus = ChatStatusEnum.DELETE
             chatRoomRepository.save(chatRoomEntity)
@@ -176,10 +183,18 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun searchRoomNameIn(searchRoomRequest: SearchRoomRequest, type: RoomType, userId: Long): BaseResponse<List<Room>> {
-        val joined: List<Joined> = joinedService.findByJoinedUserId(userId = userId, roomType = type, workspaceId = searchRoomRequest.workspaceId)
+    override fun searchRoomNameIn(
+        searchRoomRequest: SearchRoomRequest,
+        type: RoomType,
+        userId: Long
+    ): BaseResponse<List<Room>> {
+        val joined: List<Joined> = joinedService.findByJoinedUserId(
+            userId = userId,
+            roomType = type,
+            workspaceId = searchRoomRequest.workspaceId
+        )
 
-        when(type){
+        when (type) {
             PERSONAL -> {
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
@@ -187,9 +202,11 @@ class ChatRoomServiceImpl(
                     success = true,
                     message = "방 찾기 성공",
                     data = joined.mapNotNull {
-                        val name = memberRepository.findById(it.joinUserId.firstOrNull { id -> id != userId }!!).get().name
+                        val name =
+                            memberRepository.findById(it.joinUserId.firstOrNull { id -> id != userId }!!).get().name
                         if (name.contains(searchRoomRequest.word)) {
-                            val chatRoom = chatRoomRepository.findById(it.chatRoomId).orElseThrow{CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)}
+                            val chatRoom = chatRoomRepository.findById(it.chatRoomId)
+                                .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
                             chatRoom.chatName = name
                             chatRoomMapper.toDomain(chatRoom)
                         } else {
@@ -198,6 +215,7 @@ class ChatRoomServiceImpl(
                     }
                 )
             }
+
             GROUP -> {
                 return BaseResponse(
                     status = HttpStatus.OK.value(),

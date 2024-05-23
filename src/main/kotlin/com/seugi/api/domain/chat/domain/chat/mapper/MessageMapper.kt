@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.domain.chat.mapper
 
-import org.springframework.stereotype.Component
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.model.Message
@@ -8,6 +7,7 @@ import com.seugi.api.domain.chat.domain.joined.JoinedEntity
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.global.common.Mapper
+import org.springframework.stereotype.Component
 
 @Component
 class MessageMapper : Mapper<Message, MessageEntity> {
@@ -46,7 +46,12 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         )
     }
 
-    fun toMessage(chatMessageDto: ChatMessageDto, joinedEntity: JoinedEntity, author: MemberEntity, readUsers:List<Long>) : Message{
+    fun toMessage(
+        chatMessageDto: ChatMessageDto,
+        joinedEntity: JoinedEntity,
+        author: MemberEntity,
+        readUsers: List<Long>
+    ): Message {
         return Message(
             type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
@@ -61,9 +66,9 @@ class MessageMapper : Mapper<Message, MessageEntity> {
         )
     }
 
-     private fun toMember(entity: MemberEntity): MessageMember {
-        return MessageMember (
-            id =  entity.id!!,
+    private fun toMember(entity: MemberEntity): MessageMember {
+        return MessageMember(
+            id = entity.id!!,
             name = entity.name
         )
     }

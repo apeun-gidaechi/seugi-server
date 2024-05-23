@@ -1,15 +1,15 @@
 package com.seugi.api.domain.chat.domain.chat
 
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
-import org.bson.types.ObjectId
-import org.springframework.data.mongodb.core.mapping.Document
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageUserId
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 
@@ -22,21 +22,21 @@ class MessageEntity(
     val chatRoomId: Long? = null,
 
     @Enumerated(EnumType.ORDINAL)
-    val type : Type,
+    val type: Type,
 
-    val author : MessageMember,
+    val author: MessageMember,
 
-    val message : String = "",
+    val message: String = "",
 
     val eventList: List<Long>?,
 
-    val emoticon : String?,
+    val emoticon: String?,
 
-    val emojiList: List<Emoji> = MutableList(8) { Emoji(it+1) },
+    val emojiList: List<Emoji> = MutableList(8) { Emoji(it + 1) },
 
-    val mention : List<MessageUserId> = emptyList(),
+    val mention: List<MessageUserId> = emptyList(),
 
-    val mentionALl : Boolean = false,
+    val mentionALl: Boolean = false,
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 

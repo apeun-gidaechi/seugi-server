@@ -59,7 +59,7 @@ class MessageController(
         @GetAuthenticatedId userId: Long,
         @PathVariable roomId: Long,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
-    ) : BaseResponse<GetMessageResponse> {
+    ): BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
             userId = userId,

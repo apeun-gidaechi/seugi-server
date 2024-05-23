@@ -1,8 +1,8 @@
 package com.seugi.api.domain.chat.domain.room
 
-import jakarta.persistence.*
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 
@@ -20,15 +20,15 @@ class ChatRoomEntity(
     var chatName: String,
 
     @Column(nullable = false)
-    var containUserCnt : Long,
+    var containUserCnt: Long,
 
     @Column(nullable = false)
-    var chatRoomImg : String = "",
+    var chatRoomImg: String = "",
 
     @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    val lastModified : LocalDateTime = LocalDateTime.now(),
+    val lastModified: LocalDateTime = LocalDateTime.now(),
 
     @Enumerated(EnumType.STRING)
     var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE

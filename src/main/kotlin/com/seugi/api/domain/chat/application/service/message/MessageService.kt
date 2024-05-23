@@ -14,11 +14,11 @@ interface MessageService {
     fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long)
     fun sendEventMessage(message: MessageEventDto, roomId: Long)
     fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message
-    fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable) : BaseResponse<GetMessageResponse>
+    fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse>
 
-    fun addEmojiToMessage(userId: Long, emoji: AddEmoji) : BaseResponse<Unit>
-    fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji) : BaseResponse<Unit>
-    fun deleteMessage(userId: Long, deleteMessage: DeleteMessage) : BaseResponse<Unit>
+    fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
+    fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
+    fun deleteMessage(userId: Long, deleteMessage: DeleteMessage): BaseResponse<Unit>
 
     fun sub(userId: Long, roomId: String)
     fun unsub(userId: Long)

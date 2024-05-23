@@ -26,7 +26,13 @@ class JoinedServiceImpl(
 ) : JoinedService {
 
     @Transactional
-    override fun joinUserJoined(chatRoomId: Long, joinedUserId: List<Long>, type: RoomType, roomAdmin: Long, workspaceId: String) {
+    override fun joinUserJoined(
+        chatRoomId: Long,
+        joinedUserId: List<Long>,
+        type: RoomType,
+        roomAdmin: Long,
+        workspaceId: String
+    ) {
         joinedRepository.save(
             joinedMapper.toEntity(chatRoomId, joinedUserId, type, roomAdmin, workspaceId)
         )
@@ -45,7 +51,8 @@ class JoinedServiceImpl(
 
     @Transactional(readOnly = true)
     override fun findByJoinedUserId(workspaceId: String, userId: Long, roomType: RoomType): List<Joined> {
-        return joinedRepository.findByWorkspaceIDAndJoinedUserIdContainsAndRoomType(workspaceId, userId, roomType).map { joinedMapper.toDomain(it) }
+        return joinedRepository.findByWorkspaceIDAndJoinedUserIdContainsAndRoomType(workspaceId, userId, roomType)
+            .map { joinedMapper.toDomain(it) }
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +68,7 @@ class JoinedServiceImpl(
     @Transactional
     override fun addJoined(userId: Long, addJoinedRequest: AddJoinedRequest): BaseResponse<Joined> {
 
-        val joinedEntity : JoinedEntity = joinedRepository.findByChatRoomId(addJoinedRequest.chatRoomId!!)
+        val joinedEntity: JoinedEntity = joinedRepository.findByChatRoomId(addJoinedRequest.chatRoomId!!)
 
         joinedEntity.joinedUserId.addAll(
             addJoinedRequest.joinUserIds
@@ -95,7 +102,7 @@ class JoinedServiceImpl(
     override fun outJoined(outJoinedRequest: OutJoinedRequest, userId: Long): BaseResponse<Unit> {
 
         val joined: JoinedEntity = joinedRepository.findByChatRoomId(outJoinedRequest.roomId!!)
-        if (joined.roomAdmin == userId){
+        if (joined.roomAdmin == userId) {
             joined.joinedUserId = (joined.joinedUserId - outJoinedRequest.outJoinedUsers.toSet()).toMutableSet()
         }
 
@@ -122,7 +129,7 @@ class JoinedServiceImpl(
     @Transactional
     override fun tossMaster(userId: Long, tossMasterRequest: TossMasterRequest): BaseResponse<Unit> {
         val joined: JoinedEntity = joinedRepository.findByChatRoomId(tossMasterRequest.roomId)
-        if (joined.roomAdmin == userId){
+        if (joined.roomAdmin == userId) {
             joined.roomAdmin = tossMasterRequest.tossUserId
             joinedRepository.save(joined)
             return BaseResponse(
@@ -131,8 +138,7 @@ class JoinedServiceImpl(
                 success = true,
                 message = "방장 전달 성공"
             )
-        }
-        else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+        } else throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
     }
 
 }

@@ -1,10 +1,10 @@
 package com.seugi.api.domain.chat.domain.joined.mapper
 
-import org.springframework.stereotype.Component
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.joined.JoinedEntity
 import com.seugi.api.domain.chat.domain.joined.model.Joined
 import com.seugi.api.global.common.Mapper
+import org.springframework.stereotype.Component
 
 @Component
 class JoinedMapper : Mapper<Joined, JoinedEntity> {
@@ -28,7 +28,13 @@ class JoinedMapper : Mapper<Joined, JoinedEntity> {
         )
     }
 
-    fun toEntity(chatRoomId : Long, joinedUserId : List<Long>, type: RoomType, roomAdmin: Long, workspaceId: String) : JoinedEntity{
+    fun toEntity(
+        chatRoomId: Long,
+        joinedUserId: List<Long>,
+        type: RoomType,
+        roomAdmin: Long,
+        workspaceId: String
+    ): JoinedEntity {
         return JoinedEntity(
             joinedUserId = joinedUserId.toMutableSet(),
             roomType = type,

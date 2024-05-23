@@ -4,7 +4,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
 
-interface MessageRepository :MongoRepository<MessageEntity, ObjectId>{
-    fun findByChatRoomIdEquals(chatRoomId: Long, pageable: Pageable) : List<MessageEntity>
-    fun findByChatRoomIdEqualsAndReadNot(chatRoomId: Long, read: Set<Long>) : List<MessageEntity>
+interface MessageRepository : MongoRepository<MessageEntity, ObjectId> {
+    fun findByChatRoomIdEquals(chatRoomId: Long, pageable: Pageable): List<MessageEntity>
+    fun findByChatRoomIdEqualsAndReadNot(chatRoomId: Long, read: Set<Long>): List<MessageEntity>
 }

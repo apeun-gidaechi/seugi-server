@@ -11,7 +11,7 @@ class ChatRoomRepositoryCustomImpl(
 
     private val chatRoomEntity: QChatRoomEntity = QChatRoomEntity.chatRoomEntity
 
-    override fun searchRoom(chatRoomId: Long ,input: String): Room? {
+    override fun searchRoom(chatRoomId: Long, input: String): Room? {
         val room = jpaQueryFactory
             .selectFrom(chatRoomEntity)
             .where(chatRoomEntity.id.eq(chatRoomId), chatRoomEntity.chatName.contains(input))
