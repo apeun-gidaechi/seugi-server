@@ -24,50 +24,50 @@ class GroupChatController(
     fun createRoom(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
-    ): BaseResponse<Long> {
+    ): BaseResponse<String> {
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
     }
 
-    @GetMapping("/search")
-    fun searchRoom(
-        @GetAuthenticatedId userId: Long,
-        @RequestParam("workspace", defaultValue = "") workspaceId: String,
-        @RequestParam("word", defaultValue = "") word: String
-    ): BaseResponse<List<Room>> {
-        return chatRoomService.searchRoomNameIn(
-            SearchRoomRequest(workspaceId = workspaceId, word = word),
-            RoomType.GROUP,
-            userId
-        )
-    }
-
-    @GetMapping("/search/room/{roomId}")
-    fun getRoom(
-        @PathVariable("roomId") roomId: Long,
-        @GetAuthenticatedId userId: Long
-    ): BaseResponse<Room> {
-        return chatRoomService.getRoom(
-            roomId = roomId,
-            userId = userId
-        )
-    }
-
-    @GetMapping("/search/{workspaceID}")
-    fun getRooms(
-        @GetAuthenticatedId userid: Long,
-        @PathVariable workspaceID: String,
-    ): BaseResponse<List<Room>> {
-        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
-    }
-
-
-    //나가기
-    @PatchMapping("/left/{roomId}")
-    fun leftRoom(
-        @GetAuthenticatedId userId: Long,
-        @PathVariable roomId: Long,
-    ): BaseResponse<Unit> {
-        return chatRoomService.leftRoom(userId, roomId)
-    }
-
+//    @GetMapping("/search")
+//    fun searchRoom(
+//        @GetAuthenticatedId userId: Long,
+//        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+//        @RequestParam("word", defaultValue = "") word: String
+//    ): BaseResponse<List<Room>> {
+//        return chatRoomService.searchRoomNameIn(
+//            SearchRoomRequest(workspaceId = workspaceId, word = word),
+//            RoomType.GROUP,
+//            userId
+//        )
+//    }
+//
+//    @GetMapping("/search/room/{roomId}")
+//    fun getRoom(
+//        @PathVariable("roomId") roomId: Long,
+//        @GetAuthenticatedId userId: Long
+//    ): BaseResponse<Room> {
+//        return chatRoomService.getRoom(
+//            roomId = roomId,
+//            userId = userId
+//        )
+//    }
+//
+//    @GetMapping("/search/{workspaceID}")
+//    fun getRooms(
+//        @GetAuthenticatedId userid: Long,
+//        @PathVariable workspaceID: String,
+//    ): BaseResponse<List<Room>> {
+//        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
+//    }
+//
+//
+//    //나가기
+//    @PatchMapping("/left/{roomId}")
+//    fun leftRoom(
+//        @GetAuthenticatedId userId: Long,
+//        @PathVariable roomId: Long,
+//    ): BaseResponse<Unit> {
+//        return chatRoomService.leftRoom(userId, roomId)
+//    }
+//
 }

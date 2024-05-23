@@ -8,7 +8,6 @@ import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
-import com.seugi.api.domain.chat.domain.joined.JoinedRepository
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
@@ -30,7 +29,6 @@ class MessageServiceImpl(
     private val messageRepository: MessageRepository,
     private val memberRepository: MemberRepository,
     private val messageMapper: MessageMapper,
-    private val joinedRepository: JoinedRepository,
     private val roomInfoRepository: RoomInfoRepository,
     private val rabbitTemplate: RabbitTemplate
 ) : MessageService {
@@ -52,8 +50,8 @@ class MessageServiceImpl(
     @Transactional
     override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
-        val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
-
+//        val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
+        val joinedEntity = 1
         val memberEntity = memberRepository.findById(userId)
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
@@ -66,7 +64,6 @@ class MessageServiceImpl(
                     messageMapper.toMessage(
                         chatMessageDto = chatMessageDto,
                         author = memberEntity,
-                        joinedEntity = joinedEntity,
                         readUsers = readUsers
                     )
                 )
@@ -78,9 +75,9 @@ class MessageServiceImpl(
     @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
-        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(
-            ChatErrorCode.NO_ACCESS_ROOM
-        )
+//        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(
+//            ChatErrorCode.NO_ACCESS_ROOM
+//        )
         val allMessages =
             messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 

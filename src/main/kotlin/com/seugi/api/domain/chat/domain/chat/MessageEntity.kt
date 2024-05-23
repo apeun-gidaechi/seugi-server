@@ -19,7 +19,7 @@ class MessageEntity(
     @Id
     val id: ObjectId? = null,
 
-    val chatRoomId: Long? = null,
+    val chatRoomId: String? = null,
 
     @Enumerated(EnumType.ORDINAL)
     val type: Type,
@@ -28,7 +28,7 @@ class MessageEntity(
 
     val message: String = "",
 
-    val eventList: List<Long>?,
+    val eventList: Set<Long>?,
 
     val emoticon: String?,
 
@@ -41,8 +41,6 @@ class MessageEntity(
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
     val read: MutableSet<Long> = mutableSetOf(),
-
-    val joined: Set<Long>,
 
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 

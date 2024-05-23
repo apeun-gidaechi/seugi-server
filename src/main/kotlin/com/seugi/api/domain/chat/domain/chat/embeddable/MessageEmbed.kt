@@ -29,8 +29,7 @@ data class DeleteMessage(
 )
 
 data class MessageMember(
-    val id: Long,
-    val name: String
+    val id: Long
 )
 
 private class EmojiSerializer : JsonSerializer<Emoji>() {

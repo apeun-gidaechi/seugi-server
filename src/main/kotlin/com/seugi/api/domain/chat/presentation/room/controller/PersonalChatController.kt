@@ -25,41 +25,41 @@ class PersonalChatController(
     fun createRoom(
         @GetAuthenticatedId id: Long,
         @RequestBody createRoomRequest: CreateRoomRequest
-    ): BaseResponse<Long> {
+    ): BaseResponse<String> {
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.PERSONAL)
     }
 
-    @GetMapping("/search")
-    fun searchRoom(
-        @GetAuthenticatedId userId: Long,
-        @RequestParam("workspace", defaultValue = "") workspaceId: String,
-        @RequestParam("word", defaultValue = "") word: String
-    ): BaseResponse<List<Room>> {
-
-        return chatRoomService.searchRoomNameIn(
-            SearchRoomRequest(workspaceId = workspaceId, word = word),
-            RoomType.PERSONAL,
-            userId
-        )
-    }
-
-    @GetMapping("/search/room/{roomId}")
-    fun getRoom(
-        @PathVariable("roomId") roomId: Long,
-        @GetAuthenticatedId userId: Long
-    ): BaseResponse<Room> {
-        return chatRoomService.getRoom(
-            roomId = roomId,
-            userId = userId
-        )
-    }
-
-    @GetMapping("/search/{workspaceId}")
-    fun getRooms(
-        @GetAuthenticatedId userid: Long,
-        @PathVariable workspaceId: String
-    ): BaseResponse<List<Room>> {
-        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
-    }
-
+//    @GetMapping("/search")
+//    fun searchRoom(
+//        @GetAuthenticatedId userId: Long,
+//        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+//        @RequestParam("word", defaultValue = "") word: String
+//    ): BaseResponse<List<Room>> {
+//
+//        return chatRoomService.searchRoomNameIn(
+//            SearchRoomRequest(workspaceId = workspaceId, word = word),
+//            RoomType.PERSONAL,
+//            userId
+//        )
+//    }
+//
+//    @GetMapping("/search/room/{roomId}")
+//    fun getRoom(
+//        @PathVariable("roomId") roomId: Long,
+//        @GetAuthenticatedId userId: Long
+//    ): BaseResponse<Room> {
+//        return chatRoomService.getRoom(
+//            roomId = roomId,
+//            userId = userId
+//        )
+//    }
+//
+//    @GetMapping("/search/{workspaceId}")
+//    fun getRooms(
+//        @GetAuthenticatedId userid: Long,
+//        @PathVariable workspaceId: String
+//    ): BaseResponse<List<Room>> {
+//        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
+//    }
+//
 }
