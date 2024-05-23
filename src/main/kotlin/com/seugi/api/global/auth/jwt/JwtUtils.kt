@@ -85,7 +85,7 @@ class JwtUtils (
             .signWith(secretKey)
             .compact()
 
-        return accessToken
+        return "Bearer $accessToken"
     }
 
 }
