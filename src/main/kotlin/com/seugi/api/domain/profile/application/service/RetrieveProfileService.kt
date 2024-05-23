@@ -19,7 +19,7 @@ class RetrieveProfileService (
             status = HttpStatus.OK.value(),
             success = true,
             message = "프로필 불러오기 성공",
-            data = RetrieveProfileResponse.toResponse(profile)
+            data = RetrieveProfileResponse(profile)
         )
 
     }

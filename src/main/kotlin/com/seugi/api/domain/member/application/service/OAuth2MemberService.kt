@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
-import com.seugi.api.domain.member.adapter.`in`.dto.OAuth2MemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.OAuth2MemberRequest
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
@@ -74,7 +74,7 @@ class OAuth2MemberService (
         )
     }
 
-    override fun complete(dto: OAuth2MemberDTO): BaseResponse<Unit> {
+    override fun complete(dto: OAuth2MemberRequest): BaseResponse<Unit> {
         val member = loadMemberPort.loadMemberWithEmail(dto.email)
 
         if (member.name.value.isNotBlank()) {

@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import com.seugi.api.domain.member.adapter.`in`.dto.OAuth2MemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.OAuth2MemberRequest
 import com.seugi.api.domain.member.application.port.`in`.OAuth2MemberUseCase
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.response.BaseResponse
@@ -21,7 +21,7 @@ class OAuth2MemberController (
     }
 
     @PostMapping("/oauth2/complete")
-    fun setDetails(@RequestBody dto: OAuth2MemberDTO): BaseResponse<Unit> {
+    fun setDetails(@RequestBody dto: OAuth2MemberRequest): BaseResponse<Unit> {
         return oAuth2MemberUseCase.complete(dto)
     }
 
