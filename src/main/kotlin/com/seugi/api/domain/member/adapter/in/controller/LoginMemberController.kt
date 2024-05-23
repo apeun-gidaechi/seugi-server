@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import com.seugi.api.domain.member.adapter.`in`.dto.LoginMemberDTO
+import com.seugi.api.domain.member.adapter.`in`.dto.req.LoginMemberRequest
 import com.seugi.api.domain.member.application.port.`in`.LoginMemberUseCase
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.response.BaseResponse
@@ -16,7 +16,7 @@ class LoginMemberController (
 ) {
 
     @PostMapping("/login")
-    fun loginMember(@RequestBody memberDTO: LoginMemberDTO): BaseResponse<JwtInfo> {
+    fun loginMember(@RequestBody memberDTO: LoginMemberRequest): BaseResponse<JwtInfo> {
         return loginMemberUseCase.loginMember(memberDTO)
     }
 

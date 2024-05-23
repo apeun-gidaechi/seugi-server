@@ -14,20 +14,16 @@ data class RetrieveProfileResponse (
     val location: String = "", // 근무위치
 
 ) {
-    companion object {
 
-        fun toResponse(profile: Profile): RetrieveProfileResponse {
-            return RetrieveProfileResponse (
-                workspaceId = profile.workspaceId.value,
-                status = profile.status.value,
-                nick = profile.nick.value,
-                spot = profile.spot.value,
-                belong = profile.belong.value,
-                phone = profile.phone.value,
-                wire = profile.wire.value,
-                location = profile.location.value
-            )
-        }
+    constructor (profile: Profile) : this (
+        workspaceId = profile.workspaceId.value,
+        status = profile.status.value,
+        nick = profile.nick.value,
+        spot = profile.spot.value,
+        belong = profile.belong.value,
+        phone = profile.phone.value,
+        wire = profile.wire.value,
+        location = profile.location.value
+    )
 
-    }
 }
