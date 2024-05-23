@@ -25,7 +25,7 @@ class ChatRoomEntity(
 
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    var joinedUserId: MutableSet<Long> = emptyArray<Long>().toMutableSet(),
+    var joinedUserId: Set<Long>,
 
     @Enumerated(EnumType.STRING)
     var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE

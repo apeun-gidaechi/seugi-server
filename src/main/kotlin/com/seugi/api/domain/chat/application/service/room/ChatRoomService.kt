@@ -17,6 +17,6 @@ interface ChatRoomService {
 //
 //    fun leftRoom(userId: Long, roomId: Long): BaseResponse<Unit>
 //
-//    fun searchRoomNameIn(searchRoomRequest: SearchRoomRequest, type: RoomType, userId: Long): BaseResponse<List<Room>>
+    fun searchRoomNameIn(searchRoomRequest: SearchRoomRequest, type: RoomType, userId: Long): BaseResponse<List<Room>>
 
 }

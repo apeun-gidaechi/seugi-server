@@ -29,7 +29,8 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             workspaceID = domain.workspaceID,
             chatName = domain.chatName,
             roomAdmin = domain.roomAdmin,
-            roomType = domain.type
+            roomType = domain.type,
+            joinedUserId = domain.joinUserId
         )
     }
 

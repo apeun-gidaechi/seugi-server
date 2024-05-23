@@ -28,18 +28,18 @@ class GroupChatController(
         return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
     }
 
-//    @GetMapping("/search")
-//    fun searchRoom(
-//        @GetAuthenticatedId userId: Long,
-//        @RequestParam("workspace", defaultValue = "") workspaceId: String,
-//        @RequestParam("word", defaultValue = "") word: String
-//    ): BaseResponse<List<Room>> {
-//        return chatRoomService.searchRoomNameIn(
-//            SearchRoomRequest(workspaceId = workspaceId, word = word),
-//            RoomType.GROUP,
-//            userId
-//        )
-//    }
+    @GetMapping("/search")
+    fun searchRoom(
+        @GetAuthenticatedId userId: Long,
+        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+        @RequestParam("word", defaultValue = "") word: String
+    ): BaseResponse<List<Room>> {
+        return chatRoomService.searchRoomNameIn(
+            SearchRoomRequest(workspaceId = workspaceId, word = word),
+            RoomType.GROUP,
+            userId
+        )
+    }
 //
 //    @GetMapping("/search/room/{roomId}")
 //    fun getRoom(

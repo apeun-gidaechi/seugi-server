@@ -6,8 +6,6 @@ import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.enums.type.RoomType.GROUP
 import com.seugi.api.domain.chat.domain.enums.type.RoomType.PERSONAL
-import com.seugi.api.domain.chat.domain.joined.model.Joined
-import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
 import com.seugi.api.domain.chat.domain.room.model.Room
@@ -19,11 +17,9 @@ import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @Service
 class ChatRoomServiceImpl(
@@ -40,15 +36,22 @@ class ChatRoomServiceImpl(
         type: RoomType
     ): BaseResponse<String> {
 
-        if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
-            if (createRoomRequest.roomName.isEmpty()) {
-                createRoomRequest.roomName = createRoomRequest.joinUsers?.asSequence()
-                    ?.map { memberRepository.findById(it).get().name }
-                    ?.takeWhile { (createRoomRequest.roomName + it).length <= 10 }
-                    ?.joinToString(separator = ", ")
-                    ?: createRoomRequest.roomName
+        if (
+            type == PERSONAL && createRoomRequest.joinUsers.size >= 2
+            || type == GROUP && createRoomRequest.joinUsers.size <= 2
+        ) throw CustomException(
+            ChatErrorCode.CHAT_ROOM_CREATE_ERROR
+        )
 
-            }
+        createRoomRequest.joinUsers.map {
+            memberRepository.findById(it).orElseThrow { CustomException(MemberErrorCode.MEMBER_NOT_FOUND) }
+        }
+
+        if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
+            createRoomRequest.roomName = createRoomRequest.joinUsers.asSequence()
+                .map { memberRepository.findById(it).get().name }
+                .takeWhile { (createRoomRequest.roomName + it).length <= 10 }
+                .joinToString(separator = ", ")
         }
 
         val chatRoomId = chatRoomRepository.save(
@@ -74,13 +77,13 @@ class ChatRoomServiceImpl(
         return BaseResponse(
             status = HttpStatus.OK.value(),
             success = true,
-            state = "C1",
+            state = "OK",
             message = "채팅방 생성 성공 | 채팅방 ID",
             data = chatRoomId
         )
     }
 
-//    override fun getRoom(roomId: Long, userId: Long): BaseResponse<Room> {
+    //    override fun getRoom(roomId: Long, userId: Long): BaseResponse<Room> {
 //
 //        val data = chatRoomMapper.toDomain(
 //            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
@@ -174,53 +177,60 @@ class ChatRoomServiceImpl(
 //        )
 //    }
 //
-//    @Transactional(readOnly = true)
-//    override fun searchRoomNameIn(
-//        searchRoomRequest: SearchRoomRequest,
-//        type: RoomType,
-//        userId: Long
-//    ): BaseResponse<List<Room>> {
-//        val joined: List<Joined> = joinedService.findByJoinedUserId(
-//            userId = userId,
-//            roomType = type,
-//            workspaceId = searchRoomRequest.workspaceId
-//        )
-//
-//        when (type) {
-//            PERSONAL -> {
-//                return BaseResponse(
-//                    status = HttpStatus.OK.value(),
-//                    state = "OK",
-//                    success = true,
-//                    message = "방 찾기 성공",
-//                    data = joined.mapNotNull {
-//                        val name =
-//                            memberRepository.findById(it.joinUserId.firstOrNull { id -> id != userId }!!).get().name
-//                        if (name.contains(searchRoomRequest.word)) {
-//                            val chatRoom = chatRoomRepository.findById(it.chatRoomId)
-//                                .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
-//                            chatRoom.chatName = name
-//                            chatRoomMapper.toDomain(chatRoom)
-//                        } else {
-//                            null
-//                        }
-//                    }
-//                )
-//            }
-//
-//            GROUP -> {
-//                return BaseResponse(
-//                    status = HttpStatus.OK.value(),
-//                    state = "OK",
-//                    success = true,
-//                    message = "방 찾기 성공",
-//                    data = joined.mapNotNull { chatRoomRepository.searchRoom(it.chatRoomId, searchRoomRequest.word) }
-//                )
-//            }
-//
-//        }
-//
-//
-//    }
+    @Transactional(readOnly = true)
+    override fun searchRoomNameIn(
+        searchRoomRequest: SearchRoomRequest,
+        type: RoomType,
+        userId: Long
+    ): BaseResponse<List<Room>> {
+
+        val chatRoomEntity =
+            chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+                workspaceID = searchRoomRequest.workspaceId,
+                chatStatus = ChatStatusEnum.ALIVE,
+                roomType = type,
+                joinedUserId = userId
+            ).orEmpty()
+
+        when (type) {
+            PERSONAL -> {
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "방 찾기 성공",
+                    data = chatRoomEntity.mapNotNull {
+                        val member =
+                            memberRepository.findById(it.joinedUserId.firstOrNull { id -> id != userId }!!).get()
+                        if (member.name.contains(searchRoomRequest.word)) {
+                            val chatRoom = chatRoomRepository.findById(it.id!!)
+                                .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+                            chatRoom.chatName = member.name
+                            chatRoom.chatRoomImg = member.picture
+                            chatRoomMapper.toDomain(chatRoom)
+                        } else {
+                            null
+                        }
+                    }
+                )
+            }
+
+            GROUP -> {
+
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    state = "OK",
+                    success = true,
+                    message = "방 찾기 성공",
+                    data = chatRoomEntity.map {
+                        chatRoomMapper.toDomain(it)
+                    }
+                )
+            }
+
+        }
+
+
+    }
 
 }
