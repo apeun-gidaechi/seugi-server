@@ -85,6 +85,8 @@ class ChatRoomServiceImpl(
     }
 
     override fun getRoom(roomId: Long, userId: Long): BaseResponse<Room> {
+
+        val data = chatRoomMapper.toDomain(chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
         val joined = joinedService.findByRoomId(roomId).joinedUserId
 
         if (!joined.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
@@ -94,7 +96,7 @@ class ChatRoomServiceImpl(
             state = "OK",
             success = true,
             message = "채팅방 단건 조회성공!",
-            data = chatRoomMapper.toDomain(chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
+            data = data
         )
 
     }
