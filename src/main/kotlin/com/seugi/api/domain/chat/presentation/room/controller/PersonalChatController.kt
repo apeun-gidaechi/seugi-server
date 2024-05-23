@@ -2,9 +2,9 @@ package com.seugi.api.domain.chat.presentation.room.controller
 
 import com.seugi.api.domain.chat.application.service.room.ChatRoomService
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
-import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.room.dto.response.RoomResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
@@ -34,7 +34,7 @@ class PersonalChatController(
         @GetAuthenticatedId userId: Long,
         @RequestParam("workspace", defaultValue = "") workspaceId: String,
         @RequestParam("word", defaultValue = "") word: String
-    ): BaseResponse<List<Room>> {
+    ): BaseResponse<List<RoomResponse>> {
 
         return chatRoomService.searchRoomNameIn(
             SearchRoomRequest(workspaceId = workspaceId, word = word),
@@ -47,7 +47,7 @@ class PersonalChatController(
     fun getRoom(
         @PathVariable("roomId") roomId: String,
         @GetAuthenticatedId userId: Long
-    ): BaseResponse<Room> {
+    ): BaseResponse<RoomResponse> {
         return chatRoomService.getRoom(
             roomId = roomId,
             userId = userId
@@ -58,7 +58,7 @@ class PersonalChatController(
 //    fun getRooms(
 //        @GetAuthenticatedId userid: Long,
 //        @PathVariable workspaceId: String
-//    ): BaseResponse<List<Room>> {
+//    ): BaseResponse<List<RoomResponse>> {
 //        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
 //    }
 

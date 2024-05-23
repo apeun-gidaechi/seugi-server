@@ -5,6 +5,8 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType.GROUP
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
+import com.seugi.api.domain.chat.presentation.room.dto.response.RoomResponse
+import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 
@@ -43,6 +45,20 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = if (type == GROUP) userId else -1,
             chatRoomImg = createRoomRequest.chatRoomImg,
             joinUserId = createRoomRequest.joinUsers
+        )
+    }
+
+    fun toResponse(room: Room, members: Set<RetrieveMemberResponse>): RoomResponse {
+        return RoomResponse(
+            id = room.id!!,
+            workspaceID = room.workspaceID,
+            roomAdmin = room.roomAdmin,
+            chatName = room.chatName,
+            chatRoomImg = room.chatRoomImg,
+            createdAt = room.createdAt.toString(),
+            chatStatusEnum = room.chatStatusEnum!!,
+            type = room.type,
+            joinUserId = members
         )
     }
 }
