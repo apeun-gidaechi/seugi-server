@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class RoomMapper : Mapper<Room, ChatRoomEntity> {
     override fun toDomain(entity: ChatRoomEntity): Room {
         return Room(
-            id = entity.id!!,
+            id = entity.id!!.toString(),
             workspaceID = entity.workspaceID,
             type = entity.roomType,
             roomAdmin = entity.roomAdmin,

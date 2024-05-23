@@ -11,7 +11,7 @@ interface ChatRoomService {
 
     fun createChatRoom(createRoomRequest: CreateRoomRequest, userId: Long, type: RoomType): BaseResponse<String>
 
-//    fun getRoom(roomId: Long, userId: Long): BaseResponse<Room>
+    fun getRoom(roomId: String, userId: Long): BaseResponse<Room>
 //
 //    fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>>
 //

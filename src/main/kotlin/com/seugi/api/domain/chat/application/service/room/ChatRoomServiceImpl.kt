@@ -17,6 +17,7 @@ import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -83,24 +84,28 @@ class ChatRoomServiceImpl(
         )
     }
 
-    //    override fun getRoom(roomId: Long, userId: Long): BaseResponse<Room> {
-//
-//        val data = chatRoomMapper.toDomain(
-//            chatRoomRepository.findById(roomId).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
-//        val joined = joinedService.findByRoomId(roomId).joinedUserId
-//
-//        if (!joined.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
-//
-//        return BaseResponse(
-//            status = HttpStatus.OK.value(),
-//            state = "OK",
-//            success = true,
-//            message = "채팅방 단건 조회성공!",
-//            data = data
-//        )
-//
-//    }
-//
+    @Transactional(readOnly = true)
+    override fun getRoom(roomId: String, userId: Long): BaseResponse<Room> {
+
+        //ObjectId는 24글자 고정이라 예외처리 로직 추가
+        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_SEARCH_ERROR)
+
+        val data = chatRoomMapper.toDomain(
+            chatRoomRepository.findById(ObjectId(roomId)).orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) })
+
+        if (!data.joinUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "채팅방 단건 조회성공!",
+            data = data
+        )
+
+    }
+
+    //
 //    @Transactional(readOnly = true)
 //    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
 //

@@ -2,10 +2,9 @@ package com.seugi.api.domain.chat.domain.room.model
 
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
-import org.bson.types.ObjectId
 
 data class Room(
-    val id: ObjectId? = null,
+    val id: String? = null,
     val workspaceID: String,
     val type: RoomType,
     val roomAdmin: Long,

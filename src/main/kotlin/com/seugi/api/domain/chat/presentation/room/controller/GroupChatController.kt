@@ -40,18 +40,18 @@ class GroupChatController(
             userId
         )
     }
-//
-//    @GetMapping("/search/room/{roomId}")
-//    fun getRoom(
-//        @PathVariable("roomId") roomId: Long,
-//        @GetAuthenticatedId userId: Long
-//    ): BaseResponse<Room> {
-//        return chatRoomService.getRoom(
-//            roomId = roomId,
-//            userId = userId
-//        )
-//    }
-//
+
+    @GetMapping("/search/room/{roomId}")
+    fun getRoom(
+        @PathVariable("roomId") roomId: String,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<Room> {
+        return chatRoomService.getRoom(
+            roomId = roomId,
+            userId = userId
+        )
+    }
+
 //    @GetMapping("/search/{workspaceID}")
 //    fun getRooms(
 //        @GetAuthenticatedId userid: Long,
@@ -59,7 +59,7 @@ class GroupChatController(
 //    ): BaseResponse<List<Room>> {
 //        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
 //    }
-//
+
 //
 //    //나가기
 //    @PatchMapping("/left/{roomId}")

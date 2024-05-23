@@ -42,17 +42,17 @@ class PersonalChatController(
             userId
         )
     }
-//
-//    @GetMapping("/search/room/{roomId}")
-//    fun getRoom(
-//        @PathVariable("roomId") roomId: Long,
-//        @GetAuthenticatedId userId: Long
-//    ): BaseResponse<Room> {
-//        return chatRoomService.getRoom(
-//            roomId = roomId,
-//            userId = userId
-//        )
-//    }
+
+    @GetMapping("/search/room/{roomId}")
+    fun getRoom(
+        @PathVariable("roomId") roomId: String,
+        @GetAuthenticatedId userId: Long
+    ): BaseResponse<Room> {
+        return chatRoomService.getRoom(
+            roomId = roomId,
+            userId = userId
+        )
+    }
 //
 //    @GetMapping("/search/{workspaceId}")
 //    fun getRooms(
@@ -61,5 +61,5 @@ class PersonalChatController(
 //    ): BaseResponse<List<Room>> {
 //        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
 //    }
-//
+
 }
