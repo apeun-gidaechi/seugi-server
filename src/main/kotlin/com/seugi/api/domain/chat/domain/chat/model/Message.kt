@@ -1,7 +1,6 @@
 package com.seugi.api.domain.chat.domain.chat.model
 
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
-import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageUserId
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 
@@ -9,7 +8,7 @@ data class Message(
     val id: String? = null,
     val chatRoomId: String,
     val type: Type,
-    val author: MessageMember,
+    val author: Long,
     val message: String,
     val eventList: Set<Long>? = emptySet(),
     val emoticon: String?,

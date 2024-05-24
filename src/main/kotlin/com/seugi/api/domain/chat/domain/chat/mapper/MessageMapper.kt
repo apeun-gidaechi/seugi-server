@@ -1,11 +1,8 @@
 package com.seugi.api.domain.chat.domain.chat.mapper
 
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
-import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.model.Message
-//import com.seugi.api.domain.chat.domain.member.JoinedEntity
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 
@@ -46,24 +43,18 @@ class MessageMapper : Mapper<Message, MessageEntity> {
 
     fun toMessage(
         chatMessageDto: ChatMessageDto,
-        author: MemberEntity,
+        author: Long,
         readUsers: List<Long>
     ): Message {
         return Message(
             type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
-            author = toMember(author),
+            author = author,
             message = chatMessageDto.message!!,
             eventList = chatMessageDto.eventList,
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention!!,
             mentionAll = chatMessageDto.mentionAll
-        )
-    }
-
-    private fun toMember(entity: MemberEntity): MessageMember {
-        return MessageMember(
-            id = entity.id!!
         )
     }
 

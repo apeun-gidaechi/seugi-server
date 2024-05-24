@@ -14,7 +14,6 @@ import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
-import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MessageServiceImpl(
     private val messageRepository: MessageRepository,
-    private val memberRepository: MemberRepository,
     private val messageMapper: MessageMapper,
     private val roomInfoRepository: RoomInfoRepository,
     private val rabbitTemplate: RabbitTemplate
@@ -50,11 +48,6 @@ class MessageServiceImpl(
     @Transactional
     override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
-//        val joinedEntity = joinedRepository.findByChatRoomId(chatMessageDto.roomId!!)
-        val joinedEntity = 1
-        val memberEntity = memberRepository.findById(userId)
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
-
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
 
@@ -63,7 +56,7 @@ class MessageServiceImpl(
                 messageMapper.toEntity(
                     messageMapper.toMessage(
                         chatMessageDto = chatMessageDto,
-                        author = memberEntity,
+                        author = userId,
                         readUsers = readUsers
                     )
                 )
@@ -172,7 +165,7 @@ class MessageServiceImpl(
         val id = ObjectId(deleteMessage.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
-        if (message.author.id != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
+        if (message.author != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
 
         message.messageStatus = ChatStatusEnum.DELETE
         messageRepository.save(message)
