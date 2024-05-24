@@ -9,10 +9,10 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType.PERSONAL
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
+import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
-import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
@@ -92,7 +92,7 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getRoom(roomId: String, userId: Long): BaseResponse<RoomResponse> {
+    override fun getRoom(roomId: String, userId: Long): BaseResponse<Room> {
 
         //ObjectId는 24글자 고정이라 예외처리 로직 추가
         if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_SEARCH_ERROR)
@@ -109,17 +109,14 @@ class ChatRoomServiceImpl(
             state = "OK",
             success = true,
             message = "채팅방 단건 조회성공!",
-            data = chatRoomMapper.toResponse(
-                room = chatRoomMapper.toDomain(data),
-                members = getUserInfo(data)
-            )
+            data = chatRoomMapper.toDomain(data)
         )
 
     }
 
 
     @Transactional(readOnly = true)
-    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<RoomResponse>> {
+    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
 
         val chatRoomEntity =
             chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
@@ -147,10 +144,7 @@ class ChatRoomServiceImpl(
                     state = "C1",
                     message = "방 찾기 성공",
                     data = rooms.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
+                        chatRoomMapper.toDomain(it)
                     }
                 )
             }
@@ -162,10 +156,7 @@ class ChatRoomServiceImpl(
                     state = "C1",
                     message = "방 찾기 성공",
                     data = chatRoomEntity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
+                        chatRoomMapper.toDomain(it)
                     }
                 )
             }
@@ -219,7 +210,7 @@ class ChatRoomServiceImpl(
         searchRoomRequest: SearchRoomRequest,
         type: RoomType,
         userId: Long
-    ): BaseResponse<List<RoomResponse>> {
+    ): BaseResponse<List<Room>> {
 
         val chatRoomEntity =
             chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
@@ -252,10 +243,7 @@ class ChatRoomServiceImpl(
                     success = true,
                     message = "방 찾기 성공",
                     data = entity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
+                        chatRoomMapper.toDomain(it)
                     }
                 )
             }
@@ -268,11 +256,7 @@ class ChatRoomServiceImpl(
                     success = true,
                     message = "방 찾기 성공",
                     data = chatRoomEntity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
-
+                        chatRoomMapper.toDomain(it)
                     }
                 )
             }
