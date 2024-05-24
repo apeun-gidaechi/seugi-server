@@ -102,6 +102,8 @@ class ChatRoomServiceImpl(
 
         if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
+        data.chatName
+
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "OK",
@@ -115,55 +117,62 @@ class ChatRoomServiceImpl(
 
     }
 
-    //
-//    @Transactional(readOnly = true)
-//    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
-//
-//        val chatRoomEntity =
-//            chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
-//                workspaceID = workspaceId,
-//                chatStatus = ChatStatusEnum.ALIVE,
-//                roomType = type,
-//                joinedUserId = userId
-//            )?: throw CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)
-//
-//        when (type) {
-//            PERSONAL -> {
-//                val rooms: List<ChatRoomEntity> = joined.map {
-//                    val room = chatRoomRepository.findById(it.chatRoomId)
-//                        .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
-//                    room.apply {
-//                        val member = memberRepository.findByIdOrNull(it.joinUserId.filter { id -> id != userId }[0])
-//                            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-//                        chatName = member.name
-//                        chatRoomImg = member.picture
-//                    }
-//                }
-//                return BaseResponse(
-//                    status = HttpStatus.OK.value(),
-//                    success = true,
-//                    state = "C1",
-//                    message = "방 찾기 성공",
-//                    data = rooms.map { chatRoomMapper.toDomain(it) }
-//                )
-//            }
-//
-//            GROUP -> {
-//                val rooms: List<Optional<ChatRoomEntity>> = joined.map { chatRoomRepository.findById(it.chatRoomId) }
-//                return BaseResponse(
-//                    status = HttpStatus.OK.value(),
-//                    success = true,
-//                    state = "C1",
-//                    message = "방 찾기 성공",
-//                    data = rooms.filter { it.isPresent }.map { it.get() }.map { chatRoomMapper.toDomain(it) }
-//                )
-//            }
-//
-//        }
-//
-//    }
-//
-//    @Transactional
+
+    @Transactional(readOnly = true)
+    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<RoomResponse>> {
+
+        val chatRoomEntity =
+            chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+                workspaceID = workspaceId,
+                chatStatus = ChatStatusEnum.ALIVE,
+                roomType = type,
+                joinedUserId = userId
+            ) ?: throw CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)
+
+        when (type) {
+            PERSONAL -> {
+                val rooms: List<ChatRoomEntity> = chatRoomEntity.map {
+
+                    val room = chatRoomRepository.findById(it.id!!)
+                        .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+                    room.apply {
+                        val member = loadMemberPort.loadMemberWithId(it.joinedUserId.filter { id -> id != userId }[0])
+                        chatName = member.name.value
+                        chatRoomImg = member.picture.value
+                    }
+                }
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = rooms.map {
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
+                    }
+                )
+            }
+
+            GROUP -> {
+                return BaseResponse(
+                    status = HttpStatus.OK.value(),
+                    success = true,
+                    state = "C1",
+                    message = "방 찾기 성공",
+                    data = chatRoomEntity.map {
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
+                    }
+                )
+            }
+        }
+    }
+
+    //    @Transactional
 //    override fun leftRoom(userId: Long, roomId: Long): BaseResponse<Unit> {
 //
 //        val joinedEntity: JoinedEntity = joinedService.findByRoomId(roomId)

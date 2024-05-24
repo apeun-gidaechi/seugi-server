@@ -52,15 +52,15 @@ class GroupChatController(
         )
     }
 
-//    @GetMapping("/search/{workspaceID}")
-//    fun getRooms(
-//        @GetAuthenticatedId userid: Long,
-//        @PathVariable workspaceID: String,
-//    ): BaseResponse<List<RoomResponse>> {
-//        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
-//    }
+    @GetMapping("/search/{workspaceID}")
+    fun getRooms(
+        @GetAuthenticatedId userid: Long,
+        @PathVariable workspaceID: String,
+    ): BaseResponse<List<RoomResponse>> {
+        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
+    }
 
-//
+
 //    //나가기
 //    @PatchMapping("/left/{roomId}")
 //    fun leftRoom(
