@@ -1,9 +1,9 @@
-package com.seugi.api.domain.chat.application.service.room
+package com.seugi.api.domain.chat.application.service.chat.room
 
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
-import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
-import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
-import com.seugi.api.domain.chat.presentation.room.dto.response.RoomResponse
+import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
+import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.global.response.BaseResponse
 
 

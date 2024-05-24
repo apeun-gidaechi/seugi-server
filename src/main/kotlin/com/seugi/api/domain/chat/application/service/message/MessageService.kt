@@ -3,7 +3,7 @@ package com.seugi.api.domain.chat.application.service.message
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.domain.chat.model.Message
-import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
+import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.response.BaseResponse

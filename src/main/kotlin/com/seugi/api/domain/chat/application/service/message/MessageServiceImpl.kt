@@ -11,7 +11,7 @@ import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
-import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
+import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository

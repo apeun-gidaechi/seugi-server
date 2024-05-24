@@ -1,18 +1,18 @@
-//package com.seugi.api.domain.chat.application.service.joined
+//package com.seugi.api.domain.chat.application.service.member
 //
 //import com.seugi.api.domain.chat.application.service.message.MessageService
 //import com.seugi.api.domain.chat.domain.chat.model.Type
 //import com.seugi.api.domain.chat.domain.enums.type.RoomType
-//import com.seugi.api.domain.chat.domain.joined.JoinedEntity
-//import com.seugi.api.domain.chat.domain.joined.JoinedRepository
-//import com.seugi.api.domain.chat.domain.joined.mapper.JoinedMapper
-//import com.seugi.api.domain.chat.domain.joined.model.Joined
+//import com.seugi.api.domain.chat.domain.member.JoinedEntity
+//import com.seugi.api.domain.chat.domain.member.JoinedRepository
+//import com.seugi.api.domain.chat.domain.member.mapper.JoinedMapper
+//import com.seugi.api.domain.chat.domain.member.model.Joined
 //import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 //import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
 //import com.seugi.api.domain.chat.exception.ChatErrorCode
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.AddJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.OutJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.TossMasterRequest
 //import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 //import com.seugi.api.global.exception.CustomException
 //import com.seugi.api.global.response.BaseResponse
@@ -91,12 +91,12 @@
 //    @Transactional
 //    override fun outJoined(outJoinedRequest: OutJoinedRequest, userId: Long): BaseResponse<Unit> {
 //
-//        val joined: JoinedEntity = joinedRepository.findByChatRoomId(outJoinedRequest.roomId!!)
-//        if (joined.roomAdmin == userId) {
-//            joined.joinedUserId = (joined.joinedUserId - outJoinedRequest.outJoinedUsers.toSet()).toMutableSet()
+//        val member: JoinedEntity = joinedRepository.findByChatRoomId(outJoinedRequest.roomId!!)
+//        if (member.roomAdmin == userId) {
+//            member.joinedUserId = (member.joinedUserId - outJoinedRequest.outJoinedUsers.toSet()).toMutableSet()
 //        }
 //
-//        joinedRepository.save(joined)
+//        joinedRepository.save(member)
 //
 //        messageService.sendAndSaveMessage(
 //            chatMessageDto = ChatMessageDto(
@@ -118,10 +118,10 @@
 //
 //    @Transactional
 //    override fun tossMaster(userId: Long, tossMasterRequest: TossMasterRequest): BaseResponse<Unit> {
-//        val joined: JoinedEntity = joinedRepository.findByChatRoomId(tossMasterRequest.roomId)
-//        if (joined.roomAdmin == userId) {
-//            joined.roomAdmin = tossMasterRequest.tossUserId
-//            joinedRepository.save(joined)
+//        val member: JoinedEntity = joinedRepository.findByChatRoomId(tossMasterRequest.roomId)
+//        if (member.roomAdmin == userId) {
+//            member.roomAdmin = tossMasterRequest.tossUserId
+//            joinedRepository.save(member)
 //            return BaseResponse(
 //                status = HttpStatus.OK.value(),
 //                state = "J1",

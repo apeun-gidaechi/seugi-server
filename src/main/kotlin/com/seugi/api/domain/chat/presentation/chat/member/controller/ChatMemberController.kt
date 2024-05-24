@@ -1,10 +1,10 @@
-//package com.seugi.api.domain.chat.presentation.joined.controller
+//package com.seugi.api.domain.chat.presentation.member.controller
 //
-//import com.seugi.api.domain.chat.application.service.joined.JoinedService
-//import com.seugi.api.domain.chat.domain.joined.model.Joined
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+//import com.seugi.api.domain.chat.application.service.member.JoinedService
+//import com.seugi.api.domain.chat.domain.member.model.Joined
+//import com.seugi.api.domain.chat.presentation.member.dto.request.AddJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.OutJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.TossMasterRequest
 //import com.seugi.api.global.common.annotation.GetAuthenticatedId
 //import com.seugi.api.global.response.BaseResponse
 //import org.springframework.web.bind.annotation.*
@@ -15,7 +15,7 @@
 //
 //
 //@RestController
-//@RequestMapping("/joined")
+//@RequestMapping("/member")
 //class JoinedController(
 //    private val joinedService: JoinedService
 //) {

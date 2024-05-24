@@ -1,7 +1,7 @@
-//package com.seugi.api.domain.chat.domain.joined.mapper
+//package com.seugi.api.domain.chat.domain.member.mapper
 //
 //import com.seugi.api.domain.chat.domain.enums.type.RoomType
-//import com.seugi.api.domain.chat.domain.joined.model.Joined
+//import com.seugi.api.domain.chat.domain.member.model.Joined
 //import com.seugi.api.global.common.Mapper
 //import org.springframework.stereotype.Component
 //

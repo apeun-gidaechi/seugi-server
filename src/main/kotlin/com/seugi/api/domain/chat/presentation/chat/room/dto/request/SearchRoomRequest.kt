@@ -1,4 +1,4 @@
-package com.seugi.api.domain.chat.presentation.room.dto.request
+package com.seugi.api.domain.chat.presentation.chat.room.dto.request
 
 data class SearchRoomRequest(
     val workspaceId: String = "",

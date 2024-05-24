@@ -3,7 +3,7 @@ package com.seugi.api.domain.chat.domain.chat.mapper
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.embeddable.MessageMember
 import com.seugi.api.domain.chat.domain.chat.model.Message
-//import com.seugi.api.domain.chat.domain.joined.JoinedEntity
+//import com.seugi.api.domain.chat.domain.member.JoinedEntity
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.global.common.Mapper

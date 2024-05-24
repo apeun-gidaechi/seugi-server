@@ -1,4 +1,4 @@
-package com.seugi.api.domain.chat.presentation.joined.dto.request
+package com.seugi.api.domain.chat.presentation.chat.member.dto.request
 
 data class OutJoinedRequest(
     val roomId: Long? = null,

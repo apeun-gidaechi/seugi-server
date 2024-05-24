@@ -1,11 +1,11 @@
-//package com.seugi.api.domain.chat.application.service.joined
+//package com.seugi.api.domain.chat.application.service.member
 //
 //import com.seugi.api.domain.chat.domain.enums.type.RoomType
-//import com.seugi.api.domain.chat.domain.joined.JoinedEntity
-//import com.seugi.api.domain.chat.domain.joined.model.Joined
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.AddJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.OutJoinedRequest
-//import com.seugi.api.domain.chat.presentation.joined.dto.request.TossMasterRequest
+//import com.seugi.api.domain.chat.domain.member.JoinedEntity
+//import com.seugi.api.domain.chat.domain.member.model.Joined
+//import com.seugi.api.domain.chat.presentation.member.dto.request.AddJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.OutJoinedRequest
+//import com.seugi.api.domain.chat.presentation.member.dto.request.TossMasterRequest
 //import com.seugi.api.global.response.BaseResponse
 //
 //interface JoinedService {

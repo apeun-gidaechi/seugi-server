@@ -1,4 +1,4 @@
-package com.seugi.api.domain.chat.application.service.room
+package com.seugi.api.domain.chat.application.service.chat.room
 
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.model.Type
@@ -10,9 +10,9 @@ import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
 import com.seugi.api.domain.chat.exception.ChatErrorCode
-import com.seugi.api.domain.chat.presentation.room.dto.request.CreateRoomRequest
-import com.seugi.api.domain.chat.presentation.room.dto.request.SearchRoomRequest
-import com.seugi.api.domain.chat.presentation.room.dto.response.RoomResponse
+import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
+import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort

@@ -1,4 +1,4 @@
-package com.seugi.api.domain.chat.presentation.joined.dto.response
+package com.seugi.api.domain.chat.presentation.chat.member.dto.response
 
 import com.seugi.api.domain.chat.domain.chat.model.Message
 
