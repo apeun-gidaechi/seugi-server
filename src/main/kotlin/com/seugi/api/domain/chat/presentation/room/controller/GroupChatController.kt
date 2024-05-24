@@ -61,13 +61,13 @@ class GroupChatController(
     }
 
 
-//    //나가기
-//    @PatchMapping("/left/{roomId}")
-//    fun leftRoom(
-//        @GetAuthenticatedId userId: Long,
-//        @PathVariable roomId: Long,
-//    ): BaseResponse<Unit> {
-//        return chatRoomService.leftRoom(userId, roomId)
-//    }
-//
+    //나가기
+    @PatchMapping("/left/{roomId}")
+    fun leftRoom(
+        @GetAuthenticatedId userId: Long,
+        @PathVariable roomId: String,
+    ): BaseResponse<Unit> {
+        return chatRoomService.leftRoom(userId, roomId)
+    }
+
 }

@@ -7,7 +7,7 @@ data class ChatMessageDto(
     val type: Type? = Type.MESSAGE,
     val roomId: String? = null,
     val message: String? = null,
-    val eventList: MutableSet<Long>? = null,
+    val eventList: Set<Long>? = null,
     val emoticon: String? = null,
     val mention: List<MessageUserId>? = emptyList(),
     val mentionAll: Boolean = false,

@@ -172,41 +172,48 @@ class ChatRoomServiceImpl(
         }
     }
 
-    //    @Transactional
-//    override fun leftRoom(userId: Long, roomId: Long): BaseResponse<Unit> {
-//
-//        val joinedEntity: JoinedEntity = joinedService.findByRoomId(roomId)
-//        joinedEntity.joinedUserId -= userId
-//
-//        if (joinedEntity.joinedUserId.isEmpty()) {
-//            val chatRoomEntity: ChatRoomEntity = chatRoomRepository.findById(roomId).get()
-//            chatRoomEntity.chatStatus = ChatStatusEnum.DELETE
-//            chatRoomRepository.save(chatRoomEntity)
-//        }
-//
-//        joinedService.save(joinedEntity)
-//
-//        val eventList: List<Long> = listOf(userId)
-//
-//        messageService.sendAndSaveMessage(
-//            chatMessageDto = ChatMessageDto(
-//                type = Type.LEFT,
-//                roomId = roomId,
-//                message = "",
-//                eventList = eventList.toMutableList()
-//            ),
-//            userId = userId
-//        )
-//
-//
-//        return BaseResponse(
-//            status = HttpStatus.OK.value(),
-//            state = "J1",
-//            success = true,
-//            message = "방 나가기 성공"
-//        )
-//    }
-//
+    @Transactional
+    override fun leftRoom(userId: Long, roomId: String): BaseResponse<Unit> {
+
+        //ObjectId는 24글자 고정이라 예외처리 로직 추가
+        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_SEARCH_ERROR)
+        val chatRoomEntity = chatRoomRepository.findById(ObjectId(roomId))
+            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+
+        //방장인지 확인하는 로직, 방장일경우 못나감 하지만 방 인원이 자신뿐이라면 넘어감
+        if (chatRoomEntity.roomAdmin == userId && chatRoomEntity.joinedUserId.size != 1)
+            throw CustomException(ChatErrorCode.CHAT_LEFT_ERROR)
+
+        //그룹채팅방만 나갈 수 있음
+        if (chatRoomEntity.roomType != GROUP) throw CustomException(ChatErrorCode.CHAT_TYPE_ERROR)
+
+        chatRoomEntity.joinedUserId -= userId
+
+        if (chatRoomEntity.joinedUserId.isEmpty()) {
+            chatRoomEntity.chatStatus = ChatStatusEnum.DELETE
+        }
+
+        chatRoomRepository.save(chatRoomEntity)
+
+        messageService.sendAndSaveMessage(
+            chatMessageDto = ChatMessageDto(
+                type = Type.LEFT,
+                roomId = roomId,
+                message = "",
+                eventList = setOf(userId)
+            ),
+            userId = userId
+        )
+
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "J1",
+            success = true,
+            message = "방 나가기 성공"
+        )
+    }
+
     @Transactional(readOnly = true)
     override fun searchRoomNameIn(
         searchRoomRequest: SearchRoomRequest,
