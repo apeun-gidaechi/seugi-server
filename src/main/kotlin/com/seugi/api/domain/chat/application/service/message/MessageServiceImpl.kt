@@ -68,9 +68,6 @@ class MessageServiceImpl(
     @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
-//        if (!joinedRepository.findByChatRoomId(chatRoomId).joinedUserId.contains(userId)) throw CustomException(
-//            ChatErrorCode.NO_ACCESS_ROOM
-//        )
         val allMessages =
             messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 
