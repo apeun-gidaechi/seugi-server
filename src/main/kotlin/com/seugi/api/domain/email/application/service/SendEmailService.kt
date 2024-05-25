@@ -1,9 +1,11 @@
 package com.seugi.api.domain.email.application.service
 
+import com.seugi.api.domain.email.application.exception.EmailErrorCode
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import com.seugi.api.domain.email.port.`in`.SendEmailUseCase
+import com.seugi.api.global.exception.CustomException
 
 @Service
 class SendEmailService (
@@ -15,7 +17,6 @@ class SendEmailService (
         subject: String,
         message: String
     ) {
-
         val mail = SimpleMailMessage()
 
         mail.setTo(to)
@@ -23,7 +24,6 @@ class SendEmailService (
         mail.text = message
 
         emailSender.send(mail)
-
     }
 
 }
