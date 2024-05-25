@@ -28,10 +28,6 @@ data class DeleteMessage(
     val messageId: String? = null
 )
 
-data class MessageMember(
-    val id: Long
-)
-
 private class EmojiSerializer : JsonSerializer<Emoji>() {
     override fun serialize(emoji: Emoji, gen: JsonGenerator, serializers: SerializerProvider) {
         if (emoji.userId.isNotEmpty()) {
