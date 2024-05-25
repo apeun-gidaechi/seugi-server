@@ -95,7 +95,7 @@ class ChatRoomServiceImpl(
     override fun getRoom(roomId: String, userId: Long): BaseResponse<Room> {
 
         //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_SEARCH_ERROR)
+        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
 
         val data = chatRoomRepository.findById(ObjectId(roomId))
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
@@ -167,7 +167,7 @@ class ChatRoomServiceImpl(
     override fun leftRoom(userId: Long, roomId: String): BaseResponse<Unit> {
 
         //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_SEARCH_ERROR)
+        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
         val chatRoomEntity = chatRoomRepository.findById(ObjectId(roomId))
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
