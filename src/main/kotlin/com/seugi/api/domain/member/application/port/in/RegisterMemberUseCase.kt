@@ -5,6 +5,6 @@ import com.seugi.api.global.response.BaseResponse
 
 interface RegisterMemberUseCase {
 
-    fun registerMember(memberDTO: RegisterMemberRequest): BaseResponse<String>
+    fun registerMember(dto: RegisterMemberRequest): BaseResponse<String>
 
 }
