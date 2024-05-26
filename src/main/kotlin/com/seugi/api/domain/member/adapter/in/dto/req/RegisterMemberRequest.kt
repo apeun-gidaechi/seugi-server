@@ -7,6 +7,6 @@ data class RegisterMemberRequest (
     @JsonProperty("name") val name: String,
     @JsonProperty("email") val email: String,
     @JsonProperty("password") val password: String,
-    @JsonProperty("token") val token: String
+    @JsonProperty("code") val code: String
 
 )
