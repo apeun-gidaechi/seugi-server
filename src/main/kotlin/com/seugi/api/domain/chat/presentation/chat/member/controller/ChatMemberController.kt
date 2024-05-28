@@ -53,7 +53,7 @@ class ChatMemberController(
         return chatMemberService.performCommonEventChangeTasks(
             userId = userId,
             chatMemberEventRequest = chatMemberEventRequest,
-            eventType = EventType.TOSS_ADMIN
+            eventType = EventType.TRANSFER_ADMIN
         )
     }
 
