@@ -31,7 +31,7 @@ class ChatMemberServiceImpl(
         return when (eventType) {
             EventType.ADD -> addUsers(userId, chatMemberEventRequest)
             EventType.KICK -> kickUsers(userId, chatMemberEventRequest)
-            EventType.TOSS_ADMIN -> transferAdmin(userId, chatMemberEventRequest)
+            EventType.TRANSFER_ADMIN -> transferAdmin(userId, chatMemberEventRequest)
         }
     }
 
@@ -113,7 +113,7 @@ class ChatMemberServiceImpl(
         chatRoomRepository.save(chatRoomEntity)
 
         sendMessage(
-            type = Type.TOSS_ADMIN,
+            type = Type.TRANSFER_ADMIN,
             roomId = chatMemberEventRequest.chatRoomId!!,
             eventList = chatMemberEventRequest.chatMemberUsers,
             userId = userId
