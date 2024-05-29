@@ -50,6 +50,7 @@ class SecurityConfig (
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
+                    .requestMatchers("/member/edit", "/member/myInfo").hasRole("USER")
                     .requestMatchers("/stomp/**").permitAll()
                     .requestMatchers("$actuatorUrl/**").permitAll()
                     .anyRequest().authenticated()
