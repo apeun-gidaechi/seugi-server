@@ -31,7 +31,7 @@ class ChatMemberServiceImpl(
         return when (eventType) {
             EventType.ADD -> addUsers(userId, chatMemberEventRequest)
             EventType.KICK -> kickUsers(userId, chatMemberEventRequest)
-            EventType.TOSS_ADMIN -> tossAdmin(userId, chatMemberEventRequest)
+            EventType.TOSS_ADMIN -> transferAdmin(userId, chatMemberEventRequest)
         }
     }
 
@@ -99,7 +99,7 @@ class ChatMemberServiceImpl(
         )
     }
 
-    private fun tossAdmin(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
+    private fun transferAdmin(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
         if (chatMemberEventRequest.chatMemberUsers.size != 1) throw CustomException(ChatErrorCode.CHAT_TOSS_ADMIN_ERROR)
 
