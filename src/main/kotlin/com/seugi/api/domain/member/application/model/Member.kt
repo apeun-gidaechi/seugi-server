@@ -1,5 +1,6 @@
 package com.seugi.api.domain.member.application.model
 
+import com.seugi.api.domain.member.adapter.`in`.dto.req.EditMemberRequest
 import com.seugi.api.domain.member.application.model.value.*
 
 data class Member (
@@ -15,4 +16,12 @@ data class Member (
     val provider: MemberProvider,
     val providerId: MemberProviderId,
 
-)
+) {
+
+    fun editMember (dto: EditMemberRequest) {
+        this.picture = MemberPicture(dto.picture)
+        this.name = MemberName(dto.name)
+        this.birth = MemberBirth(dto.birth)
+    }
+
+}
