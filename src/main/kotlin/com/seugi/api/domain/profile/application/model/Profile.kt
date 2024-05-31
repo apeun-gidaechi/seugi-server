@@ -19,6 +19,19 @@ data class Profile (
 
 ) {
 
+    constructor (member: Member, workspaceId: String) : this (
+        id = ProfileId(0),
+        memberId = member,
+        workspaceId = ProfileWorkspaceId(workspaceId),
+        status = ProfileStatus(""),
+        nick = ProfileNick(""),
+        spot = ProfileSpot(""),
+        belong = ProfileBelong(""),
+        phone = ProfilePhone(""),
+        wire = ProfileWire(""),
+        location = ProfileLocation("")
+    )
+
     fun editProfile(dto: EditProfileRequest) {
         this.status = ProfileStatus(dto.status)
         this.nick = ProfileNick(dto.nick)
