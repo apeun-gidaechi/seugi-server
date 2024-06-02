@@ -9,10 +9,10 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType.PERSONAL
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.mapper.RoomMapper
-import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
+import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
@@ -92,7 +92,7 @@ class ChatRoomServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getRoom(roomId: String, userId: Long): BaseResponse<Room> {
+    override fun getRoom(roomId: String, userId: Long): BaseResponse<RoomResponse> {
 
         //ObjectId는 24글자 고정이라 예외처리 로직 추가
         if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
@@ -102,21 +102,22 @@ class ChatRoomServiceImpl(
 
         if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
-        data.chatName
-
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "OK",
             success = true,
             message = "채팅방 단건 조회성공!",
-            data = chatRoomMapper.toDomain(data)
+            data = chatRoomMapper.toResponse(
+                room = chatRoomMapper.toDomain(data),
+                members = getUserInfo(data)
+            )
         )
 
     }
 
 
     @Transactional(readOnly = true)
-    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<Room>> {
+    override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =
             chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
@@ -144,7 +145,10 @@ class ChatRoomServiceImpl(
                     state = "C1",
                     message = "방 찾기 성공",
                     data = rooms.map {
-                        chatRoomMapper.toDomain(it)
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
                     }
                 )
             }
@@ -156,7 +160,10 @@ class ChatRoomServiceImpl(
                     state = "C1",
                     message = "방 찾기 성공",
                     data = chatRoomEntity.map {
-                        chatRoomMapper.toDomain(it)
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
                     }
                 )
             }
@@ -210,7 +217,7 @@ class ChatRoomServiceImpl(
         searchRoomRequest: SearchRoomRequest,
         type: RoomType,
         userId: Long
-    ): BaseResponse<List<Room>> {
+    ): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =
             chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
@@ -243,7 +250,10 @@ class ChatRoomServiceImpl(
                     success = true,
                     message = "방 찾기 성공",
                     data = entity.map {
-                        chatRoomMapper.toDomain(it)
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
                     }
                 )
             }
@@ -256,7 +266,10 @@ class ChatRoomServiceImpl(
                     success = true,
                     message = "방 찾기 성공",
                     data = chatRoomEntity.map {
-                        chatRoomMapper.toDomain(it)
+                        chatRoomMapper.toResponse(
+                            room = chatRoomMapper.toDomain(it),
+                            members = getUserInfo(it)
+                        )
                     }
                 )
             }
