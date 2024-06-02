@@ -6,7 +6,7 @@ import com.seugi.api.global.response.BaseResponse
 
 interface WorkspaceService {
 
-    fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<Unit>
+    fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<String>
     fun getWorkspace(userId: Long) : BaseResponse<List<WorkspaceResponse>>
     fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String>
     fun searchWorkspace(code: String): BaseResponse<WorkspaceResponse>

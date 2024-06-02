@@ -19,7 +19,7 @@ class WorkspaceController(
     fun createWorkspace(
         @GetAuthenticatedId userId: Long,
         @RequestBody createWorkspaceRequest: CreateWorkspaceRequest
-    ): BaseResponse<Unit> {
+    ): BaseResponse<String> {
         return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
     }
 
