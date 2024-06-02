@@ -1,6 +1,8 @@
 package com.seugi.api.domain.chat.presentation.websocket.config
 
-import org.springframework.amqp.core.*
+import org.springframework.amqp.core.BindingBuilder
+import org.springframework.amqp.core.Queue
+import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.annotation.EnableRabbit
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -33,14 +35,14 @@ class RabbitMQConfig(
     fun binding(queue: Queue, exchange: TopicExchange) = BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY)
 
     @Bean
-    fun rabbitTemplate() : RabbitTemplate {
+    fun rabbitTemplate(): RabbitTemplate {
         val rabbitTemplate = RabbitTemplate(connectionFactory())
         rabbitTemplate.messageConverter = jsonMessageConverter()
         return rabbitTemplate
     }
 
     @Bean
-    fun connectionFactory() : CachingConnectionFactory {
+    fun connectionFactory(): CachingConnectionFactory {
         val factory = CachingConnectionFactory()
         factory.setHost(rabbitmqHost)
         factory.username = username

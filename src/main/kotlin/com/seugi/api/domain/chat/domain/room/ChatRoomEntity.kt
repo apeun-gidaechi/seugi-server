@@ -1,34 +1,31 @@
 package com.seugi.api.domain.chat.domain.room
 
-import jakarta.persistence.*
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
+import jakarta.persistence.*
+import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
 
-@Entity
+@Document(collection = "chatRooms")
 class ChatRoomEntity(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_room_id")
-    val id: Long? = null,
+    val id: ObjectId? = null,
 
-    @Enumerated(EnumType.ORDINAL)
+    val workspaceID: String,
+
     val roomType: RoomType,
 
-    @Column(nullable = false)
+    var roomAdmin: Long,
+
     var chatName: String,
 
-    @Column(nullable = false)
-    var containUserCnt : Long,
+    var chatRoomImg: String = "",
 
-    @Column(nullable = false)
-    var chatRoomImg : String = "",
-
-    @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    val lastModified : LocalDateTime = LocalDateTime.now(),
+    var joinedUserId: Set<Long>,
 
     @Enumerated(EnumType.STRING)
     var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE

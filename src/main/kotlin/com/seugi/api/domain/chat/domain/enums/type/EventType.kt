@@ -1,5 +1,5 @@
 package com.seugi.api.domain.chat.domain.enums.type
 
-enum class RoomType {
-    PERSONAL, GROUP
+enum class EventType {
+    ADD, KICK, TOSS_ADMIN
 }

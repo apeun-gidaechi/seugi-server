@@ -3,7 +3,7 @@ package com.seugi.api.domain.chat.presentation.message.controller
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
-import com.seugi.api.domain.chat.presentation.joined.dto.response.GetMessageResponse
+import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.data.domain.Pageable
@@ -59,7 +59,7 @@ class MessageController(
         @GetAuthenticatedId userId: Long,
         @PathVariable roomId: Long,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
-    ) : BaseResponse<GetMessageResponse> {
+    ): BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
             userId = userId,
