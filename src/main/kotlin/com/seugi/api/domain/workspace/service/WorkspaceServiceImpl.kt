@@ -34,24 +34,23 @@ class WorkspaceServiceImpl(
      }
 
     @Transactional
-    override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<Unit> {
+    override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<String> {
         var workspaceCode: String
 
         do {
             workspaceCode = genCode()
         } while (workspaceRepository.existsByWorkspaceCode(workspaceCode))
 
-        workspaceRepository.save(
-            workspaceMapper.toEntity(
-                workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
-            )
-        )
-
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "W1",
             success = true,
-            message = "워크스페이스 생성 완료"
+            message = "워크스페이스 생성 완료",
+            data = workspaceRepository.save(
+                workspaceMapper.toEntity(
+                    workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
+                )
+            ).id.toString()
         )
     }
 

@@ -125,7 +125,7 @@ class ChatRoomServiceImpl(
                 chatStatus = ChatStatusEnum.ALIVE,
                 roomType = type,
                 joinedUserId = userId
-            ) ?: throw CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)
+            ).orEmpty()
 
         when (type) {
             PERSONAL -> {
