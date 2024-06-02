@@ -1,10 +1,10 @@
 package com.seugi.api.domain.member.application.service
 
+import com.seugi.api.domain.email.application.service.ConfirmCodeService
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
-import com.seugi.api.domain.email.application.service.ConfirmTokenService
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
@@ -16,21 +16,21 @@ import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
 @Service
-class RegisterMemberService (
+class RegisterMemberService(
     private val saveMemberPort: SaveMemberPort,
     private val existMemberPort: ExistMemberPort,
     private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-    private val confirmTokenService: ConfirmTokenService
-): RegisterMemberUseCase {
+    private val confirmCodeService: ConfirmCodeService
+) : RegisterMemberUseCase {
 
-    override fun registerMember(@RequestBody memberDTO: RegisterMemberRequest): BaseResponse<String> {
+    override fun registerMember(@RequestBody dto: RegisterMemberRequest): BaseResponse<String> {
         val member = Member(
             id = null,
-            name = MemberName(memberDTO.name),
-            email = MemberEmail(memberDTO.email),
+            name = MemberName(dto.name),
+            email = MemberEmail(dto.email),
             picture = MemberPicture(""),
             password = MemberPassword(
-                bCryptPasswordEncoder.encode(memberDTO.password)
+                bCryptPasswordEncoder.encode(dto.password)
             ),
             birth = MemberBirth(""),
             role = MemberRole("ROLE_USER"),
@@ -39,18 +39,18 @@ class RegisterMemberService (
             providerId = MemberProviderId(""),
         )
 
+        confirmCodeService.confirmCode(dto.email, dto.code)
+
         if (existMemberPort.existMemberWithEmail(member.email.value)) {
             throw CustomException(MemberErrorCode.MEMBER_ALREADY_EXIST)
-        } else {
-            confirmTokenService.confirmToken(memberDTO.token, memberDTO.email)
-
-            saveMemberPort.saveMember(member)
-
-            return BaseResponse (
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    message = "회원가입 성공 !!",
-                )
         }
+
+        saveMemberPort.saveMember(member)
+
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            success = true,
+            message = "회원가입 성공 !!",
+        )
     }
 }

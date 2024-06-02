@@ -31,7 +31,7 @@ class ChatMemberServiceImpl(
         return when (eventType) {
             EventType.ADD -> addUsers(userId, chatMemberEventRequest)
             EventType.KICK -> kickUsers(userId, chatMemberEventRequest)
-            EventType.TOSS_ADMIN -> transferAdmin(userId, chatMemberEventRequest)
+            EventType.TRANSFER_ADMIN -> transferAdmin(userId, chatMemberEventRequest)
         }
     }
 
@@ -78,9 +78,9 @@ class ChatMemberServiceImpl(
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
 
-        if (chatRoomEntity.roomAdmin == userId) {
-            chatRoomEntity.joinedUserId -= chatMemberEventRequest.chatMemberUsers
-        }
+        if (chatRoomEntity.roomAdmin != userId) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+
+        chatRoomEntity.joinedUserId -= chatMemberEventRequest.chatMemberUsers
 
         chatRoomRepository.save(chatRoomEntity)
 
@@ -113,7 +113,7 @@ class ChatMemberServiceImpl(
         chatRoomRepository.save(chatRoomEntity)
 
         sendMessage(
-            type = Type.TOSS_ADMIN,
+            type = Type.TRANSFER_ADMIN,
             roomId = chatMemberEventRequest.chatRoomId!!,
             eventList = chatMemberEventRequest.chatMemberUsers,
             userId = userId

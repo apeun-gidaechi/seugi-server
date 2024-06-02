@@ -4,13 +4,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import com.seugi.api.domain.email.port.`in`.CreateTokenUseCase
+import com.seugi.api.domain.email.port.`in`.CreateCodeUseCase
 import com.seugi.api.global.response.BaseResponse
 
 @RestController
 @RequestMapping("/email")
 class SendEmailController (
-    private val createTokenUseCase: CreateTokenUseCase
+    private val createTokenUseCase: CreateCodeUseCase
 ) {
 
     @GetMapping("/send")

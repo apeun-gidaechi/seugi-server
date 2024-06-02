@@ -2,8 +2,8 @@ package com.seugi.api.domain.email.port.`in`
 
 import com.seugi.api.global.response.BaseResponse
 
-interface RetrieveTokenUseCase {
+interface CreateCodeUseCase {
 
-    fun retrieveToken(code: String): BaseResponse<String>
+    fun createToken(email: String): BaseResponse<Unit>
 
 }

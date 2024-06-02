@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/chat/group/member")
 class ChatMemberController(
     private val chatMemberService: ChatMemberService
 ) {
@@ -53,7 +53,7 @@ class ChatMemberController(
         return chatMemberService.performCommonEventChangeTasks(
             userId = userId,
             chatMemberEventRequest = chatMemberEventRequest,
-            eventType = EventType.TOSS_ADMIN
+            eventType = EventType.TRANSFER_ADMIN
         )
     }
 
