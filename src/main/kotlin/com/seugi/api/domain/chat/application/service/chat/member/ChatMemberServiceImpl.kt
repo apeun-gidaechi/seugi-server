@@ -78,9 +78,9 @@ class ChatMemberServiceImpl(
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
 
 
-        if (chatRoomEntity.roomAdmin == userId) {
-            chatRoomEntity.joinedUserId -= chatMemberEventRequest.chatMemberUsers
-        }
+        if (chatRoomEntity.roomAdmin != userId) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+
+        chatRoomEntity.joinedUserId -= chatMemberEventRequest.chatMemberUsers
 
         chatRoomRepository.save(chatRoomEntity)
 
