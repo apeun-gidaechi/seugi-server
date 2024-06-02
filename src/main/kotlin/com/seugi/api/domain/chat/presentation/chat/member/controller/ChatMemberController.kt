@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-@RequestMapping("/chat/member")
+@RequestMapping("/chat/group/member")
 class ChatMemberController(
     private val chatMemberService: ChatMemberService
 ) {
