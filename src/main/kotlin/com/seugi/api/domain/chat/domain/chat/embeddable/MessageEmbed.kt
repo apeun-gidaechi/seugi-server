@@ -19,10 +19,6 @@ data class AddEmoji(
     val userId: MutableSet<Long> = mutableSetOf()
 )
 
-data class MessageUserId(
-    val userId: MutableSet<Long> = mutableSetOf()
-)
-
 data class DeleteMessage(
     val roomId: String? = null,
     val messageId: String? = null
