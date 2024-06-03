@@ -1,6 +1,5 @@
 package com.seugi.api.domain.chat.presentation.websocket.dto
 
-import com.seugi.api.domain.chat.domain.chat.embeddable.MessageUserId
 import com.seugi.api.domain.chat.domain.chat.model.Type
 
 data class ChatMessageDto(
@@ -9,6 +8,6 @@ data class ChatMessageDto(
     val message: String? = null,
     val eventList: Set<Long>? = null,
     val emoticon: String? = null,
-    val mention: List<MessageUserId>? = emptyList(),
+    val mention: Set<Long>? = null,
     val mentionAll: Boolean = false,
 )

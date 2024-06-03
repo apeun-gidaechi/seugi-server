@@ -115,7 +115,7 @@ class MessageServiceImpl(
         sendEventMessage(
             MessageEventDto(
                 type = Type.ADD_EMOJI,
-                eventList = listOf(userId),
+                userId = userId,
                 messageId = emoji.messageId,
                 emojiId = emoji.emojiId
             ),
@@ -142,7 +142,7 @@ class MessageServiceImpl(
         sendEventMessage(
             MessageEventDto(
                 type = Type.REMOVE_EMOJI,
-                eventList = listOf(userId),
+                userId = userId,
                 messageId = emoji.messageId,
                 emojiId = emoji.emojiId
             ),
@@ -162,7 +162,7 @@ class MessageServiceImpl(
         val id = ObjectId(deleteMessage.messageId)
         val message: MessageEntity = messageRepository.findById(id).get()
 
-        if (message.author != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
+        if (message.userId != userId) throw CustomException(ChatErrorCode.NO_ACCESS_MESSAGE)
 
         message.messageStatus = ChatStatusEnum.DELETE
         messageRepository.save(message)
@@ -170,7 +170,7 @@ class MessageServiceImpl(
         sendEventMessage(
             MessageEventDto(
                 type = Type.DELETE_MESSAGE,
-                eventList = listOf(userId),
+                userId = userId,
                 messageId = deleteMessage.messageId,
             ),
             deleteMessage.roomId!!
@@ -189,8 +189,8 @@ class MessageServiceImpl(
         if (roomId != "message") {
             sendEventMessage(
                 message = MessageEventDto(
-                    type = Type.SUB,
-                    eventList = listOf(userId)
+                    userId = userId,
+                    type = Type.SUB
                 ),
                 roomId = roomId
             )

@@ -1,7 +1,6 @@
 package com.seugi.api.domain.chat.domain.chat
 
 import com.seugi.api.domain.chat.domain.chat.embeddable.Emoji
-import com.seugi.api.domain.chat.domain.chat.embeddable.MessageUserId
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import jakarta.persistence.EnumType
@@ -23,7 +22,7 @@ class MessageEntity(
     @Enumerated(EnumType.ORDINAL)
     val type: Type,
 
-    val author: Long,
+    val userId: Long,
 
     val message: String = "",
 
@@ -33,7 +32,7 @@ class MessageEntity(
 
     val emojiList: List<Emoji> = MutableList(8) { Emoji(it + 1) },
 
-    val mention: List<MessageUserId> = emptyList(),
+    val mention: Set<Long> = emptySet(),
 
     val mentionALl: Boolean = false,
 
