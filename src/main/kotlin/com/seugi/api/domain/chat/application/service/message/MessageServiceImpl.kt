@@ -39,7 +39,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun sendEventMessage(message: MessageEventDto, roomId: Long) {
+    override fun sendEventMessage(message: MessageEventDto, roomId: String) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${roomId}", message
         )
@@ -192,7 +192,7 @@ class MessageServiceImpl(
                     type = Type.SUB,
                     eventList = listOf(userId)
                 ),
-                roomId = roomId.toLong()
+                roomId = roomId
             )
             roomInfoRepository.save(
                 RoomInfoEntity(
