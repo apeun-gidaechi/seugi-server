@@ -1,7 +1,7 @@
 package com.seugi.api.domain.member.application.service
 
+import com.seugi.api.domain.member.adapter.`in`.dto.req.EditMemberRequest
 import com.seugi.api.domain.member.adapter.out.MemberAdapter
-import com.seugi.api.domain.member.application.model.value.MemberPicture
 import com.seugi.api.domain.member.application.port.`in`.EditMemberUseCase
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.http.HttpStatus
@@ -12,17 +12,17 @@ class EditMemberService (
     private val memberAdapter: MemberAdapter,
 ) : EditMemberUseCase {
 
-    override fun editPicture(url: String, id: Long): BaseResponse<Unit> {
+    override fun editMember(dto: EditMemberRequest, id: Long): BaseResponse<Unit> {
         val member = memberAdapter.loadMemberWithId(id)
 
-        member.picture = MemberPicture(url)
+        member.editMember(dto)
 
         memberAdapter.saveMember(member)
 
         return BaseResponse (
             status = HttpStatus.OK.value(),
             success = true,
-            message = "프로필 사진 변경 성공 !!"
+            message = "멤버 정보 변경 성공 !!"
         )
     }
 
