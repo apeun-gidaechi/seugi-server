@@ -25,4 +25,15 @@ class ProfileRepositoryCustomImpl (
         return Optional.ofNullable(result)
     }
 
+    override fun existByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Boolean {
+        val profileEntity = QProfileEntity.profileEntity
+
+        return jpaQueryFactory
+            .select(profileEntity)
+            .from(profileEntity)
+            .where(profileEntity.memberId.eq(memberId)
+                .and(profileEntity.workspaceId.eq(workspaceId)))
+            .fetchFirst() != null
+    }
+
 }

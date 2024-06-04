@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.service
 
+import com.seugi.api.domain.profile.application.service.CreateProfileService
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.enums.Status
@@ -21,7 +22,8 @@ import kotlin.random.Random
 class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
-    @Value("\${workspace.code.secret}") private val charset: String
+    @Value("\${workspace.code.secret}") private val charset: String,
+    private val createProfileService: CreateProfileService
 ): WorkspaceService {
 
      private fun genCode(length: Int = 6): String {
@@ -249,6 +251,8 @@ class WorkspaceServiceImpl(
         }
 
         workspaceRepository.save(workspaceEntity)
+
+        createProfileService.createProfile(userId, waitSetWorkspaceMemberRequest.workspaceId)
 
         return BaseResponse(
             status = HttpStatus.OK.value(),

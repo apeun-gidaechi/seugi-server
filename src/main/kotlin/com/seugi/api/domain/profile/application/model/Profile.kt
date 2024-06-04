@@ -6,16 +6,16 @@ import com.seugi.api.domain.profile.application.model.value.*
 
 data class Profile (
 
-    val id: ProfileId,
+    val id: ProfileId = ProfileId(0),
     var memberId: Member,
     var workspaceId : ProfileWorkspaceId,
-    var status: ProfileStatus, // 상태메시지
-    var nick: ProfileNick, // 닉네임
-    var spot: ProfileSpot, // 직위
-    var belong: ProfileBelong, // 소속
-    var phone: ProfilePhone, // 휴대전화번호
-    var wire: ProfileWire, // 유선전화번호
-    var location: ProfileLocation // 근무위치
+    var status: ProfileStatus = ProfileStatus(""), // 상태메시지
+    var nick: ProfileNick = ProfileNick(""), // 닉네임
+    var spot: ProfileSpot = ProfileSpot(""), // 직위
+    var belong: ProfileBelong = ProfileBelong(""), // 소속
+    var phone: ProfilePhone = ProfilePhone(""), // 휴대전화번호
+    var wire: ProfileWire = ProfileWire(""), // 유선전화번호
+    var location: ProfileLocation = ProfileLocation("") // 근무위치
 
 ) {
 
