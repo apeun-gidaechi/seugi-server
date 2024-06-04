@@ -18,7 +18,10 @@ class CreateProfileService (
         if (!existProfilePort.existProfile(memberId, workspaceId)) {
             val member = loadMemberPort.loadMemberWithId(memberId)
 
-            val profile = Profile(member, workspaceId)
+            val profile = Profile(
+                memberId = member,
+                workspaceId = ProfileWorkspaceId(workspaceId)
+            )
 
             saveProfilePort.saveProfile(profile)
         }
