@@ -2,6 +2,7 @@ package com.seugi.api.domain.profile.application.service
 
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.application.model.Profile
+import com.seugi.api.domain.profile.application.model.value.ProfileWorkspaceId
 import com.seugi.api.domain.profile.application.port.`in`.CreateProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.ExistProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
@@ -18,7 +19,10 @@ class CreateProfileService (
         if (!existProfilePort.existProfile(memberId, workspaceId)) {
             val member = loadMemberPort.loadMemberWithId(memberId)
 
-            val profile = Profile(member, workspaceId)
+            val profile = Profile(
+                memberId = member,
+                workspaceId = ProfileWorkspaceId(workspaceId)
+            )
 
             saveProfilePort.saveProfile(profile)
         }
