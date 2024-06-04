@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable
 interface MessageService {
 
     fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long)
-    fun sendEventMessage(message: MessageEventDto, roomId: Long)
+    fun sendEventMessage(message: MessageEventDto, roomId: String)
     fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message
     fun getMessages(chatRoomId: Long, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse>
 
