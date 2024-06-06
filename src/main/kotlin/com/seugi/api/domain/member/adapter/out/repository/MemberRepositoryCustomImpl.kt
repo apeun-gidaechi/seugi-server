@@ -16,8 +16,10 @@ class MemberRepositoryCustomImpl (
         val result = jpaQueryFactory
             .select(memberEntity)
             .from(memberEntity)
-            .where(memberEntity.email.eq(email))
-            .fetchOne()
+            .where(
+                memberEntity.email.eq(email),
+                memberEntity.deleted.eq(false)
+            ).fetchOne()
 
         return result
     }
@@ -28,7 +30,9 @@ class MemberRepositoryCustomImpl (
         return jpaQueryFactory
             .selectOne()
             .from(memberEntity)
-            .where(memberEntity.email.eq(email))
-            .fetchOne() != null
+            .where(
+                memberEntity.email.eq(email),
+                memberEntity.deleted.eq(false)
+            ).fetchOne() != null
     }
 }
