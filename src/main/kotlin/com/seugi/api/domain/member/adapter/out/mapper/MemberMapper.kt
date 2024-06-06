@@ -22,6 +22,7 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             loginId = MemberLoginId(entity.loginId),
             provider = MemberProvider(entity.provider),
             providerId = MemberProviderId(entity.providerId),
+            deleted = MemberDeleted(entity.deleted)
         )
     }
 
@@ -36,6 +37,7 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             loginId = domain.loginId.value,
             provider = domain.provider.value,
             providerId = domain.providerId.value,
+            deleted = domain.deleted.value
         )
     }
 
