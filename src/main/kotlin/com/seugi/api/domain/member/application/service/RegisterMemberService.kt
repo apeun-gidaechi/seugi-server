@@ -37,6 +37,7 @@ class RegisterMemberService(
             loginId = MemberLoginId(""),
             provider = MemberProvider(""),
             providerId = MemberProviderId(""),
+            deleted = MemberDeleted(false)
         )
 
         confirmCodeService.confirmCode(dto.email, dto.code)
