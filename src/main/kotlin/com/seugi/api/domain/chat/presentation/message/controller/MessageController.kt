@@ -60,7 +60,6 @@ class MessageController(
         @PathVariable roomId: String,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
     ): BaseResponse<GetMessageResponse> {
-        println("++++++++++++++++++++++++++++")
         return messageService.getMessages(
             chatRoomId = roomId,
             userId = userId,
