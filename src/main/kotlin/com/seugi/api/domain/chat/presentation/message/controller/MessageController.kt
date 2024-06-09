@@ -57,7 +57,7 @@ class MessageController(
     @GetMapping("/search/{roomId}")
     fun getMessages(
         @GetAuthenticatedId userId: Long,
-        @PathVariable roomId: Long,
+        @PathVariable roomId: String,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
     ): BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
