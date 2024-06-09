@@ -69,10 +69,14 @@ class MessageServiceImpl(
     override fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
         val allMessages =
-            messageRepository.findByChatRoomIdEquals(ObjectId(chatRoomId), pageable).map { messageMapper.toDomain(it) }
+            messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
+
+        for (message in allMessages) {
+            println(message)
+        }
 
         val unreadMessages: List<MessageEntity> =
-            messageRepository.findByChatRoomIdEqualsAndReadNot(ObjectId(chatRoomId), setOf(userId))
+            messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))
 
         if (unreadMessages.isNotEmpty()) {
             unreadMessages.map { it.read.add(userId) }
