@@ -4,6 +4,7 @@ import com.seugi.api.domain.profile.application.model.Profile
 
 data class RetrieveProfileResponse (
 
+    val memberId: Long,
     val workspaceId: String, // 워크스페이스 ID
     val status: String = "", // 상태메시지
     val nick: String = "", // 닉네임
@@ -16,6 +17,7 @@ data class RetrieveProfileResponse (
 ) {
 
     constructor (profile: Profile) : this (
+        memberId = profile.memberId.id!!.value,
         workspaceId = profile.workspaceId.value,
         status = profile.status.value,
         nick = profile.nick.value,
