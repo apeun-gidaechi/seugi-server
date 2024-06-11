@@ -3,6 +3,7 @@ package com.seugi.api.domain.member.adapter.`in`.controller
 import com.seugi.api.domain.member.application.port.`in`.RemoveMemberUseCase
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -13,7 +14,7 @@ class RemoveMemberController(
     private val removeMemberUseCase: RemoveMemberUseCase
 ) {
 
-    @GetMapping("/remove")
+    @DeleteMapping("/remove")
     fun removeMember(@GetAuthenticatedId id: Long): BaseResponse<Unit> {
         return removeMemberUseCase.removeMember(id)
     }
