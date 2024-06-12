@@ -24,20 +24,7 @@ class RegisterMemberService(
 ) : RegisterMemberUseCase {
 
     override fun registerMember(@RequestBody dto: RegisterMemberRequest): BaseResponse<String> {
-        val member = Member(
-            id = null,
-            name = MemberName(dto.name),
-            email = MemberEmail(dto.email),
-            picture = MemberPicture(""),
-            password = MemberPassword(
-                bCryptPasswordEncoder.encode(dto.password)
-            ),
-            birth = MemberBirth(""),
-            role = MemberRole("ROLE_USER"),
-            loginId = MemberLoginId(""),
-            provider = MemberProvider(""),
-            providerId = MemberProviderId(""),
-        )
+        val member = Member(dto, bCryptPasswordEncoder.encode(dto.password))
 
         confirmCodeService.confirmCode(dto.email, dto.code)
 

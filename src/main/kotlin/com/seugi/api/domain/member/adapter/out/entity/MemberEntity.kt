@@ -37,4 +37,6 @@ data class MemberEntity (
 
     var providerId: String = "",
 
+    var deleted: Boolean = false,
+
 )
