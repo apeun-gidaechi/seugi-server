@@ -50,10 +50,10 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
             userId = author,
-            message = chatMessageDto.message!!,
+            message = chatMessageDto.message ?: "",
             eventList = chatMessageDto.eventList,
             emoticon = chatMessageDto.emoticon,
-            mention = chatMessageDto.mention!!,
+            mention = chatMessageDto.mention ?: emptySet(),
             mentionAll = chatMessageDto.mentionAll
         )
     }
