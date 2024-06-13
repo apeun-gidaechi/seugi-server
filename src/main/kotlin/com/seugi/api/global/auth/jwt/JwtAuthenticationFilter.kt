@@ -7,7 +7,6 @@ import com.seugi.api.global.response.BaseResponse
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -27,17 +26,7 @@ class JwtAuthenticationFilter(
             token = jwtUtils.getToken(token)
 
             when (jwtUtils.isExpired(token)) {
-                JwtErrorType.OK -> {
-                    try {
-                        val authentication: Authentication = jwtUtils.getAuthentication(token)
-
-                        SecurityContextHolder.getContext().authentication = authentication
-                    } catch (e: Exception) {
-                        setErrorResponse(response, JwtErrorCode.JWT_NULL_EXCEPTION)
-                        return
-                    }
-                }
-
+                JwtErrorType.OK -> SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
                 JwtErrorType.ExpiredJwtException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_EXPIRED)
                 JwtErrorType.SignatureException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_SIGNATURE_ERROR)
                 JwtErrorType.MalformedJwtException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_ERROR)
