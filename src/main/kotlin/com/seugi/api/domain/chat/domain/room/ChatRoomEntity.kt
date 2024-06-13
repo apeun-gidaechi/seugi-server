@@ -25,7 +25,7 @@ class ChatRoomEntity(
 
     var chatRoomImg: String = "",
 
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val createdAt: LocalDateTime,
 
     var joinedUserId: Set<Long>,
 

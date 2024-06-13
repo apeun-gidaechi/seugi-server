@@ -120,8 +120,8 @@ class ChatRoomServiceImpl(
     override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =
-            chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
-                workspaceID = workspaceId,
+            chatRoomRepository.findByWorkspaceIdEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+                workspaceId = workspaceId,
                 chatStatus = ChatStatusEnum.ALIVE,
                 roomType = type,
                 joinedUserId = userId
@@ -220,8 +220,8 @@ class ChatRoomServiceImpl(
     ): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =
-            chatRoomRepository.findByWorkspaceIDEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
-                workspaceID = searchRoomRequest.workspaceId,
+            chatRoomRepository.findByWorkspaceIdEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+                workspaceId = searchRoomRequest.workspaceId,
                 chatStatus = ChatStatusEnum.ALIVE,
                 roomType = type,
                 joinedUserId = userId

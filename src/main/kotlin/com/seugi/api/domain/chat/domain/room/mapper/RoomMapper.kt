@@ -9,6 +9,7 @@ import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomRespons
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class RoomMapper : Mapper<Room, ChatRoomEntity> {
@@ -20,7 +21,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = entity.roomAdmin,
             chatName = entity.chatName,
             chatRoomImg = entity.chatRoomImg,
-            createdAt = entity.createdAt.toString(),
+            createdAt = entity.createdAt,
             joinUserId = entity.joinedUserId,
             chatStatusEnum = entity.chatStatus
         )
@@ -32,6 +33,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             chatName = domain.chatName,
             roomAdmin = domain.roomAdmin,
             roomType = domain.type,
+            createdAt = domain.createdAt,
             joinedUserId = domain.joinUserId
         )
     }
@@ -44,6 +46,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             type = type,
             roomAdmin = if (type == GROUP) userId else -1,
             chatRoomImg = createRoomRequest.chatRoomImg,
+            createdAt = LocalDateTime.now(),
             joinUserId = createRoomRequest.joinUsers
         )
     }
