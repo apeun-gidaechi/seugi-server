@@ -6,7 +6,7 @@ import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 
 data class RoomResponse(
     val id: String,
-    val workspaceID: String,
+    val workspaceId: String,
     val type: RoomType,
     val roomAdmin: Long,
     val chatName: String,

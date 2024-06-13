@@ -5,7 +5,7 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType
 
 data class Room(
     val id: String? = null,
-    val workspaceID: String,
+    val workspaceId: String,
     val type: RoomType,
     val roomAdmin: Long,
     val chatName: String,

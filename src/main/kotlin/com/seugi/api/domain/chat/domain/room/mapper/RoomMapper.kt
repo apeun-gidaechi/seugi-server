@@ -15,7 +15,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
     override fun toDomain(entity: ChatRoomEntity): Room {
         return Room(
             id = entity.id!!.toString(),
-            workspaceID = entity.workspaceID,
+            workspaceId = entity.workspaceId,
             type = entity.roomType,
             roomAdmin = entity.roomAdmin,
             chatName = entity.chatName,
@@ -28,7 +28,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
 
     override fun toEntity(domain: Room): ChatRoomEntity {
         return ChatRoomEntity(
-            workspaceID = domain.workspaceID,
+            workspaceId = domain.workspaceId,
             chatName = domain.chatName,
             roomAdmin = domain.roomAdmin,
             roomType = domain.type,
@@ -39,7 +39,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
     fun toRoom(createRoomRequest: CreateRoomRequest, type: RoomType, userId: Long): Room {
         createRoomRequest.joinUsers.add(userId)
         return Room(
-            workspaceID = createRoomRequest.workspaceId,
+            workspaceId = createRoomRequest.workspaceId,
             chatName = createRoomRequest.roomName,
             type = type,
             roomAdmin = if (type == GROUP) userId else -1,
@@ -51,7 +51,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
     fun toResponse(room: Room, members: Set<RetrieveMemberResponse>): RoomResponse {
         return RoomResponse(
             id = room.id!!,
-            workspaceID = room.workspaceID,
+            workspaceId = room.workspaceId,
             roomAdmin = room.roomAdmin,
             chatName = room.chatName,
             chatRoomImg = room.chatRoomImg,
