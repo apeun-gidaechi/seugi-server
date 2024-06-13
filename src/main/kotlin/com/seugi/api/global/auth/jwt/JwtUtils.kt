@@ -1,14 +1,17 @@
 package com.seugi.api.global.auth.jwt
 
+import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.global.auth.jwt.exception.type.JwtErrorType
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
-import com.seugi.api.domain.member.application.model.Member
 import java.nio.charset.StandardCharsets
+import java.security.SignatureException
 import java.util.*
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
@@ -28,12 +31,16 @@ class JwtUtils (
         )
     }
 
-    fun isExpired(token: String): Boolean {
+    fun isExpired(token: String): JwtErrorType {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
-            return false
+            return JwtErrorType.OK
         } catch (e: ExpiredJwtException) {
-            return true
+            return JwtErrorType.ExpiredJwtException
+        } catch (e: SignatureException) {
+            return JwtErrorType.SignatureException
+        } catch (e: MalformedJwtException) {
+            return JwtErrorType.MalformedJwtException
         }
     }
 
