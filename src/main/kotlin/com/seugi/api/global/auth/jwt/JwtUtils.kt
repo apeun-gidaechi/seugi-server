@@ -17,12 +17,15 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 @Component
-class JwtUtils (
+class JwtUtils(
     private val jwtProperties: JwtProperties,
-    private val userDetailsService: UserDetailsService,
+    private val userDetailsService: UserDetailsService
 ) {
 
-    private val secretKey: SecretKey = SecretKeySpec(this.jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().algorithm)
+    private val secretKey: SecretKey = SecretKeySpec(
+        this.jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8),
+        Jwts.SIG.HS256.key().build().algorithm
+    )
 
     fun getUsername(token: String): String {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).payload.get(
@@ -49,25 +52,15 @@ class JwtUtils (
     }
 
     fun generate(member: Member): JwtInfo {
-        val now: Long = Date().time
+        val accessToken = createToken(
+            member = member,
+            tokenExpired = jwtProperties.accessExpired
+        )
+        val refreshToken = createToken(
+            member = member,
+            tokenExpired = jwtProperties.refreshExpired
+        )
 
-        val accessToken = Jwts.builder()
-            .claim("id", member.id?.value)
-            .claim("email", member.email.value)
-            .claim("role", member.role.value)
-            .issuedAt(Date(now))
-            .expiration(Date(now + jwtProperties.accessExpired))
-            .signWith(secretKey)
-            .compact()
-
-        val refreshToken = Jwts.builder()
-            .claim("id", member.id?.value)
-            .claim("email", member.email.value)
-            .claim("role", member.role.value)
-            .issuedAt(Date(now))
-            .expiration(Date(now + jwtProperties.refreshExpired))
-            .signWith(secretKey)
-            .compact()
 
         return JwtInfo("Bearer $accessToken", "Bearer $refreshToken")
     }
@@ -79,18 +72,23 @@ class JwtUtils (
     }
 
     fun refreshToken(member: Member): String {
-        val now: Long = Date().time
 
-        val accessToken = Jwts.builder()
+        return "Bearer " + createToken(
+            member = member,
+            tokenExpired = jwtProperties.accessExpired
+        )
+    }
+
+    private fun createToken(member: Member, tokenExpired: Long): String {
+        val now: Long = Date().time
+        return Jwts.builder()
             .claim("id", member.id?.value)
             .claim("email", member.email.value)
             .claim("role", member.role.value)
             .issuedAt(Date(now))
-            .expiration(Date(now + jwtProperties.refreshExpired))
+            .expiration(Date(now + tokenExpired))
             .signWith(secretKey)
             .compact()
-
-        return "Bearer $accessToken"
     }
 
 }
