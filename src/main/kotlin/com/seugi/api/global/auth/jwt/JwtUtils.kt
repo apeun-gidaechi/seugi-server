@@ -5,6 +5,7 @@ import com.seugi.api.global.auth.jwt.exception.type.JwtErrorType
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.UnsupportedJwtException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
@@ -34,7 +35,7 @@ class JwtUtils(
         )
     }
 
-    fun isExpired(token: String): JwtErrorType {
+    fun checkTokenInfo(token: String): JwtErrorType {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
             return JwtErrorType.OK
@@ -44,6 +45,12 @@ class JwtUtils(
             return JwtErrorType.SignatureException
         } catch (e: MalformedJwtException) {
             return JwtErrorType.MalformedJwtException
+        } catch (e: UnsupportedJwtException) {
+            return JwtErrorType.UnsupportedJwtException
+        } catch (e: IllegalArgumentException) {
+            return JwtErrorType.IllegalArgumentException
+        } catch (e: Exception) {
+            return JwtErrorType.UNKNOWN_EXCEPTION
         }
     }
 

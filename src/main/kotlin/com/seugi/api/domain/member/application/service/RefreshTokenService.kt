@@ -19,7 +19,7 @@ class RefreshTokenService (
     override fun refreshToken(token: String): BaseResponse<String> {
         val got = jwtUtils.getToken(token)
 
-        if (jwtUtils.isExpired(got) == JwtErrorType.ExpiredJwtException) {
+        if (jwtUtils.checkTokenInfo(got) == JwtErrorType.ExpiredJwtException) {
             throw CustomException(JwtErrorCode.JWT_TOKEN_EXPIRED)
         }
 
