@@ -15,7 +15,7 @@ class WorkspaceController(
     private val workspaceService: WorkspaceService
 ) {
 
-    @PostMapping("/")
+    @PostMapping(path = ["", "/"])
     fun createWorkspace(
         @GetAuthenticatedId userId: Long,
         @RequestBody createWorkspaceRequest: CreateWorkspaceRequest
@@ -31,7 +31,7 @@ class WorkspaceController(
         return workspaceService.deleteWorkspace(userId = userId, workspaceId = workspaceId)
     }
 
-    @GetMapping("/")
+    @GetMapping(path = ["", "/"])
     fun getWorkspace(
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<WorkspaceResponse>> {
@@ -83,7 +83,7 @@ class WorkspaceController(
         )
     }
 
-    @PatchMapping("/")
+    @PatchMapping(path = ["", "/"])
     fun updateWorkspace(
         @GetAuthenticatedId userId: Long,
         @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest

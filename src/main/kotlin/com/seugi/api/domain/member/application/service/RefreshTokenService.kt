@@ -4,9 +4,9 @@ import com.seugi.api.domain.member.application.port.`in`.RefreshTokenUseCase
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
+import com.seugi.api.global.auth.jwt.exception.type.JwtErrorType
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
@@ -19,7 +19,7 @@ class RefreshTokenService (
     override fun refreshToken(token: String): BaseResponse<String> {
         val got = jwtUtils.getToken(token)
 
-        if (jwtUtils.isExpired(got)) {
+        if (jwtUtils.isExpired(got) == JwtErrorType.ExpiredJwtException) {
             throw CustomException(JwtErrorCode.JWT_TOKEN_EXPIRED)
         }
 
