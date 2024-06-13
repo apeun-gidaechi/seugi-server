@@ -9,18 +9,19 @@ import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomRespons
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class RoomMapper : Mapper<Room, ChatRoomEntity> {
     override fun toDomain(entity: ChatRoomEntity): Room {
         return Room(
             id = entity.id!!.toString(),
-            workspaceID = entity.workspaceID,
+            workspaceId = entity.workspaceId,
             type = entity.roomType,
             roomAdmin = entity.roomAdmin,
             chatName = entity.chatName,
             chatRoomImg = entity.chatRoomImg,
-            createdAt = entity.createdAt.toString(),
+            createdAt = entity.createdAt,
             joinUserId = entity.joinedUserId,
             chatStatusEnum = entity.chatStatus
         )
@@ -28,10 +29,11 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
 
     override fun toEntity(domain: Room): ChatRoomEntity {
         return ChatRoomEntity(
-            workspaceID = domain.workspaceID,
+            workspaceId = domain.workspaceId,
             chatName = domain.chatName,
             roomAdmin = domain.roomAdmin,
             roomType = domain.type,
+            createdAt = domain.createdAt,
             joinedUserId = domain.joinUserId
         )
     }
@@ -39,11 +41,12 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
     fun toRoom(createRoomRequest: CreateRoomRequest, type: RoomType, userId: Long): Room {
         createRoomRequest.joinUsers.add(userId)
         return Room(
-            workspaceID = createRoomRequest.workspaceId,
+            workspaceId = createRoomRequest.workspaceId,
             chatName = createRoomRequest.roomName,
             type = type,
             roomAdmin = if (type == GROUP) userId else -1,
             chatRoomImg = createRoomRequest.chatRoomImg,
+            createdAt = LocalDateTime.now(),
             joinUserId = createRoomRequest.joinUsers
         )
     }
@@ -51,7 +54,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
     fun toResponse(room: Room, members: Set<RetrieveMemberResponse>): RoomResponse {
         return RoomResponse(
             id = room.id!!,
-            workspaceID = room.workspaceID,
+            workspaceId = room.workspaceId,
             roomAdmin = room.roomAdmin,
             chatName = room.chatName,
             chatRoomImg = room.chatRoomImg,
