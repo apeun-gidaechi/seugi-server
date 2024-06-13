@@ -5,4 +5,7 @@ enum class JwtErrorType {
     ExpiredJwtException,
     SignatureException,
     MalformedJwtException,
+    UnsupportedJwtException,
+    IllegalArgumentException,
+    UNKNOWN_EXCEPTION
 }

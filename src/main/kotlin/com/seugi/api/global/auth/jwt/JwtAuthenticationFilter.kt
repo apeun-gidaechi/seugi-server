@@ -20,20 +20,43 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        var token: String? = request.getHeader("Authorization")
+        val token: String? = request.getHeader("Authorization")
+        val path: String = request.servletPath
 
-        if (token != null && token.startsWith("Bearer ")) {
-            token = jwtUtils.getToken(token)
+        if (path.startsWith("/member/") ||
+            path.startsWith("/oauth2/") ||
+            path.startsWith("/email/") ||
+            path.startsWith("/stomp/")
+        ) {
+            filterChain.doFilter(request, response)
+            return
+        }
 
-            when (jwtUtils.isExpired(token)) {
-                JwtErrorType.OK -> SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
+        if (token.isNullOrEmpty() || !token.startsWith("Bearer ")) {
+            setErrorResponse(response, JwtErrorCode.JWT_EMPTY_EXCEPTION)
+        } else {
+            when (jwtUtils.checkTokenInfo(jwtUtils.getToken(token))) {
+                JwtErrorType.OK -> {
+                    SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
+                    doFilter(request, response, filterChain)
+                }
+
                 JwtErrorType.ExpiredJwtException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_EXPIRED)
                 JwtErrorType.SignatureException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_SIGNATURE_ERROR)
                 JwtErrorType.MalformedJwtException -> setErrorResponse(response, JwtErrorCode.JWT_TOKEN_ERROR)
+                JwtErrorType.UnsupportedJwtException -> setErrorResponse(
+                    response,
+                    JwtErrorCode.JWT_TOKEN_UNSUPPORTED_ERROR
+                )
+
+                JwtErrorType.IllegalArgumentException -> setErrorResponse(
+                    response,
+                    JwtErrorCode.JWT_TOKEN_ILL_EXCEPTION
+                )
+
+                JwtErrorType.UNKNOWN_EXCEPTION -> setErrorResponse(response, JwtErrorCode.JWT_UNKNOWN_EXCEPTION)
             }
         }
-
-        doFilter(request, response, filterChain)
     }
 
     private fun setErrorResponse(
@@ -53,6 +76,5 @@ class JwtAuthenticationFilter(
                 )
             )
         )
-
     }
 }
