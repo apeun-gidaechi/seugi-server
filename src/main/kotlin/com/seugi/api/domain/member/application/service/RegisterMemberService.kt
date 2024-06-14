@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.application.model.value.*
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
 import com.seugi.api.domain.member.application.port.out.ExistMemberPort
