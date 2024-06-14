@@ -1,6 +1,7 @@
 package com.seugi.api.domain.workspace.service
 
 import com.seugi.api.domain.workspace.presentation.dto.request.*
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberListResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.response.BaseResponse
 
@@ -16,5 +17,6 @@ interface WorkspaceService {
     fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit>
     fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit>
     fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceResponse>>
+    fun getWorkspaceMemberList(workspaceId: String): BaseResponse<WorkspaceMemberListResponse>
 
 }
