@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.service
 
+import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.service.CreateProfileService
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
@@ -286,22 +287,28 @@ class WorkspaceServiceImpl(
         val response = WorkspaceMemberListResponse()
 
         workspaceEntity.student.forEach {
-            val profile = loadProfilePort.loadProfile(it, workspaceId)
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
 
-            val belong: String = profile.belong.value
+            val belong: String = profile.belong
 
             if (belong.isNotEmpty()) {
-                response.students[belong]?.plus(profile) ?: listOf(profile)
+                val existingList = response.students[belong] ?: listOf()
+                response.students[belong] = existingList + profile
             }
         }
 
         workspaceEntity.teacher.forEach {
-            val profile = loadProfilePort.loadProfile(it, workspaceId)
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
 
-            val belong: String = profile.belong.value
+            val belong: String = profile.belong
 
             if (belong.isNotEmpty()) {
-                response.teachers[belong]?.plus(profile) ?: listOf(profile)
+                val existingList = response.teachers[belong] ?: listOf()
+                response.teachers[belong] = existingList + profile
             }
         }
 
