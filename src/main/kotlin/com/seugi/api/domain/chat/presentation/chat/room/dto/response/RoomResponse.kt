@@ -13,5 +13,7 @@ data class RoomResponse(
     val chatRoomImg: String,
     val createdAt: String,
     val chatStatusEnum: ChatStatusEnum,
-    val joinUserId: Set<RetrieveMemberResponse>
+    val joinUserId: Set<RetrieveMemberResponse>,
+    val lastMessage: String,
+    val lastMessageTimestamp: String
 )

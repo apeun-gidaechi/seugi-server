@@ -51,7 +51,12 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
         )
     }
 
-    fun toResponse(room: Room, members: Set<RetrieveMemberResponse>): RoomResponse {
+    fun toResponse(
+        room: Room,
+        members: Set<RetrieveMemberResponse>,
+        lastMessage: String,
+        lastMessageTimeStamp: String
+    ): RoomResponse {
         return RoomResponse(
             id = room.id!!,
             workspaceId = room.workspaceId,
@@ -61,7 +66,9 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             createdAt = room.createdAt.toString(),
             chatStatusEnum = room.chatStatusEnum!!,
             type = room.type,
-            joinUserId = members
+            joinUserId = members,
+            lastMessage = lastMessage,
+            lastMessageTimestamp = lastMessageTimeStamp
         )
     }
 }

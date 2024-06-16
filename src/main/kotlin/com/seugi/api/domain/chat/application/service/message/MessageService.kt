@@ -1,5 +1,6 @@
 package com.seugi.api.domain.chat.application.service.message
 
+import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.domain.chat.model.Message
@@ -14,6 +15,7 @@ interface MessageService {
     fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long)
     fun sendEventMessage(message: MessageEventDto, roomId: String)
     fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message
+    fun getMessage(roomId: String): MessageEntity?
     fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse>
 
     fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
