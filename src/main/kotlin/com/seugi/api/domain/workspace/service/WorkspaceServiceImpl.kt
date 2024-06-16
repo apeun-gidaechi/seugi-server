@@ -14,7 +14,6 @@ import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceRespons
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
-import org.hibernate.metamodel.model.domain.internal.SetAttributeImpl
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
