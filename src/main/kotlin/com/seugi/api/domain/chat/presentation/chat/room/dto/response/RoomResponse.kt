@@ -15,5 +15,6 @@ data class RoomResponse(
     val chatStatusEnum: ChatStatusEnum,
     val joinUserId: Set<RetrieveMemberResponse>,
     val lastMessage: String,
-    val lastMessageTimestamp: String
+    val lastMessageTimestamp: String,
+    val notReadCnt: Int
 )

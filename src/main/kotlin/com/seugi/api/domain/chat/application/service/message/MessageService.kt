@@ -17,6 +17,7 @@ interface MessageService {
     fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message
     fun getMessage(roomId: String): MessageEntity?
     fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse>
+    fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int
 
     fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
     fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>

@@ -115,6 +115,10 @@ class MessageServiceImpl(
         }
     }
 
+    override fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int {
+        return messageRepository.findByChatRoomIdAndRead(chatRoomId, setOf(userId)).count()
+    }
+
     @Transactional
     override fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit> {
         val id = ObjectId(emoji.messageId)
