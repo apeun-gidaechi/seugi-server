@@ -68,6 +68,12 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun getMessage(roomId: String): MessageEntity? {
+        return messageRepository.findByChatRoomId(roomId).lastOrNull()
+    }
+
+
+    @Transactional(readOnly = true)
     override fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
 
         val allMessages =

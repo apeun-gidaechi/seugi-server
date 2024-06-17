@@ -31,6 +31,24 @@ class ChatRoomServiceImpl(
     private val messageService: MessageService
 ) : ChatRoomService {
 
+    private fun toResponse(chatRoomEntities: List<ChatRoomEntity>): BaseResponse<List<RoomResponse>> {
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            success = true,
+            state = "OK",
+            message = "방 찾기 성공",
+            data = chatRoomEntities.map {
+                val lastMessageEntity = messageService.getMessage(it.id.toString())
+                chatRoomMapper.toResponse(
+                    room = chatRoomMapper.toDomain(it),
+                    members = getUserInfo(it),
+                    lastMessage = lastMessageEntity?.message ?: "",
+                    lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString()
+                )
+            }
+        )
+    }
+
     //채팅방 반환시 유저 모델 전달용 함수
     private fun getUserInfo(chatRoomEntity: ChatRoomEntity): Set<RetrieveMemberResponse> {
         return chatRoomEntity.joinedUserId.map { RetrieveMemberResponse(loadMemberPort.loadMemberWithId(it)) }
@@ -102,6 +120,8 @@ class ChatRoomServiceImpl(
 
         if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
+        val lastMessageEntity = messageService.getMessage(roomId)
+
         return BaseResponse(
             status = HttpStatus.OK.value(),
             state = "OK",
@@ -109,7 +129,9 @@ class ChatRoomServiceImpl(
             message = "채팅방 단건 조회성공!",
             data = chatRoomMapper.toResponse(
                 room = chatRoomMapper.toDomain(data),
-                members = getUserInfo(data)
+                members = getUserInfo(data),
+                lastMessage = lastMessageEntity?.message ?: "",
+                lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString()
             )
         )
 
@@ -139,34 +161,11 @@ class ChatRoomServiceImpl(
                         chatRoomImg = member.picture.value
                     }
                 }
-                return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "C1",
-                    message = "방 찾기 성공",
-                    data = rooms.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
-                    }
-                )
+
+                return toResponse(rooms)
             }
 
-            GROUP -> {
-                return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "C1",
-                    message = "방 찾기 성공",
-                    data = chatRoomEntity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
-                    }
-                )
-            }
+            GROUP -> return toResponse(chatRoomEntity)
         }
     }
 
@@ -244,35 +243,10 @@ class ChatRoomServiceImpl(
                     }
                 }
 
-                return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
-                    message = "방 찾기 성공",
-                    data = entity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
-                    }
-                )
+                return toResponse(entity)
             }
 
-            GROUP -> {
-
-                return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
-                    message = "방 찾기 성공",
-                    data = chatRoomEntity.map {
-                        chatRoomMapper.toResponse(
-                            room = chatRoomMapper.toDomain(it),
-                            members = getUserInfo(it)
-                        )
-                    }
-                )
-            }
+            GROUP -> return toResponse(chatRoomEntity)
 
         }
 
