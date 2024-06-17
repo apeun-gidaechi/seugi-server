@@ -55,7 +55,7 @@ class JwtUtils(
     }
 
     fun getToken(token: String): String {
-        return token.substring(7)
+        return token.removePrefix("Bearer ")
     }
 
     fun generate(member: Member): JwtInfo {
@@ -73,7 +73,7 @@ class JwtUtils(
     }
 
     fun getAuthentication(token: String): Authentication {
-        val userDetails: UserDetails = userDetailsService.loadUserByUsername(getUsername(token))
+        val userDetails: UserDetails = userDetailsService.loadUserByUsername(getUsername(getToken(token)))
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 

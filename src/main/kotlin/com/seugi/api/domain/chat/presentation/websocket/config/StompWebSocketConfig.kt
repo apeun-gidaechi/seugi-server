@@ -54,8 +54,7 @@ class StompWebSocketConfig(
                         val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
 
                         if (authToken != null && authToken.startsWith("Bearer ")) {
-                            val token = authToken.removePrefix("Bearer ")
-                            val auth = jwtUtils.getAuthentication(token)
+                            val auth = jwtUtils.getAuthentication(authToken)
 
                             val userDetails = auth.principal as? JwtUserDetails
 
