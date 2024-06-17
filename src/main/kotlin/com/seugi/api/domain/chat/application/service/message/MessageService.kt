@@ -24,6 +24,6 @@ interface MessageService {
     fun deleteMessage(userId: Long, deleteMessage: DeleteMessage): BaseResponse<Unit>
 
     fun sub(userId: Long, roomId: String)
-    fun unsub(userId: Long)
+    fun unSub(userId: Long)
 
 }

@@ -227,7 +227,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun unsub(userId: Long) {
+    override fun unSub(userId: Long) {
         roomInfoRepository.deleteById(userId)
     }
 
