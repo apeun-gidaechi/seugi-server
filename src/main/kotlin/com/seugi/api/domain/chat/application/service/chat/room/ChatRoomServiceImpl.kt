@@ -31,7 +31,7 @@ class ChatRoomServiceImpl(
     private val messageService: MessageService
 ) : ChatRoomService {
 
-    private fun toResponse(chatRoomEntities: List<ChatRoomEntity>): BaseResponse<List<RoomResponse>> {
+    private fun toResponse(chatRoomEntities: List<ChatRoomEntity>, userId: Long): BaseResponse<List<RoomResponse>> {
         return BaseResponse(
             status = HttpStatus.OK.value(),
             success = true,
@@ -43,7 +43,8 @@ class ChatRoomServiceImpl(
                     room = chatRoomMapper.toDomain(it),
                     members = getUserInfo(it),
                     lastMessage = lastMessageEntity?.message ?: "",
-                    lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString()
+                    lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString(),
+                    notReadCnt = messageService.getNotReadMessageCount(it.id.toString(), userId)
                 )
             }
         )
@@ -131,7 +132,8 @@ class ChatRoomServiceImpl(
                 room = chatRoomMapper.toDomain(data),
                 members = getUserInfo(data),
                 lastMessage = lastMessageEntity?.message ?: "",
-                lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString()
+                lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString(),
+                notReadCnt = messageService.getNotReadMessageCount(roomId, userId)
             )
         )
 
@@ -162,10 +164,10 @@ class ChatRoomServiceImpl(
                     }
                 }
 
-                return toResponse(rooms)
+                return toResponse(rooms, userId)
             }
 
-            GROUP -> return toResponse(chatRoomEntity)
+            GROUP -> return toResponse(chatRoomEntity, userId)
         }
     }
 
@@ -243,10 +245,10 @@ class ChatRoomServiceImpl(
                     }
                 }
 
-                return toResponse(entity)
+                return toResponse(entity, userId)
             }
 
-            GROUP -> return toResponse(chatRoomEntity)
+            GROUP -> return toResponse(chatRoomEntity, userId)
 
         }
 

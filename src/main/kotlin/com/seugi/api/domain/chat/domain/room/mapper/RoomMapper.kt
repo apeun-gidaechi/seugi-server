@@ -55,7 +55,8 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
         room: Room,
         members: Set<RetrieveMemberResponse>,
         lastMessage: String,
-        lastMessageTimeStamp: String
+        lastMessageTimeStamp: String,
+        notReadCnt: Int
     ): RoomResponse {
         return RoomResponse(
             id = room.id!!,
@@ -68,7 +69,8 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             type = room.type,
             joinUserId = members,
             lastMessage = lastMessage,
-            lastMessageTimestamp = lastMessageTimeStamp
+            lastMessageTimestamp = lastMessageTimeStamp,
+            notReadCnt = notReadCnt
         )
     }
 }
