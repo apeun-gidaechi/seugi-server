@@ -88,7 +88,7 @@ class StompWebSocketConfig(
                         if (accessor.destination != null) {
                             val simpAttributes = SimpAttributesContextHolder.currentAttributes()
                             val userId = simpAttributes.getAttribute("user-id") as String
-                            messageService.unsub(
+                            messageService.unSub(
                                 userId = userId.toLong()
                             )
                         }

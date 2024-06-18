@@ -116,7 +116,7 @@ class MessageServiceImpl(
     }
 
     override fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int {
-        return messageRepository.findByChatRoomIdAndRead(chatRoomId, setOf(userId)).count()
+        return messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId)).count()
     }
 
     @Transactional
@@ -227,7 +227,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun unsub(userId: Long) {
+    override fun unSub(userId: Long) {
         roomInfoRepository.deleteById(userId)
     }
 
