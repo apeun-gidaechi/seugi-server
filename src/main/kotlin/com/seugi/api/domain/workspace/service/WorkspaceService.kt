@@ -15,5 +15,6 @@ interface WorkspaceService {
     fun addWaitListToWorkspaceMember(userId: Long, waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest): BaseResponse<Unit>
     fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit>
     fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit>
+    fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceResponse>>
 
 }

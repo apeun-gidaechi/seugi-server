@@ -96,6 +96,17 @@ class WorkspaceServiceImpl(
 
     }
 
+    override fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceResponse>> {
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "OK",
+            success = true,
+            message = "자신이 대기중인 워크스페이스 모두 불러오기",
+            data = workspaceRepository.findWaitWorkspaceByStatusAndUserId(Status.ALIVE, userId)
+                .map { workspaceMapper.toWorkspaceResponse(it) }
+        )
+    }
+
     @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<WorkspaceResponse>> {
          return BaseResponse(
