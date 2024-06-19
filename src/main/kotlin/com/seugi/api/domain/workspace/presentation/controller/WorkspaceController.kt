@@ -65,18 +65,19 @@ class WorkspaceController(
     fun addWaitListToWorkspaceMember(
         @GetAuthenticatedId userId: Long,
         @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
-    ): BaseResponse<Unit>{
-        return workspaceService.addWaitListToWorkspaceMember(userId = userId, waitSetWorkspaceMemberRequest = waitSetWorkspaceMemberRequest)
+    ): BaseResponse<Unit> {
+        return workspaceService.addWaitListToWorkspaceMember(
+            userId = userId,
+            waitSetWorkspaceMemberRequest = waitSetWorkspaceMemberRequest
+        )
     }
 
     @GetMapping("/wait-list")
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
-        @RequestParam("workspace" , defaultValue = "") workspaceId: String,
+        @RequestParam("workspace", defaultValue = "") workspaceId: String,
         @RequestParam("role", defaultValue = "STUDENT") role: String
     ): BaseResponse<Set<Long>> {
-        println(workspaceId)
-        println(role)
         return workspaceService.getWaitList(
             userId = userId,
             getWaitListRequest = GetWaitListRequest(workspaceId = workspaceId, role = WorkspaceRole.valueOf(role))
@@ -89,6 +90,13 @@ class WorkspaceController(
         @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest
     ): BaseResponse<Unit> {
         return workspaceService.updateWorkspace(userId = userId, updateWorkspaceRequest = updateWorkspaceRequest)
+    }
+
+    @GetMapping("/my/wait-list")
+    fun getMyWaitList(
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<List<WorkspaceResponse>> {
+        return workspaceService.getMyWaitList(userId = userId)
     }
 
 }
