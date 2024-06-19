@@ -280,6 +280,8 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<WorkspaceMemberListResponse> {
+        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
