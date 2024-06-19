@@ -1,5 +1,7 @@
 package com.seugi.api.domain.workspace.service
 
+import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
+import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.service.CreateProfileService
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
@@ -8,6 +10,7 @@ import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.*
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberListResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -18,12 +21,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.random.Random
 
+
 @Service
 class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
-    private val createProfileService: CreateProfileService
+    private val createProfileService: CreateProfileService,
+    private val loadProfilePort: LoadProfilePort
 ): WorkspaceService {
 
      private fun genCode(length: Int = 6): String {
@@ -273,4 +278,47 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional(readOnly = true)
+    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<WorkspaceMemberListResponse> {
+        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
+            CustomException(WorkspaceErrorCode.NOT_FOUND)
+        }
+
+        val response = WorkspaceMemberListResponse()
+
+        workspaceEntity.student.forEach {
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
+
+            val belong: String = profile.belong
+
+            if (belong.isNotEmpty()) {
+                val existingList = response.students[belong] ?: listOf()
+                response.students[belong] = existingList + profile
+            }
+        }
+
+        workspaceEntity.teacher.forEach {
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
+
+            val belong: String = profile.belong
+
+            if (belong.isNotEmpty()) {
+                val existingList = response.teachers[belong] ?: listOf()
+                response.teachers[belong] = existingList + profile
+            }
+        }
+
+        return BaseResponse (
+            status = HttpStatus.OK.value(),
+            success = true,
+            message = "조직도를 불러왔습니다",
+            data = response
+        )
+    }
 }
