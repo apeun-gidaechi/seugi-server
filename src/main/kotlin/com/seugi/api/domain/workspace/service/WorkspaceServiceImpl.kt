@@ -10,7 +10,7 @@ import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.*
-import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberListResponse
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -279,14 +279,14 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<WorkspaceMemberListResponse> {
+    override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
 
-        val response = WorkspaceMemberListResponse()
+        val response = WorkspaceMemberChartResponse()
 
         workspaceEntity.student.forEach {
             val profile = RetrieveProfileResponse(
@@ -319,6 +319,39 @@ class WorkspaceServiceImpl(
             success = true,
             message = "조직도를 불러왔습니다",
             data = response
+        )
+    }
+
+    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<List<RetrieveProfileResponse>> {
+        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+
+        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
+            CustomException(WorkspaceErrorCode.NOT_FOUND)
+        }
+
+        val list = mutableListOf<RetrieveProfileResponse>()
+
+        workspaceEntity.student.forEach {
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
+
+            list.add(profile)
+        }
+
+        workspaceEntity.teacher.forEach {
+            val profile = RetrieveProfileResponse(
+                loadProfilePort.loadProfile(it, workspaceId)
+            )
+
+            list.add(profile)
+        }
+
+        return BaseResponse (
+            status = HttpStatus.OK.value(),
+            success = true,
+            message = "멤버 전체를 조회하였습니다",
+            data = list
         )
     }
 }
