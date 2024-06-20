@@ -1,12 +1,12 @@
 package com.seugi.api.domain.profile.adapter.`in`.response
 
+import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.application.model.Profile
 
 data class RetrieveProfileResponse (
 
-    val memberId: Long,
     val workspaceId: String, // 워크스페이스 ID
-    val picture: String,
+    val member: RetrieveMemberResponse,
     val status: String = "", // 상태메시지
     val nick: String = "", // 닉네임
     val spot: String = "", // 직위
@@ -18,9 +18,8 @@ data class RetrieveProfileResponse (
 ) {
 
     constructor (profile: Profile) : this (
-        memberId = profile.memberId.id!!.value,
         workspaceId = profile.workspaceId.value,
-        picture = profile.memberId.picture.value,
+        member = RetrieveMemberResponse(profile.memberId),
         status = profile.status.value,
         nick = profile.nick.value,
         spot = profile.spot.value,
