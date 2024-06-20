@@ -11,6 +11,8 @@ import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
 import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
+import com.seugi.api.global.auth.jwt.JwtInfo
+import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 
@@ -19,10 +21,11 @@ class RegisterMemberService(
     private val saveMemberPort: SaveMemberPort,
     private val existMemberPort: ExistMemberPort,
     private val bCryptPasswordEncoder: BCryptPasswordEncoder,
-    private val confirmCodeService: ConfirmCodeService
+    private val confirmCodeService: ConfirmCodeService,
+    private val jwtUtils: JwtUtils
 ) : RegisterMemberUseCase {
 
-    override fun registerMember(@RequestBody dto: RegisterMemberRequest): BaseResponse<String> {
+    override fun registerMember(@RequestBody dto: RegisterMemberRequest): BaseResponse<JwtInfo> {
         val member = Member(dto, bCryptPasswordEncoder.encode(dto.password))
 
         confirmCodeService.confirmCode(dto.email, dto.code)
@@ -37,6 +40,7 @@ class RegisterMemberService(
             status = HttpStatus.OK.value(),
             success = true,
             message = "회원가입 성공 !!",
+            data = jwtUtils.generate(member)
         )
     }
 }
