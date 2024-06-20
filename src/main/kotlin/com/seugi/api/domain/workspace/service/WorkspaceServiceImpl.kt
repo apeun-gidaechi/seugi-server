@@ -31,12 +31,19 @@ class WorkspaceServiceImpl(
     private val loadProfilePort: LoadProfilePort
 ): WorkspaceService {
 
-     private fun genCode(length: Int = 6): String {
-         return (1..length)
-             .map { Random.nextInt(0, charset.length) }
-             .map(charset::get)
-             .joinToString("")
-     }
+    private fun genCode(length: Int = 6): String {
+        return (1..length)
+            .map { Random.nextInt(0, charset.length) }
+            .map(charset::get)
+            .joinToString("")
+    }
+
+    fun findWorkspaceById(id: String): WorkspaceEntity {
+        if (id.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+        return workspaceRepository.findById(ObjectId(id)).orElseThrow {
+            CustomException(WorkspaceErrorCode.NOT_FOUND)
+        }
+    }
 
     @Transactional
     override fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<String> {
@@ -61,9 +68,8 @@ class WorkspaceServiceImpl(
 
     @Transactional
     override fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit> {
-        val workspaceObjectId = ObjectId(workspaceId)
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
-        if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
+        if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
         workspaceEntity.status = Status.DELETE
 
@@ -80,14 +86,15 @@ class WorkspaceServiceImpl(
     @Transactional
     override fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit> {
 
-        val workspaceObjectId = ObjectId(updateWorkspaceRequest.workspaceId)
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
-        if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(updateWorkspaceRequest.workspaceId)
+        if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
+            WorkspaceErrorCode.FORBIDDEN
+        )
 
-        if(updateWorkspaceRequest.workspaceName.isNotEmpty()){
+        if (updateWorkspaceRequest.workspaceName.isNotEmpty()) {
             workspaceEntity.workspaceName = updateWorkspaceRequest.workspaceName
         }
-        if(updateWorkspaceRequest.workspaceImgUrl.isNotEmpty()){
+        if (updateWorkspaceRequest.workspaceImgUrl.isNotEmpty()) {
             workspaceEntity.workspaceImageUrl = updateWorkspaceRequest.workspaceImgUrl
         }
         workspaceRepository.save(workspaceEntity)
@@ -114,23 +121,26 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<WorkspaceResponse>> {
-         return BaseResponse(
-             status = HttpStatus.OK.value(),
-             state = "W1",
-             success = true,
-             message = "자신이 속한 워크스페이스 전체 불러오기 성공",
-             data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
-                 .map { workspaceMapper.toWorkspaceResponse(it) }
-         )
+        return BaseResponse(
+            status = HttpStatus.OK.value(),
+            state = "W1",
+            success = true,
+            message = "자신이 속한 워크스페이스 전체 불러오기 성공",
+            data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
+                .map { workspaceMapper.toWorkspaceResponse(it) }
+        )
 
-     }
+    }
 
     @Transactional(readOnly = true)
     override fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String> {
-        val workspaceObjectId = ObjectId(workspaceId)
-        val workspaceEntity = workspaceRepository.findById(workspaceObjectId).orElseThrow { CustomException(WorkspaceErrorCode.NOT_FOUND) }
 
-        if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId) && !workspaceEntity.teacher.contains(userId) ) throw CustomException(
+        val workspaceEntity = findWorkspaceById(workspaceId)
+
+        if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId) && !workspaceEntity.teacher.contains(
+                userId
+            )
+        ) throw CustomException(
             WorkspaceErrorCode.FORBIDDEN
         )
         return BaseResponse(
@@ -152,7 +162,8 @@ class WorkspaceServiceImpl(
             success = true,
             message = "워크스페이스 조회 성공",
             data = workspaceMapper.toWorkspaceResponse(
-                workspaceRepository.findByWorkspaceCodeEquals(code) ?: throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+                workspaceRepository.findByWorkspaceCodeEquals(code)
+                    ?: throw CustomException(WorkspaceErrorCode.NOT_FOUND)
             )
         )
 
@@ -161,12 +172,11 @@ class WorkspaceServiceImpl(
     @Transactional
     override fun joinWorkspace(userId: Long, joinWorkspaceRequest: JoinWorkspaceRequest): BaseResponse<Unit> {
 
-        val id = ObjectId(joinWorkspaceRequest.workspaceId)
-        val workspace: WorkspaceEntity = workspaceRepository.findById(id).orElseThrow{CustomException(WorkspaceErrorCode.NOT_FOUND)}
-        if (workspace.workspaceCode!=joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
+        val workspace: WorkspaceEntity = findWorkspaceById(joinWorkspaceRequest.workspaceId)
+        if (workspace.workspaceCode != joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
 
 
-        when(joinWorkspaceRequest.role){
+        when (joinWorkspaceRequest.role) {
             WorkspaceRole.STUDENT -> workspace.studentWaitList.add(userId)
             WorkspaceRole.TEACHER -> workspace.teacherWaitList.add(userId)
             WorkspaceRole.MIDDLE_ADMIN -> Unit
@@ -185,32 +195,31 @@ class WorkspaceServiceImpl(
     @Transactional(readOnly = true)
     override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
 
-        if (getWaitListRequest.workspaceId.isEmpty() or getWaitListRequest.role.name.isEmpty()) throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+        if (getWaitListRequest.workspaceId.isEmpty() or getWaitListRequest.role.name.isEmpty()) throw CustomException(
+            WorkspaceErrorCode.MEDIA_TYPE_ERROR
+        )
 
-        val workspaceId = ObjectId(getWaitListRequest.workspaceId)
-
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
-            CustomException(
-                WorkspaceErrorCode.NOT_FOUND
-            )
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(getWaitListRequest.workspaceId)
 
         // 학생인 경우 확인 못하게 예외를 던짐
         if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
-        when(getWaitListRequest.role) {
+        when (getWaitListRequest.role) {
             WorkspaceRole.STUDENT -> {
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
                     state = "OK",
                     success = true,
                     message = "학생 대기명단 불러오기 성공",
-                    data =  workspaceEntity.studentWaitList
+                    data = workspaceEntity.studentWaitList
                 )
             }
+
             WorkspaceRole.TEACHER -> {
                 // 워크스페이스 어드민과 중간관리자만 선생님 목록 확인 가능
-                if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
+                    WorkspaceErrorCode.FORBIDDEN
+                )
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
                     state = "OK",
@@ -221,7 +230,7 @@ class WorkspaceServiceImpl(
             }
 
             WorkspaceRole.MIDDLE_ADMIN -> {
-                if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 return BaseResponse(
                     status = HttpStatus.OK.value(),
                     state = "OK",
@@ -236,30 +245,33 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional
-    override fun addWaitListToWorkspaceMember(userId: Long, waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest): BaseResponse<Unit> {
+    override fun addWaitListToWorkspaceMember(
+        userId: Long,
+        waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
+    ): BaseResponse<Unit> {
 
-        val workspaceId = ObjectId(waitSetWorkspaceMemberRequest.workspaceId)
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(workspaceId).orElseThrow {
-            CustomException(WorkspaceErrorCode.NOT_FOUND)
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
 
         if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
 
-        when(waitSetWorkspaceMemberRequest.role){
+        when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
                 workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
+
             WorkspaceRole.TEACHER -> {
                 // 워크스페이스 어드민과 중간관리자만 선생님 목록 추가 가능
-                if (workspaceEntity.workspaceAdmin!=userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
+                    WorkspaceErrorCode.FORBIDDEN
+                )
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
 
             WorkspaceRole.MIDDLE_ADMIN -> {
                 //어드민만 중간 관리자 추가 가능
-                if (workspaceEntity.workspaceAdmin!=userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+                if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
@@ -278,6 +290,12 @@ class WorkspaceServiceImpl(
 
     }
 
+    private fun setRetrieveProfileResponse(userId: Long, workspaceId: String): RetrieveProfileResponse {
+        return RetrieveProfileResponse(
+            loadProfilePort.loadProfile(userId, workspaceId)
+        )
+    }
+
     @Transactional(readOnly = true)
     override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
@@ -289,27 +307,23 @@ class WorkspaceServiceImpl(
         val response = WorkspaceMemberChartResponse()
 
         workspaceEntity.student.map {
-            val profile = RetrieveProfileResponse(
-                loadProfilePort.loadProfile(it, workspaceId)
-            )
+            val profile = setRetrieveProfileResponse(it, workspaceId)
 
             val belong: String = profile.belong
 
             if (belong.isNotEmpty()) {
-                val existingList = response.students[belong] ?: listOf()
+                val existingList = response.students[belong] ?: emptyList()
                 response.students[belong] = existingList + profile
             }
         }
 
         workspaceEntity.teacher.map {
-            val profile = RetrieveProfileResponse(
-                loadProfilePort.loadProfile(it, workspaceId)
-            )
+            val profile = setRetrieveProfileResponse(it, workspaceId)
 
             val belong: String = profile.belong
 
             if (belong.isNotEmpty()) {
-                val existingList = response.teachers[belong] ?: listOf()
+                val existingList = response.teachers[belong] ?: emptyList()
                 response.teachers[belong] = existingList + profile
             }
         }
@@ -332,19 +346,11 @@ class WorkspaceServiceImpl(
         val list = mutableListOf<RetrieveProfileResponse>()
 
         workspaceEntity.student.map {
-            val profile = RetrieveProfileResponse(
-                loadProfilePort.loadProfile(it, workspaceId)
-            )
-
-            list.add(profile)
+            list.add(setRetrieveProfileResponse(it, workspaceId))
         }
 
         workspaceEntity.teacher.map {
-            val profile = RetrieveProfileResponse(
-                loadProfilePort.loadProfile(it, workspaceId)
-            )
-
-            list.add(profile)
+            list.add(setRetrieveProfileResponse(it, workspaceId))
         }
 
         return BaseResponse (
