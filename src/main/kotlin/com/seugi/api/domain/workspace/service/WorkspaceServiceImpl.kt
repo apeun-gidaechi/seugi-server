@@ -288,7 +288,7 @@ class WorkspaceServiceImpl(
 
         val response = WorkspaceMemberChartResponse()
 
-        workspaceEntity.student.forEach {
+        workspaceEntity.student.map {
             val profile = RetrieveProfileResponse(
                 loadProfilePort.loadProfile(it, workspaceId)
             )
@@ -301,7 +301,7 @@ class WorkspaceServiceImpl(
             }
         }
 
-        workspaceEntity.teacher.forEach {
+        workspaceEntity.teacher.map {
             val profile = RetrieveProfileResponse(
                 loadProfilePort.loadProfile(it, workspaceId)
             )
@@ -331,7 +331,7 @@ class WorkspaceServiceImpl(
 
         val list = mutableListOf<RetrieveProfileResponse>()
 
-        workspaceEntity.student.forEach {
+        workspaceEntity.student.map {
             val profile = RetrieveProfileResponse(
                 loadProfilePort.loadProfile(it, workspaceId)
             )
@@ -339,7 +339,7 @@ class WorkspaceServiceImpl(
             list.add(profile)
         }
 
-        workspaceEntity.teacher.forEach {
+        workspaceEntity.teacher.map {
             val profile = RetrieveProfileResponse(
                 loadProfilePort.loadProfile(it, workspaceId)
             )
