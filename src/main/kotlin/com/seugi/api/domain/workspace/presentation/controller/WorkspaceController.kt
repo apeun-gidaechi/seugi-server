@@ -1,8 +1,9 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
+import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.presentation.dto.request.*
-import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberListResponse
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
@@ -100,11 +101,19 @@ class WorkspaceController(
         return workspaceService.getMyWaitList(userId = userId)
     }
 
+    @GetMapping("/members/chart")
+    fun getWorkspaceMemberChart(
+        @GetAuthenticatedId userId: Long,
+        workspaceId: String
+    ): BaseResponse<WorkspaceMemberChartResponse> {
+        return workspaceService.getWorkspaceMemberChart(workspaceId)
+    }
+
     @GetMapping("/members")
     fun getWorkspaceMemberList(
         @GetAuthenticatedId userId: Long,
         workspaceId: String
-    ): BaseResponse<WorkspaceMemberListResponse> {
+    ): BaseResponse<List<RetrieveProfileResponse>> {
         return workspaceService.getWorkspaceMemberList(workspaceId)
     }
 
