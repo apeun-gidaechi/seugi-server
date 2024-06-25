@@ -306,27 +306,12 @@ class WorkspaceServiceImpl(
 
         val response = WorkspaceMemberChartResponse()
 
-        workspaceEntity.student.map {
-            val profile = setRetrieveProfileResponse(it, workspaceId)
+        val adminProfile = setRetrieveProfileResponse(workspaceEntity.workspaceAdmin!!, workspaceId)
+        addProfileToChart(response.admin, adminProfile)
 
-            val belong: String = profile.belong
-
-            if (belong.isNotEmpty()) {
-                val existingList = response.students[belong] ?: emptyList()
-                response.students[belong] = existingList + profile
-            }
-        }
-
-        workspaceEntity.teacher.map {
-            val profile = setRetrieveProfileResponse(it, workspaceId)
-
-            val belong: String = profile.belong
-
-            if (belong.isNotEmpty()) {
-                val existingList = response.teachers[belong] ?: emptyList()
-                response.teachers[belong] = existingList + profile
-            }
-        }
+        addProfilesToChart(response.middleAdmin, workspaceEntity.middleAdmin, workspaceId)
+        addProfilesToChart(response.students, workspaceEntity.student, workspaceId)
+        addProfilesToChart(response.teachers, workspaceEntity.teacher, workspaceId)
 
         return BaseResponse (
             status = HttpStatus.OK.value(),
@@ -334,6 +319,25 @@ class WorkspaceServiceImpl(
             message = "조직도를 불러왔습니다",
             data = response
         )
+    }
+
+    private fun addProfileToChart(chartSection: MutableMap<String, List<RetrieveProfileResponse>>, profile: RetrieveProfileResponse) {
+        val belong = profile.belong
+        if (belong.isNotEmpty()) {
+            val existingList = chartSection[belong] ?: emptyList()
+            chartSection[belong] = existingList + profile
+        }
+    }
+
+    private fun addProfilesToChart(
+        chartSection: MutableMap<String, List<RetrieveProfileResponse>>,
+        members: MutableSet<Long>,
+        workspaceId: String
+    ) {
+        members.forEach { member ->
+            val profile = setRetrieveProfileResponse(member, workspaceId)
+            addProfileToChart(chartSection, profile)
+        }
     }
 
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<List<RetrieveProfileResponse>> {
