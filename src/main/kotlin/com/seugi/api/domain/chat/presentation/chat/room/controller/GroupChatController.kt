@@ -48,7 +48,8 @@ class GroupChatController(
     ): BaseResponse<RoomResponse> {
         return chatRoomService.getRoom(
             roomId = roomId,
-            userId = userId
+            userId = userId,
+            type = RoomType.GROUP
         )
     }
 

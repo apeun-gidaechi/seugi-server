@@ -50,7 +50,8 @@ class PersonalChatController(
     ): BaseResponse<RoomResponse> {
         return chatRoomService.getRoom(
             roomId = roomId,
-            userId = userId
+            userId = userId,
+            type = RoomType.PERSONAL
         )
     }
 
