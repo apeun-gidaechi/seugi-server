@@ -55,16 +55,14 @@ class ChatRoomServiceImpl(
         type: RoomType
     ): BaseResponse<String> {
 
+        createRoomRequest.joinUsers.add(userId)
+
         if (
-            type == PERSONAL && createRoomRequest.joinUsers.size >= 2
-            || type == GROUP && createRoomRequest.joinUsers.size <= 2
+            type == PERSONAL && createRoomRequest.joinUsers.size > 2
+            || type == GROUP && createRoomRequest.joinUsers.size < 2
         ) throw CustomException(
             ChatErrorCode.CHAT_ROOM_CREATE_ERROR
         )
-
-        createRoomRequest.joinUsers.map {
-            loadMemberPort.loadMemberWithId(it)
-        }
 
         if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
             createRoomRequest.roomName = createRoomRequest.joinUsers.asSequence()
