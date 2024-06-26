@@ -113,7 +113,7 @@ class WorkspaceController(
     fun getWorkspaceMemberList(
         @GetAuthenticatedId userId: Long,
         workspaceId: String
-    ): BaseResponse<List<RetrieveProfileResponse>> {
+    ): BaseResponse<Set<RetrieveProfileResponse>> {
         return workspaceService.getWorkspaceMemberList(workspaceId)
     }
 
