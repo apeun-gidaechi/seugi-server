@@ -257,6 +257,8 @@ class WorkspaceServiceImpl(
         when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
                 workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
 
@@ -265,7 +267,10 @@ class WorkspaceServiceImpl(
                 if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
                     WorkspaceErrorCode.FORBIDDEN
                 )
+
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
 
@@ -273,6 +278,8 @@ class WorkspaceServiceImpl(
                 //어드민만 중간 관리자 추가 가능
                 if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
         }
