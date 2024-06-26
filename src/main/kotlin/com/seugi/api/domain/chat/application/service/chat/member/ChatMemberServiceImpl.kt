@@ -10,7 +10,6 @@ import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -64,9 +63,6 @@ class ChatMemberServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "OK",
             message = "유저 채팅방에 추가 성공"
         )
 
@@ -92,9 +88,6 @@ class ChatMemberServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "맴버 내보내기 성공"
         )
     }
@@ -120,9 +113,6 @@ class ChatMemberServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "방장 전달 성공"
         )
 

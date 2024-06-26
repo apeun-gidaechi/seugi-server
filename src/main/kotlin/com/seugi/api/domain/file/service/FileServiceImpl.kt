@@ -5,7 +5,6 @@ import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.aws.s3.service.S3
 import com.seugi.api.global.infra.aws.s3.type.FileType
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -18,9 +17,6 @@ class FileServiceImpl(
         if (file.isEmpty) throw CustomException(FileErrorCode.MEDIA_TYPE_ERROR)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "M1",
-            success = true,
             message =
             s3.uploadMultipleFile(
                 file = file,

@@ -19,7 +19,6 @@ import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -98,9 +97,6 @@ class ChatRoomServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "OK",
             message = "채팅방 생성 성공 | 채팅방 ID",
             data = chatRoomId
         )
@@ -121,9 +117,6 @@ class ChatRoomServiceImpl(
                     chatRoomImg = member.picture.value
                 }
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "채팅방 단건 조회성공!",
                     data = toResponse(data, userId)
                 )
@@ -131,9 +124,6 @@ class ChatRoomServiceImpl(
 
             GROUP -> {
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "채팅방 단건 조회성공!",
                     data = toResponse(data, userId)
                 )
@@ -166,18 +156,12 @@ class ChatRoomServiceImpl(
                 }
 
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "OK",
                     message = "채팅방 불러오기 성공",
                     data = rooms.map { toResponse(it, userId) }
                 )
             }
 
             GROUP -> return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "OK",
                 message = "채팅방 불러오기 성공",
                 data = chatRoomEntity.map { toResponse(it, userId) }
             )
@@ -216,9 +200,6 @@ class ChatRoomServiceImpl(
 
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "J1",
-            success = true,
             message = "방 나가기 성공"
         )
     }
@@ -256,9 +237,6 @@ class ChatRoomServiceImpl(
                 }
 
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "OK",
                     message = "채팅방 검색 성공",
                     data = entity.map {
                         toResponse(it, userId)
@@ -267,9 +245,6 @@ class ChatRoomServiceImpl(
             }
 
             GROUP -> return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "OK",
                 message = "채팅방 검색 성공",
                 data = chatRoomEntity.map {
                     toResponse(it, userId)

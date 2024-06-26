@@ -1,13 +1,9 @@
 package com.seugi.api.domain.member.application.service
 
 import com.seugi.api.domain.email.application.service.ConfirmCodeService
-import org.springframework.http.HttpStatus
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.RequestBody
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
-import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
+import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.`in`.RegisterMemberUseCase
 import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
@@ -15,6 +11,9 @@ import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.RequestBody
 
 @Service
 class RegisterMemberService(
@@ -37,8 +36,6 @@ class RegisterMemberService(
         saveMemberPort.saveMember(member)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "회원가입 성공 !!",
             data = jwtUtils.generate(member)
         )

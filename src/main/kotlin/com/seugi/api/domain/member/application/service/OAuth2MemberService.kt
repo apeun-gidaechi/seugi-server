@@ -1,12 +1,6 @@
 package com.seugi.api.domain.member.application.service
 
 import com.fasterxml.jackson.databind.JsonNode
-import jakarta.transaction.Transactional
-import org.springframework.http.*
-import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
-import org.springframework.web.client.RestTemplate
 import com.seugi.api.domain.member.adapter.`in`.dto.req.OAuth2MemberRequest
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.domain.member.application.model.Member
@@ -20,6 +14,12 @@ import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.oauth.OAuth2Properties
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import jakarta.transaction.Transactional
+import org.springframework.http.*
+import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.client.RestTemplate
 
 @Service
 @Transactional
@@ -67,11 +67,8 @@ class OAuth2MemberService (
         }
 
         return BaseResponse (
-            HttpStatus.OK.value(),
-            true,
-            "OK",
-            "로그인 성공 !",
-            jwtUtils.generate(member)
+            message = "로그인 성공 !",
+            data = jwtUtils.generate(member)
         )
     }
 
@@ -89,10 +86,7 @@ class OAuth2MemberService (
         )
 
         return BaseResponse (
-            HttpStatus.OK.value(),
-            true,
-            "OK",
-            "회원가입 완료 ~ !!",
+            message = "회원가입 완료 ~ !!",
         )
     }
 

@@ -1,11 +1,10 @@
 package com.seugi.api.domain.email.application.service
 
-import org.springframework.http.HttpStatus
-import org.springframework.stereotype.Service
 import com.seugi.api.domain.email.port.`in`.CreateCodeUseCase
 import com.seugi.api.domain.email.port.`in`.SendEmailUseCase
 import com.seugi.api.domain.email.port.out.SaveCodePort
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
@@ -26,8 +25,6 @@ class CreateCodeService (
         )
 
         return BaseResponse (
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "전송 성공 !",
         )
     }

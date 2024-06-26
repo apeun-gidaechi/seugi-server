@@ -1,8 +1,5 @@
 package com.seugi.api.domain.member.application.service
 
-import org.springframework.http.HttpStatus
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.stereotype.Service
 import com.seugi.api.domain.member.adapter.`in`.dto.req.LoginMemberRequest
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.`in`.LoginMemberUseCase
@@ -12,6 +9,8 @@ import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.stereotype.Service
 
 @Service
 class LoginMemberService(
@@ -30,8 +29,6 @@ class LoginMemberService(
         val jwtInfo = jwtUtils.generate(member)
 
         return BaseResponse (
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "토큰 발급 성공 !!",
             data = jwtInfo
         )
