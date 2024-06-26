@@ -31,6 +31,12 @@ class ChatRoomServiceImpl(
     private val messageService: MessageService
 ) : ChatRoomService {
 
+    private fun findChatRoomById(id: String): ChatRoomEntity {
+        if (id.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
+        return chatRoomRepository.findById(ObjectId(id))
+            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+    }
+
     private fun toResponse(chatRoomEntity: ChatRoomEntity, userId: Long): RoomResponse {
         val lastMessageEntity = messageService.getMessage(chatRoomEntity.id.toString())
         return chatRoomMapper.toResponse(
@@ -103,11 +109,7 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getRoom(roomId: String, userId: Long, type: RoomType): BaseResponse<RoomResponse> {
 
-        //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
-
-        val data = chatRoomRepository.findById(ObjectId(roomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val data = findChatRoomById(roomId)
 
         if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
@@ -155,8 +157,7 @@ class ChatRoomServiceImpl(
             PERSONAL -> {
                 val rooms: List<ChatRoomEntity> = chatRoomEntity.map {
 
-                    val room = chatRoomRepository.findById(it.id!!)
-                        .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+                    val room = findChatRoomById(it.id.toString())
                     room.apply {
                         val member = loadMemberPort.loadMemberWithId(it.joinedUserId.filter { id -> id != userId }[0])
                         chatName = member.name.value
@@ -186,10 +187,7 @@ class ChatRoomServiceImpl(
     @Transactional
     override fun leftRoom(userId: Long, roomId: String): BaseResponse<Unit> {
 
-        //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
-        val chatRoomEntity = chatRoomRepository.findById(ObjectId(roomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val chatRoomEntity = findChatRoomById(roomId)
 
         //방장인지 확인하는 로직, 방장일경우 못나감 하지만 방 인원이 자신뿐이라면 넘어감
         if (chatRoomEntity.roomAdmin == userId && chatRoomEntity.joinedUserId.size != 1)
