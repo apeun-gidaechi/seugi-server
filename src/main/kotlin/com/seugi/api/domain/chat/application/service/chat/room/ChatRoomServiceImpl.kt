@@ -19,7 +19,6 @@ import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,6 +29,12 @@ class ChatRoomServiceImpl(
     private val chatRoomMapper: RoomMapper,
     private val messageService: MessageService
 ) : ChatRoomService {
+
+    private fun findChatRoomById(id: String): ChatRoomEntity {
+        if (id.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
+        return chatRoomRepository.findById(ObjectId(id))
+            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+    }
 
     private fun toResponse(chatRoomEntity: ChatRoomEntity, userId: Long): RoomResponse {
         val lastMessageEntity = messageService.getMessage(chatRoomEntity.id.toString())
@@ -55,16 +60,14 @@ class ChatRoomServiceImpl(
         type: RoomType
     ): BaseResponse<String> {
 
+        createRoomRequest.joinUsers.add(userId)
+
         if (
-            type == PERSONAL && createRoomRequest.joinUsers.size >= 2
-            || type == GROUP && createRoomRequest.joinUsers.size <= 2
+            type == PERSONAL && createRoomRequest.joinUsers.size > 2
+            || type == GROUP && createRoomRequest.joinUsers.size < 2
         ) throw CustomException(
             ChatErrorCode.CHAT_ROOM_CREATE_ERROR
         )
-
-        createRoomRequest.joinUsers.map {
-            loadMemberPort.loadMemberWithId(it)
-        }
 
         if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
             createRoomRequest.roomName = createRoomRequest.joinUsers.asSequence()
@@ -94,9 +97,6 @@ class ChatRoomServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            success = true,
-            state = "OK",
             message = "채팅방 생성 성공 | 채팅방 ID",
             data = chatRoomId
         )
@@ -105,11 +105,7 @@ class ChatRoomServiceImpl(
     @Transactional(readOnly = true)
     override fun getRoom(roomId: String, userId: Long, type: RoomType): BaseResponse<RoomResponse> {
 
-        //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
-
-        val data = chatRoomRepository.findById(ObjectId(roomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val data = findChatRoomById(roomId)
 
         if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
@@ -121,9 +117,6 @@ class ChatRoomServiceImpl(
                     chatRoomImg = member.picture.value
                 }
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "채팅방 단건 조회성공!",
                     data = toResponse(data, userId)
                 )
@@ -131,9 +124,6 @@ class ChatRoomServiceImpl(
 
             GROUP -> {
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "채팅방 단건 조회성공!",
                     data = toResponse(data, userId)
                 )
@@ -157,8 +147,7 @@ class ChatRoomServiceImpl(
             PERSONAL -> {
                 val rooms: List<ChatRoomEntity> = chatRoomEntity.map {
 
-                    val room = chatRoomRepository.findById(it.id!!)
-                        .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+                    val room = findChatRoomById(it.id.toString())
                     room.apply {
                         val member = loadMemberPort.loadMemberWithId(it.joinedUserId.filter { id -> id != userId }[0])
                         chatName = member.name.value
@@ -167,18 +156,12 @@ class ChatRoomServiceImpl(
                 }
 
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "OK",
                     message = "채팅방 불러오기 성공",
                     data = rooms.map { toResponse(it, userId) }
                 )
             }
 
             GROUP -> return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "OK",
                 message = "채팅방 불러오기 성공",
                 data = chatRoomEntity.map { toResponse(it, userId) }
             )
@@ -188,10 +171,7 @@ class ChatRoomServiceImpl(
     @Transactional
     override fun leftRoom(userId: Long, roomId: String): BaseResponse<Unit> {
 
-        //ObjectId는 24글자 고정이라 예외처리 로직 추가
-        if (roomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
-        val chatRoomEntity = chatRoomRepository.findById(ObjectId(roomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val chatRoomEntity = findChatRoomById(roomId)
 
         //방장인지 확인하는 로직, 방장일경우 못나감 하지만 방 인원이 자신뿐이라면 넘어감
         if (chatRoomEntity.roomAdmin == userId && chatRoomEntity.joinedUserId.size != 1)
@@ -220,9 +200,6 @@ class ChatRoomServiceImpl(
 
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "J1",
-            success = true,
             message = "방 나가기 성공"
         )
     }
@@ -260,9 +237,6 @@ class ChatRoomServiceImpl(
                 }
 
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    success = true,
-                    state = "OK",
                     message = "채팅방 검색 성공",
                     data = entity.map {
                         toResponse(it, userId)
@@ -271,9 +245,6 @@ class ChatRoomServiceImpl(
             }
 
             GROUP -> return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "OK",
                 message = "채팅방 검색 성공",
                 data = chatRoomEntity.map {
                     toResponse(it, userId)

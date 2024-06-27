@@ -6,7 +6,6 @@ import com.seugi.api.domain.profile.application.port.`in`.EditProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,8 +22,6 @@ class EditProfileService (
         saveProfilePort.saveProfile(profile)
 
         return BaseResponse (
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "프로필 수정 성공 !!",
         )
     }

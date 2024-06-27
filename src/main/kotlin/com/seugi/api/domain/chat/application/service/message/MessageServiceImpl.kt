@@ -20,7 +20,6 @@ import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.domain.Pageable
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -92,9 +91,6 @@ class MessageServiceImpl(
             messageRepository.saveAll(unreadMessages).last()
 
             return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "M1",
                 message = "채팅 불러오기 성공",
                 data = GetMessageResponse(
                     firstMessageId = unreadMessages.first().id?.toString(),
@@ -103,9 +99,6 @@ class MessageServiceImpl(
             )
         } else {
             return BaseResponse(
-                status = HttpStatus.OK.value(),
-                success = true,
-                state = "M1",
                 message = "채팅 불러오기 성공",
                 data = GetMessageResponse(
                     firstMessageId = if (allMessages.isEmpty()) null else allMessages.last().id,
@@ -139,9 +132,6 @@ class MessageServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "이모지 추가 성공"
         )
     }
@@ -166,9 +156,6 @@ class MessageServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "이모지 삭제 성공"
         )
     }
@@ -193,9 +180,6 @@ class MessageServiceImpl(
         )
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "M1",
-            success = true,
             message = "메시지 지워짐으로 상태변경 성공"
         )
     }

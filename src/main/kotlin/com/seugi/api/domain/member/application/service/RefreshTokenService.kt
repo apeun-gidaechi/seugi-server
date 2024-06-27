@@ -7,7 +7,6 @@ import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
 import com.seugi.api.global.auth.jwt.exception.type.JwtErrorType
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -28,11 +27,8 @@ class RefreshTokenService (
         )
 
         return BaseResponse (
-            HttpStatus.OK.value(),
-            true,
-            "OK",
-            "리프레시 성공 !",
-            jwtUtils.refreshToken(member)
+            message = "리프레시 성공 !",
+            data = jwtUtils.refreshToken(member)
         )
     }
 

@@ -16,7 +16,6 @@ import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.random.Random
@@ -54,9 +53,6 @@ class WorkspaceServiceImpl(
         } while (workspaceRepository.existsByWorkspaceCode(workspaceCode))
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "W1",
-            success = true,
             message = "워크스페이스 생성 완료",
             data = workspaceRepository.save(
                 workspaceMapper.toEntity(
@@ -76,9 +72,6 @@ class WorkspaceServiceImpl(
         workspaceRepository.save(workspaceEntity)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "워크스페이스 삭제 성공"
         )
     }
@@ -100,9 +93,6 @@ class WorkspaceServiceImpl(
         workspaceRepository.save(workspaceEntity)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "워크스페이스 업데이트성공"
         )
 
@@ -110,9 +100,6 @@ class WorkspaceServiceImpl(
 
     override fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceResponse>> {
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "자신이 대기중인 워크스페이스 모두 불러오기",
             data = workspaceRepository.findWaitWorkspaceByStatusAndUserId(Status.ALIVE, userId)
                 .map { workspaceMapper.toWorkspaceResponse(it) }
@@ -122,9 +109,6 @@ class WorkspaceServiceImpl(
     @Transactional(readOnly = true)
     override fun getWorkspace(userId: Long): BaseResponse<List<WorkspaceResponse>> {
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "W1",
-            success = true,
             message = "자신이 속한 워크스페이스 전체 불러오기 성공",
             data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
                 .map { workspaceMapper.toWorkspaceResponse(it) }
@@ -144,9 +128,6 @@ class WorkspaceServiceImpl(
             WorkspaceErrorCode.FORBIDDEN
         )
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "워크스페이스 코드 조회 성공",
             data = workspaceEntity.workspaceCode
         )
@@ -157,9 +138,6 @@ class WorkspaceServiceImpl(
     override fun searchWorkspace(code: String): BaseResponse<WorkspaceResponse> {
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "W1",
-            success = true,
             message = "워크스페이스 조회 성공",
             data = workspaceMapper.toWorkspaceResponse(
                 workspaceRepository.findByWorkspaceCodeEquals(code)
@@ -185,9 +163,6 @@ class WorkspaceServiceImpl(
         workspaceRepository.save(workspace)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "워크스페이스 참가 신청 성공"
         )
     }
@@ -207,9 +182,6 @@ class WorkspaceServiceImpl(
         when (getWaitListRequest.role) {
             WorkspaceRole.STUDENT -> {
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "학생 대기명단 불러오기 성공",
                     data = workspaceEntity.studentWaitList
                 )
@@ -221,9 +193,6 @@ class WorkspaceServiceImpl(
                     WorkspaceErrorCode.FORBIDDEN
                 )
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "선생님 대기명단 불러오기 성공",
                     data = workspaceEntity.teacherWaitList
                 )
@@ -232,9 +201,6 @@ class WorkspaceServiceImpl(
             WorkspaceRole.MIDDLE_ADMIN -> {
                 if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 return BaseResponse(
-                    status = HttpStatus.OK.value(),
-                    state = "OK",
-                    success = true,
                     message = "선생님 대기명단 불러오기 성공",
                     data = workspaceEntity.middleAdminWaitList
                 )
@@ -289,9 +255,6 @@ class WorkspaceServiceImpl(
         createProfileService.createProfile(userId, waitSetWorkspaceMemberRequest.workspaceId)
 
         return BaseResponse(
-            status = HttpStatus.OK.value(),
-            state = "OK",
-            success = true,
             message = "${waitSetWorkspaceMemberRequest.role} 맴버 추가 성공"
         )
 
@@ -321,8 +284,6 @@ class WorkspaceServiceImpl(
         addProfilesToChart(response.teachers, workspaceEntity.teacher, workspaceId)
 
         return BaseResponse (
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "조직도를 불러왔습니다",
             data = response
         )
@@ -371,8 +332,6 @@ class WorkspaceServiceImpl(
         }
 
         return BaseResponse (
-            status = HttpStatus.OK.value(),
-            success = true,
             message = "멤버 전체를 조회하였습니다",
             data = set
         )
