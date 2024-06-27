@@ -257,6 +257,8 @@ class WorkspaceServiceImpl(
         when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
                 workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
 
@@ -265,7 +267,10 @@ class WorkspaceServiceImpl(
                 if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
                     WorkspaceErrorCode.FORBIDDEN
                 )
+
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
 
@@ -273,6 +278,8 @@ class WorkspaceServiceImpl(
                 //어드민만 중간 관리자 추가 가능
                 if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
                 workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
             }
         }
@@ -340,28 +347,34 @@ class WorkspaceServiceImpl(
         }
     }
 
-    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<List<RetrieveProfileResponse>> {
+    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
         val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
 
-        val list = mutableListOf<RetrieveProfileResponse>()
+        val set = HashSet<RetrieveProfileResponse>()
+
+        set.add(setRetrieveProfileResponse(workspaceEntity.workspaceAdmin!!, workspaceId))
+
+        workspaceEntity.middleAdmin.map {
+            set.add(setRetrieveProfileResponse(it, workspaceId))
+        }
 
         workspaceEntity.student.map {
-            list.add(setRetrieveProfileResponse(it, workspaceId))
+            set.add(setRetrieveProfileResponse(it, workspaceId))
         }
 
         workspaceEntity.teacher.map {
-            list.add(setRetrieveProfileResponse(it, workspaceId))
+            set.add(setRetrieveProfileResponse(it, workspaceId))
         }
 
         return BaseResponse (
             status = HttpStatus.OK.value(),
             success = true,
             message = "멤버 전체를 조회하였습니다",
-            data = list
+            data = set
         )
     }
 }
