@@ -2,6 +2,7 @@ package com.seugi.api.domain.chat.domain.chat.mapper
 
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.model.Message
+import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
@@ -16,7 +17,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             type = entity.type,
             chatRoomId = entity.chatRoomId!!,
             userId = entity.userId,
-            message = entity.message,
+            message = if (entity.messageStatus == ChatStatusEnum.DELETE) "" else entity.message,
             eventList = entity.eventList,
             emoticon = entity.emoticon,
             emojiList = entity.emojiList,

@@ -78,9 +78,6 @@ class MessageServiceImpl(
         val allMessages =
             messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 
-        for (message in allMessages) {
-            println(message)
-        }
 
         val unreadMessages: List<MessageEntity> =
             messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))
