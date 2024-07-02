@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 @Component
 class MessageMapper : Mapper<Message, MessageEntity> {
 
-
     override fun toDomain(entity: MessageEntity): Message {
         return Message(
             id = entity.id.toString(),
@@ -35,6 +34,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = domain.chatRoomId,
             userId = domain.userId,
             message = domain.message,
+            read = domain.read.toMutableSet(),
             eventList = domain.eventList,
             emoticon = domain.emoticon,
             mention = domain.mention,
@@ -52,6 +52,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = chatMessageDto.roomId!!,
             userId = author,
             message = chatMessageDto.message ?: "",
+            read = readUsers,
             eventList = chatMessageDto.eventList,
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention ?: emptySet(),
