@@ -85,13 +85,11 @@ class StompWebSocketConfig(
                     }
 
                     SimpMessageType.UNSUBSCRIBE -> {
-                        if (accessor.destination != null) {
-                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                            val userId = simpAttributes.getAttribute("user-id") as String
-                            messageService.unSub(
-                                userId = userId.toLong()
-                            )
-                        }
+                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                        val userId = simpAttributes.getAttribute("user-id") as String
+                        messageService.unSub(
+                            userId = userId.toLong()
+                        )
                     }
 
                     SimpMessageType.HEARTBEAT,
