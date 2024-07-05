@@ -1,11 +1,61 @@
 package com.seugi.api.domain.notice.presentation.controller
 
+import com.seugi.api.domain.notice.presentation.dto.request.CreateNoticeRequest
+import com.seugi.api.domain.notice.presentation.dto.response.NoticeResponse
 import com.seugi.api.domain.notice.service.NoticeService
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.response.BaseResponse
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/notice")
 class NoticeController(
-    private val noticeService: NoticeService
-)
+    private val noticeService: NoticeService,
+) {
+
+    @PostMapping
+    fun createNotice(
+        @RequestBody createNoticeRequest: CreateNoticeRequest,
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<Unit> {
+        return noticeService.createNotice(
+            createNoticeRequest = createNoticeRequest,
+            userId = userId
+        )
+    }
+
+    @GetMapping("/{workspaceId}")
+    fun getNotices(
+        @PathVariable workspaceId: String,
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<List<NoticeResponse>> {
+        return noticeService.getNotices(
+            workspaceId = workspaceId,
+            userId = userId
+        )
+    }
+
+    @PatchMapping("/{id}")
+    fun updateNotice(
+        @PathVariable id: Long,
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<Unit> {
+        return noticeService.updateNotice(
+            id = id,
+            userId = userId
+        )
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteNotice(
+        @PathVariable id: Long,
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<Unit> {
+        return noticeService.deleteNotice(
+            id = id,
+            userId = userId
+        )
+    }
+
+
+}
