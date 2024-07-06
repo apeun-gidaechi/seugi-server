@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notice.presentation.controller
 
 import com.seugi.api.domain.notice.presentation.dto.request.CreateNoticeRequest
+import com.seugi.api.domain.notice.presentation.dto.request.UpdateNoticeRequest
 import com.seugi.api.domain.notice.presentation.dto.response.NoticeResponse
 import com.seugi.api.domain.notice.service.NoticeService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
@@ -35,13 +36,13 @@ class NoticeController(
         )
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     fun updateNotice(
-        @PathVariable id: Long,
+        @RequestBody updateNoticeRequest: UpdateNoticeRequest,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
         return noticeService.updateNotice(
-            id = id,
+            updateNoticeRequest = updateNoticeRequest,
             userId = userId
         )
     }

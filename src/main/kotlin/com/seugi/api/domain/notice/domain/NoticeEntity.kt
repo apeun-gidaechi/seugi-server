@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notice.domain
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.notice.presentation.dto.request.UpdateNoticeRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -42,4 +43,9 @@ class NoticeEntity(
 
     @Column(nullable = false)
     var deleted: Boolean = false,
-)
+) {
+    fun updateNotice(updateNoticeRequest: UpdateNoticeRequest) {
+        this.title = updateNoticeRequest.title
+        this.content = updateNoticeRequest.content
+    }
+}
