@@ -8,7 +8,6 @@ import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
-import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MessageServiceImpl(
     private val messageRepository: MessageRepository,
-    private val chatRoomRepository: ChatRoomRepository,
     private val messageMapper: MessageMapper,
     private val roomInfoRepository: RoomInfoRepository,
     private val rabbitTemplate: RabbitTemplate
@@ -184,12 +182,6 @@ class MessageServiceImpl(
     @Transactional
     override fun sub(userId: Long, roomId: String) {
         if (roomId != "message" && roomId.length == 24) {
-
-            if (!chatRoomRepository.findById(ObjectId(roomId)).orElseThrow {
-                    CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND)
-                }.joinedUserId.contains(userId)) {
-                throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
-            }
 
             sendEventMessage(
                 message = MessageEventDto(
