@@ -78,7 +78,7 @@ class MessageServiceImpl(
 
 
         val unreadMessages: List<MessageEntity> =
-            messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId))
+            messageRepository.findByChatRoomIdEqualsAndReadNotContains(chatRoomId, userId)
 
         if (unreadMessages.isNotEmpty()) {
             unreadMessages.map { it.read.add(userId) }
@@ -104,7 +104,7 @@ class MessageServiceImpl(
     }
 
     override fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int {
-        return messageRepository.findByChatRoomIdEqualsAndReadNot(chatRoomId, setOf(userId)).count()
+        return messageRepository.findByChatRoomIdEqualsAndReadNotContains(chatRoomId, userId).count()
     }
 
     @Transactional
