@@ -47,10 +47,10 @@ class NoticeController(
         )
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{workspaceId}/{id}")
     fun deleteNotice(
-        @RequestParam("id") id: Long,
-        @RequestParam("workspaceId") workspaceId: String,
+        @PathVariable workspaceId: String,
+        @PathVariable id: Long,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
         return noticeService.deleteNotice(

@@ -15,7 +15,10 @@ class NoticeRepositoryCustomImpl(
         return jpaQueryFactory
             .select(notice)
             .from(notice)
-            .where(notice.workspaceId.eq(workspaceId))
+            .where(
+                notice.workspaceId.eq(workspaceId),
+                notice.deleted.isFalse
+            )
             .fetch().orEmpty().toList()
 
     }

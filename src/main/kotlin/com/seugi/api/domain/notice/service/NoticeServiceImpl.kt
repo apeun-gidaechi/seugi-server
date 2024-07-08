@@ -31,7 +31,7 @@ class NoticeServiceImpl(
         noticeRepository.save(notice)
 
         return BaseResponse(
-            message = "공지 등록 성공",
+            message = "공지 등록 성공"
         )
     }
 
@@ -56,7 +56,7 @@ class NoticeServiceImpl(
         noticeRepository.save(noticeEntity)
 
         return BaseResponse(
-            message = "공지 수정 성공",
+            message = "공지 수정 성공"
         )
     }
 
@@ -65,14 +65,15 @@ class NoticeServiceImpl(
         val workspaceEntity = workspaceService.findWorkspaceById(workspaceId)
         val notice = noticeRepository.findById(id).orElseThrow { CustomException(NoticeErrorCode.NOT_FOUND) }
 
-        if (workspaceEntity.workspaceAdmin != userId ||
-            !workspaceEntity.middleAdmin.contains(userId) ||
+        if (workspaceEntity.workspaceAdmin != userId &&
+            !workspaceEntity.middleAdmin.contains(userId) &&
             notice.user!!.id != userId
         ) {
             throw CustomException(NoticeErrorCode.FORBIDDEN)
         }
 
-        noticeRepository.deleteById(id)
+        notice.deleteNotice()
+        noticeRepository.save(notice)
 
         return BaseResponse(
             message = "공지 삭제 성공"
