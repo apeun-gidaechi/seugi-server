@@ -65,8 +65,8 @@ class NoticeServiceImpl(
         val workspaceEntity = workspaceService.findWorkspaceById(workspaceId)
         val notice = noticeRepository.findById(id).orElseThrow { CustomException(NoticeErrorCode.NOT_FOUND) }
 
-        if (workspaceEntity.workspaceAdmin != userId ||
-            !workspaceEntity.middleAdmin.contains(userId) ||
+        if (workspaceEntity.workspaceAdmin != userId &&
+            !workspaceEntity.middleAdmin.contains(userId) &&
             notice.user!!.id != userId
         ) {
             throw CustomException(NoticeErrorCode.FORBIDDEN)
