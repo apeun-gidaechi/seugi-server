@@ -35,11 +35,11 @@ class NoticeEntity(
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
-    var creationDate: LocalDateTime? = null,
+    var creationDate: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = false)
     @LastModifiedDate
-    var lastModifiedDate: LocalDateTime? = null,
+    var lastModifiedDate: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = false)
     var deleted: Boolean = false,
@@ -47,5 +47,8 @@ class NoticeEntity(
     fun updateNotice(updateNoticeRequest: UpdateNoticeRequest) {
         this.title = updateNoticeRequest.title
         this.content = updateNoticeRequest.content
+    }
+    fun deleteNotice() {
+        this.deleted = true
     }
 }
