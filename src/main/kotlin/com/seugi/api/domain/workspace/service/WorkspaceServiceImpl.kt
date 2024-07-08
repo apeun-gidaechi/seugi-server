@@ -37,7 +37,7 @@ class WorkspaceServiceImpl(
             .joinToString("")
     }
 
-    fun findWorkspaceById(id: String): WorkspaceEntity {
+    override fun findWorkspaceById(id: String): WorkspaceEntity {
         if (id.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
         return workspaceRepository.findById(ObjectId(id)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)

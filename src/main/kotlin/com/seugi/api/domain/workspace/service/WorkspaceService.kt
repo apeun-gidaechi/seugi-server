@@ -1,6 +1,7 @@
 package com.seugi.api.domain.workspace.service
 
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
+import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.presentation.dto.request.*
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
@@ -9,6 +10,7 @@ import com.seugi.api.global.response.BaseResponse
 interface WorkspaceService {
 
     fun createWorkspace(userId: Long, createWorkspaceRequest: CreateWorkspaceRequest): BaseResponse<String>
+    fun findWorkspaceById(id: String): WorkspaceEntity
     fun getWorkspace(userId: Long) : BaseResponse<List<WorkspaceResponse>>
     fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String>
     fun searchWorkspace(code: String): BaseResponse<WorkspaceResponse>
