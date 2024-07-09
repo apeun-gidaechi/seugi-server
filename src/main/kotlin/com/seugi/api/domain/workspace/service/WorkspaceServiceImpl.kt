@@ -10,6 +10,7 @@ import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.domain.mapper.WorkspaceMapper
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
 import com.seugi.api.domain.workspace.presentation.dto.request.*
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
@@ -27,8 +28,8 @@ class WorkspaceServiceImpl(
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
     private val createProfileService: CreateProfileService,
-    private val loadProfilePort: LoadProfilePort
-): WorkspaceService {
+    private val loadProfilePort: LoadProfilePort,
+) : WorkspaceService {
 
     private fun genCode(length: Int = 6): String {
         return (1..length)
@@ -42,6 +43,13 @@ class WorkspaceServiceImpl(
         return workspaceRepository.findById(ObjectId(id)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
+    }
+
+    override fun getWorkspace(workspaceId: String, userId: Long): BaseResponse<WorkspaceResponse> {
+        return BaseResponse(
+            message = "워크스페이스 단건 조회 성공",
+            data = workspaceMapper.toWorkspaceResponse(findWorkspaceById(workspaceId))
+        )
     }
 
     @Transactional
@@ -98,11 +106,11 @@ class WorkspaceServiceImpl(
 
     }
 
-    override fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceResponse>> {
+    override fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceInfoResponse>> {
         return BaseResponse(
             message = "자신이 대기중인 워크스페이스 모두 불러오기",
             data = workspaceRepository.findWaitWorkspaceByStatusAndUserId(Status.ALIVE, userId)
-                .map { workspaceMapper.toWorkspaceResponse(it) }
+                .map { workspaceMapper.toWorkspaceInfoResponse(it) }
         )
     }
 
@@ -213,7 +221,7 @@ class WorkspaceServiceImpl(
     @Transactional
     override fun addWaitListToWorkspaceMember(
         userId: Long,
-        waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
+        waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
@@ -283,13 +291,16 @@ class WorkspaceServiceImpl(
         addProfilesToChart(response.students, workspaceEntity.student, workspaceId)
         addProfilesToChart(response.teachers, workspaceEntity.teacher, workspaceId)
 
-        return BaseResponse (
+        return BaseResponse(
             message = "조직도를 불러왔습니다",
             data = response
         )
     }
 
-    private fun addProfileToChart(chartSection: MutableMap<String, List<RetrieveProfileResponse>>, profile: RetrieveProfileResponse) {
+    private fun addProfileToChart(
+        chartSection: MutableMap<String, List<RetrieveProfileResponse>>,
+        profile: RetrieveProfileResponse,
+    ) {
         val belong = profile.belong
         if (belong.isNotEmpty()) {
             val existingList = chartSection[belong] ?: emptyList()
@@ -300,7 +311,7 @@ class WorkspaceServiceImpl(
     private fun addProfilesToChart(
         chartSection: MutableMap<String, List<RetrieveProfileResponse>>,
         members: MutableSet<Long>,
-        workspaceId: String
+        workspaceId: String,
     ) {
         members.forEach { member ->
             val profile = setRetrieveProfileResponse(member, workspaceId)
@@ -331,7 +342,7 @@ class WorkspaceServiceImpl(
             set.add(setRetrieveProfileResponse(it, workspaceId))
         }
 
-        return BaseResponse (
+        return BaseResponse(
             message = "멤버 전체를 조회하였습니다",
             data = set
         )

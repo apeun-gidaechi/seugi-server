@@ -3,6 +3,7 @@ package com.seugi.api.domain.workspace.presentation.controller
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.presentation.dto.request.*
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.domain.workspace.service.WorkspaceService
@@ -34,10 +35,21 @@ class WorkspaceController(
     }
 
     @GetMapping(path = ["", "/"])
-    fun getWorkspace(
+    fun getWorkspaces(
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<WorkspaceResponse>> {
-        return workspaceService.getWorkspace(userId = userId)
+        return workspaceService.getWorkspaces(userId = userId)
+    }
+
+    @GetMapping("/{workspaceId}")
+    fun getWorkspace(
+        @PathVariable workspaceId: String,
+        @GetAuthenticatedId userId: Long,
+    ): BaseResponse<WorkspaceResponse> {
+        return workspaceService.getWorkspace(
+            workspaceId = workspaceId,
+            userId = userId
+        )
     }
 
     @GetMapping("/code/{workspaceId}")
