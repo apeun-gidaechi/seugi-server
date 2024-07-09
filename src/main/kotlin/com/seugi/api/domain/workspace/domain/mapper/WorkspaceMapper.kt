@@ -3,6 +3,7 @@ package com.seugi.api.domain.workspace.domain.mapper
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
+import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
@@ -52,13 +53,25 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
         )
     }
 
-    fun toWorkspaceResponse(entity: WorkspaceEntity): WorkspaceResponse {
-        return WorkspaceResponse(
+    fun toWorkspaceInfoResponse(entity: WorkspaceEntity): WorkspaceInfoResponse {
+        return WorkspaceInfoResponse(
             workspaceId = entity.id.toString(),
             workspaceName = entity.workspaceName!!,
             workspaceImageUrl = entity.workspaceImageUrl!!,
             studentCount = entity.student.size,
             teacherCount = entity.teacher.size+entity.middleAdmin.size+1 // 선생님, 중간관리자, 관리자 수 == 총 선생님 수,
+        )
+    }
+
+    fun toWorkspaceResponse(entity: WorkspaceEntity): WorkspaceResponse {
+        return WorkspaceResponse(
+            workspaceId = entity.id.toString(),
+            workspaceName = entity.workspaceName,
+            workspaceImageUrl = entity.workspaceImageUrl,
+            workspaceAdmin = entity.workspaceAdmin,
+            middleAdmin = entity.middleAdmin,
+            teacher = entity.teacher,
+            student = entity.student
         )
     }
 
