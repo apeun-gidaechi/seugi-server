@@ -33,7 +33,7 @@ class MessageServiceImpl(
     @Transactional
     override fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long) {
         rabbitTemplate.convertAndSend(
-            "chat.exchange", "room.${chatMessageDto.roomId}", savaMessage(chatMessageDto, userId)
+            "chat.exchange", "room.${chatMessageDto.roomId}", saveMessage(chatMessageDto, userId)
         )
     }
 
@@ -45,7 +45,7 @@ class MessageServiceImpl(
     }
 
     @Transactional
-    override fun savaMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
+    override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
