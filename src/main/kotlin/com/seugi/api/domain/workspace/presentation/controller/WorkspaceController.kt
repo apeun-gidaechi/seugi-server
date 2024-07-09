@@ -109,7 +109,7 @@ class WorkspaceController(
     @GetMapping("/my/wait-list")
     fun getMyWaitList(
         @GetAuthenticatedId userId: Long,
-    ): BaseResponse<List<WorkspaceResponse>> {
+    ): BaseResponse<List<WorkspaceInfoResponse>> {
         return workspaceService.getMyWaitList(userId = userId)
     }
 

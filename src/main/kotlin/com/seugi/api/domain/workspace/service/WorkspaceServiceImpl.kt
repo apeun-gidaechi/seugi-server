@@ -115,7 +115,7 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWorkspace(userId: Long): BaseResponse<List<WorkspaceResponse>> {
+    override fun getWorkspaces(userId: Long): BaseResponse<List<WorkspaceResponse>> {
         return BaseResponse(
             message = "자신이 속한 워크스페이스 전체 불러오기 성공",
             data = workspaceRepository.findOneByStatusAndUserIds(Status.ALIVE, userId)
