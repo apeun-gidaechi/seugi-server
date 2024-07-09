@@ -103,6 +103,7 @@ class MessageServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
     override fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int {
         return messageRepository.findByChatRoomIdEqualsAndReadNotContains(chatRoomId, userId).count()
     }
