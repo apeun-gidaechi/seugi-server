@@ -143,11 +143,11 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun searchWorkspace(code: String): BaseResponse<WorkspaceResponse> {
+    override fun searchWorkspace(code: String): BaseResponse<WorkspaceInfoResponse> {
 
         return BaseResponse(
             message = "워크스페이스 조회 성공",
-            data = workspaceMapper.toWorkspaceResponse(
+            data = workspaceMapper.toWorkspaceInfoResponse(
                 workspaceRepository.findByWorkspaceCodeEquals(code)
                     ?: throw CustomException(WorkspaceErrorCode.NOT_FOUND)
             )

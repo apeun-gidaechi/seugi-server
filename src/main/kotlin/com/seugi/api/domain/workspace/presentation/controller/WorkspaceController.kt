@@ -62,8 +62,8 @@ class WorkspaceController(
 
     @GetMapping("/{code}")
     fun searchWorkspace(
-        @PathVariable code: String
-    ): BaseResponse<WorkspaceResponse> {
+        @PathVariable code: String,
+    ): BaseResponse<WorkspaceInfoResponse> {
         return workspaceService.searchWorkspace(code = code)
     }
 
