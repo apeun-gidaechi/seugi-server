@@ -1,16 +1,16 @@
-package com.seugi.api.domain.notice.domain
+package com.seugi.api.domain.notification.domain
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
 
 
 @Repository
-class NoticeRepositoryCustomImpl(
+class NotificationRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory,
-) : NoticeRepositoryCustom {
+) : NotificationRepositoryCustom {
 
-    override fun findByWorkspaceId(workspaceId: String): List<NoticeEntity> {
-        val notice: QNoticeEntity = QNoticeEntity.noticeEntity
+    override fun findByWorkspaceId(workspaceId: String): List<NotificationEntity> {
+        val notice: QNotificationEntity = QNotificationEntity.notificationEntity
 
         return jpaQueryFactory
             .select(notice)
