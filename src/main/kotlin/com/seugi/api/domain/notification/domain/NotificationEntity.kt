@@ -1,7 +1,7 @@
-package com.seugi.api.domain.notice.domain
+package com.seugi.api.domain.notification.domain
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.domain.notice.presentation.dto.request.UpdateNoticeRequest
+import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-class NoticeEntity(
+class NotificationEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ class NoticeEntity(
     @Column(nullable = false)
     var deleted: Boolean = false,
 ) {
-    fun updateNotice(updateNoticeRequest: UpdateNoticeRequest) {
+    fun updateNotice(updateNoticeRequest: UpdateNotificationRequest) {
         this.title = updateNoticeRequest.title
         this.content = updateNoticeRequest.content
     }

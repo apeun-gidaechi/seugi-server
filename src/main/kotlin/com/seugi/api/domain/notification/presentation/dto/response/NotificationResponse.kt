@@ -1,9 +1,9 @@
-package com.seugi.api.domain.notice.presentation.dto.response
+package com.seugi.api.domain.notification.presentation.dto.response
 
 import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-data class NoticeResponse(
+data class NotificationResponse(
     val id: Long? = null,
     val workspaceId: String? = null,
     val userName: String? = null,

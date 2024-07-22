@@ -1,17 +1,17 @@
-package com.seugi.api.domain.notice.domain.mapper
+package com.seugi.api.domain.notification.domain.mapper
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.domain.notice.domain.NoticeEntity
-import com.seugi.api.domain.notice.domain.model.Notice
-import com.seugi.api.domain.notice.presentation.dto.request.CreateNoticeRequest
-import com.seugi.api.domain.notice.presentation.dto.response.NoticeResponse
+import com.seugi.api.domain.notification.domain.NotificationEntity
+import com.seugi.api.domain.notification.domain.model.Notification
+import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
+import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 
 @Component
-class NoticeMapper : Mapper<Notice, NoticeEntity> {
-    override fun toDomain(entity: NoticeEntity): Notice {
-        return Notice(
+class NotificationMapper : Mapper<Notification, NotificationEntity> {
+    override fun toDomain(entity: NotificationEntity): Notification {
+        return Notification(
             id = entity.id!!,
             workspaceId = entity.workspaceId,
             user = entity.user!!,
@@ -24,8 +24,8 @@ class NoticeMapper : Mapper<Notice, NoticeEntity> {
         )
     }
 
-    override fun toEntity(domain: Notice): NoticeEntity {
-        return NoticeEntity(
+    override fun toEntity(domain: Notification): NotificationEntity {
+        return NotificationEntity(
             workspaceId = domain.workspaceId,
             user = domain.user,
             title = domain.title,
@@ -33,9 +33,12 @@ class NoticeMapper : Mapper<Notice, NoticeEntity> {
         )
     }
 
-    fun transferNoticeEntity(createNoticeRequest: CreateNoticeRequest, userEntity: MemberEntity): NoticeEntity {
+    fun transferNoticeEntity(
+        createNoticeRequest: CreateNotificationRequest,
+        userEntity: MemberEntity,
+    ): NotificationEntity {
         return toEntity(
-            Notice(
+            Notification(
                 workspaceId = createNoticeRequest.workspaceId,
                 user = userEntity,
                 title = createNoticeRequest.title,
@@ -44,8 +47,8 @@ class NoticeMapper : Mapper<Notice, NoticeEntity> {
         )
     }
 
-    fun transferNoticeResponse(notice: Notice): NoticeResponse {
-        return NoticeResponse(
+    fun transferNoticeResponse(notice: Notification): NotificationResponse {
+        return NotificationResponse(
             id = notice.id,
             workspaceId = notice.workspaceId,
             userName = notice.user.name,
