@@ -1,8 +1,8 @@
-package com.seugi.api.domain.notice.domain.model
+package com.seugi.api.domain.notification.domain.model
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 
-data class Notice(
+data class Notification(
     val id: Long? = null,
     val workspaceId: String,
     val user: MemberEntity,

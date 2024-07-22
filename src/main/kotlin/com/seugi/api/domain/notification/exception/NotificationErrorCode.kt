@@ -1,9 +1,9 @@
-package com.seugi.api.domain.notice.exception
+package com.seugi.api.domain.notification.exception
 
 import com.seugi.api.global.exception.CustomErrorCode
 import org.springframework.http.HttpStatus
 
-enum class NoticeErrorCode(
+enum class NotificationErrorCode(
     override val status: HttpStatus,
     override val state: String,
     override val message: String,

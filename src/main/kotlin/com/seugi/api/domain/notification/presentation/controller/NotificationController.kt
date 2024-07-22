@@ -1,22 +1,22 @@
-package com.seugi.api.domain.notice.presentation.controller
+package com.seugi.api.domain.notification.presentation.controller
 
-import com.seugi.api.domain.notice.presentation.dto.request.CreateNoticeRequest
-import com.seugi.api.domain.notice.presentation.dto.request.UpdateNoticeRequest
-import com.seugi.api.domain.notice.presentation.dto.response.NoticeResponse
-import com.seugi.api.domain.notice.service.NoticeService
+import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
+import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
+import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
+import com.seugi.api.domain.notification.service.NotificationService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/notice")
-class NoticeController(
-    private val noticeService: NoticeService,
+class NotificationController(
+    private val noticeService: NotificationService,
 ) {
 
     @PostMapping
     fun createNotice(
-        @RequestBody createNoticeRequest: CreateNoticeRequest,
+        @RequestBody createNoticeRequest: CreateNotificationRequest,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
         return noticeService.createNotice(
@@ -29,7 +29,7 @@ class NoticeController(
     fun getNotices(
         @PathVariable workspaceId: String,
         @GetAuthenticatedId userId: Long,
-    ): BaseResponse<List<NoticeResponse>> {
+    ): BaseResponse<List<NotificationResponse>> {
         return noticeService.getNotices(
             workspaceId = workspaceId,
             userId = userId
@@ -38,7 +38,7 @@ class NoticeController(
 
     @PatchMapping
     fun updateNotice(
-        @RequestBody updateNoticeRequest: UpdateNoticeRequest,
+        @RequestBody updateNoticeRequest: UpdateNotificationRequest,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
         return noticeService.updateNotice(
