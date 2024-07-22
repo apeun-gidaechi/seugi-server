@@ -9,7 +9,7 @@ import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/notice")
+@RequestMapping("/notification")
 class NotificationController(
     private val noticeService: NotificationService,
 ) {
