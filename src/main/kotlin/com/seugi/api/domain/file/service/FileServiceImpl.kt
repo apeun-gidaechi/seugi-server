@@ -17,7 +17,8 @@ class FileServiceImpl(
         if (file.isEmpty) throw CustomException(FileErrorCode.MEDIA_TYPE_ERROR)
 
         return BaseResponse(
-            message =
+            message = "파일 업로드 성공, 업로드 타입 = $type",
+            data =
             s3.uploadMultipleFile(
                 file = file,
                 type = type
