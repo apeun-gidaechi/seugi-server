@@ -3,6 +3,7 @@ package com.seugi.api.domain.chat.application.service.chat.member
 import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.type.EventType
+import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.request.ChatMemberEventRequest
@@ -19,14 +20,24 @@ class ChatMemberServiceImpl(
     private val messageService: MessageService
 ) : ChatMemberService {
 
+    private fun checkRoomIdLength(chatRoomId: String) {
+        if (chatRoomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
+    }
+
+    private fun findByChatRoomId(chatRoomId: String): ChatRoomEntity {
+        return chatRoomRepository.findById(ObjectId(chatRoomId))
+            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+    }
+
     @Transactional
     override fun performCommonEventChangeTasks(
         userId: Long,
         chatMemberEventRequest: ChatMemberEventRequest,
         eventType: EventType
     ): BaseResponse<Unit> {
-        //미리 채팅방 이름이 24글자가 아닌지 확인하여 오류방지
-        if (chatMemberEventRequest.chatRoomId?.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
+
+        checkRoomIdLength(chatMemberEventRequest.chatRoomId)
+
         return when (eventType) {
             EventType.ADD -> addUsers(userId, chatMemberEventRequest)
             EventType.KICK -> kickUsers(userId, chatMemberEventRequest)
@@ -48,8 +59,7 @@ class ChatMemberServiceImpl(
 
     private fun addUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
-        val chatRoomEntity = chatRoomRepository.findById(ObjectId(chatMemberEventRequest.chatRoomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
         chatRoomEntity.joinedUserId += chatMemberEventRequest.chatMemberUsers
 
@@ -57,7 +67,7 @@ class ChatMemberServiceImpl(
 
         sendMessage(
             type = Type.ENTER,
-            roomId = chatMemberEventRequest.chatRoomId!!,
+            roomId = chatMemberEventRequest.chatRoomId,
             eventList = chatMemberEventRequest.chatMemberUsers,
             userId = userId
         )
@@ -70,8 +80,7 @@ class ChatMemberServiceImpl(
 
     private fun kickUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
-        val chatRoomEntity = chatRoomRepository.findById(ObjectId(chatMemberEventRequest.chatRoomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
 
         if (chatRoomEntity.roomAdmin != userId) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
@@ -82,7 +91,7 @@ class ChatMemberServiceImpl(
 
         sendMessage(
             type = Type.LEFT,
-            roomId = chatMemberEventRequest.chatRoomId!!,
+            roomId = chatMemberEventRequest.chatRoomId,
             eventList = chatMemberEventRequest.chatMemberUsers,
             userId = userId
         )
@@ -96,8 +105,7 @@ class ChatMemberServiceImpl(
 
         if (chatMemberEventRequest.chatMemberUsers.size != 1) throw CustomException(ChatErrorCode.CHAT_TOSS_ADMIN_ERROR)
 
-        val chatRoomEntity = chatRoomRepository.findById(ObjectId(chatMemberEventRequest.chatRoomId))
-            .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+        val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
         if (chatRoomEntity.roomAdmin != userId) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
@@ -107,7 +115,7 @@ class ChatMemberServiceImpl(
 
         sendMessage(
             type = Type.TRANSFER_ADMIN,
-            roomId = chatMemberEventRequest.chatRoomId!!,
+            roomId = chatMemberEventRequest.chatRoomId,
             eventList = chatMemberEventRequest.chatMemberUsers,
             userId = userId
         )
