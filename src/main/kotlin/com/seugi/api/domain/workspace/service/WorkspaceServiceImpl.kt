@@ -155,16 +155,30 @@ class WorkspaceServiceImpl(
 
     }
 
+    private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
+        if (workspace.workspaceAdmin == userId || workspace.middleAdmin.contains(userId) || workspace.teacher.contains(
+                userId
+            ) || workspace.student.contains(userId)
+        ) throw CustomException(WorkspaceErrorCode.EXIST)
+    }
+
     @Transactional
     override fun joinWorkspace(userId: Long, joinWorkspaceRequest: JoinWorkspaceRequest): BaseResponse<Unit> {
 
         val workspace: WorkspaceEntity = findWorkspaceById(joinWorkspaceRequest.workspaceId)
         if (workspace.workspaceCode != joinWorkspaceRequest.workspaceCode) throw CustomException(WorkspaceErrorCode.NOT_MATCH)
 
-
         when (joinWorkspaceRequest.role) {
-            WorkspaceRole.STUDENT -> workspace.studentWaitList.add(userId)
-            WorkspaceRole.TEACHER -> workspace.teacherWaitList.add(userId)
+            WorkspaceRole.STUDENT -> {
+                checkExistInWorkspace(userId, workspace)
+                workspace.studentWaitList.add(userId)
+            }
+
+            WorkspaceRole.TEACHER -> {
+                checkExistInWorkspace(userId, workspace)
+                workspace.teacherWaitList.add(userId)
+            }
+
             WorkspaceRole.MIDDLE_ADMIN -> Unit
         }
 
@@ -278,9 +292,7 @@ class WorkspaceServiceImpl(
     override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
-            CustomException(WorkspaceErrorCode.NOT_FOUND)
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
         val response = WorkspaceMemberChartResponse()
 
@@ -322,9 +334,7 @@ class WorkspaceServiceImpl(
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
-            CustomException(WorkspaceErrorCode.NOT_FOUND)
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
         val set = HashSet<RetrieveProfileResponse>()
 

@@ -7,6 +7,7 @@ import com.seugi.api.domain.notification.exception.NotificationErrorCode
 import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
+import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
@@ -21,9 +22,13 @@ class NotificationServiceImpl(
     private val noticeMapper: NotificationMapper,
 ) : NotificationService {
 
+    private fun findWorkspaceById(workspaceId: String): WorkspaceEntity {
+        return workspaceService.findWorkspaceById(workspaceId)
+    }
+
     @Transactional
     override fun createNotice(createNoticeRequest: CreateNotificationRequest, userId: Long): BaseResponse<Unit> {
-        val workspaceEntity = workspaceService.findWorkspaceById(createNoticeRequest.workspaceId)
+        val workspaceEntity = findWorkspaceById(createNoticeRequest.workspaceId)
 
         if (workspaceEntity.student.contains(userId)) throw CustomException(NotificationErrorCode.FORBIDDEN)
 
@@ -53,6 +58,7 @@ class NotificationServiceImpl(
             .orElseThrow { CustomException(NotificationErrorCode.NOT_FOUND) }
 
         noticeEntity.updateNotice(updateNoticeRequest)
+        
         noticeRepository.save(noticeEntity)
 
         return BaseResponse(
@@ -62,7 +68,7 @@ class NotificationServiceImpl(
 
     @Transactional
     override fun deleteNotice(id: Long, workspaceId: String, userId: Long): BaseResponse<Unit> {
-        val workspaceEntity = workspaceService.findWorkspaceById(workspaceId)
+        val workspaceEntity = findWorkspaceById(workspaceId)
         val notice = noticeRepository.findById(id).orElseThrow { CustomException(NotificationErrorCode.NOT_FOUND) }
 
         if (workspaceEntity.workspaceAdmin != userId &&
