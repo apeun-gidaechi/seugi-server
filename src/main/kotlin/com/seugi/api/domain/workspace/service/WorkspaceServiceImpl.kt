@@ -178,6 +178,7 @@ class WorkspaceServiceImpl(
                 checkExistInWorkspace(userId, workspace)
                 workspace.teacherWaitList.add(userId)
             }
+
             WorkspaceRole.MIDDLE_ADMIN -> Unit
         }
 
@@ -291,9 +292,7 @@ class WorkspaceServiceImpl(
     override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
-            CustomException(WorkspaceErrorCode.NOT_FOUND)
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
         val response = WorkspaceMemberChartResponse()
 
@@ -335,9 +334,7 @@ class WorkspaceServiceImpl(
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
 
-        val workspaceEntity: WorkspaceEntity = workspaceRepository.findById(ObjectId(workspaceId)).orElseThrow {
-            CustomException(WorkspaceErrorCode.NOT_FOUND)
-        }
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
         val set = HashSet<RetrieveProfileResponse>()
 
