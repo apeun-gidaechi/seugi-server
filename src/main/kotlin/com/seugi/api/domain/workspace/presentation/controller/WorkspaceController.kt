@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
+import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.presentation.dto.request.*
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/workspace")
 class WorkspaceController(
-    private val workspaceService: WorkspaceService
+    private val workspaceService: WorkspaceService,
 ) {
 
     @PostMapping(path = ["", "/"])
     fun createWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody createWorkspaceRequest: CreateWorkspaceRequest
+        @RequestBody createWorkspaceRequest: CreateWorkspaceRequest,
     ): BaseResponse<String> {
         return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
     }
@@ -55,7 +56,7 @@ class WorkspaceController(
     @GetMapping("/code/{workspaceId}")
     fun getWorkspaceCode(
         @GetAuthenticatedId userId: Long,
-        @PathVariable workspaceId: String
+        @PathVariable workspaceId: String,
     ): BaseResponse<String> {
         return workspaceService.getWorkspaceCode(userId = userId, workspaceId = workspaceId)
     }
@@ -70,7 +71,7 @@ class WorkspaceController(
     @PostMapping("/join")
     fun joinWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest
+        @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest,
     ): BaseResponse<Unit> {
         return workspaceService.joinWorkspace(userId = userId, joinWorkspaceRequest = joinWorkspaceRequest)
     }
@@ -78,7 +79,7 @@ class WorkspaceController(
     @PatchMapping("/add")
     fun addWaitListToWorkspaceMember(
         @GetAuthenticatedId userId: Long,
-        @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest
+        @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
         return workspaceService.addWaitListToWorkspaceMember(
             userId = userId,
@@ -90,8 +91,8 @@ class WorkspaceController(
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
         @RequestParam("workspace", defaultValue = "") workspaceId: String,
-        @RequestParam("role", defaultValue = "STUDENT") role: String
-    ): BaseResponse<Set<Long>> {
+        @RequestParam("role", defaultValue = "STUDENT") role: String,
+    ): BaseResponse<List<RetrieveMemberResponse>> {
         return workspaceService.getWaitList(
             userId = userId,
             getWaitListRequest = GetWaitListRequest(workspaceId = workspaceId, role = WorkspaceRole.valueOf(role))
@@ -101,7 +102,7 @@ class WorkspaceController(
     @PatchMapping(path = ["", "/"])
     fun updateWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest
+        @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest,
     ): BaseResponse<Unit> {
         return workspaceService.updateWorkspace(userId = userId, updateWorkspaceRequest = updateWorkspaceRequest)
     }
@@ -116,7 +117,7 @@ class WorkspaceController(
     @GetMapping("/members/chart")
     fun getWorkspaceMemberChart(
         @GetAuthenticatedId userId: Long,
-        workspaceId: String
+        workspaceId: String,
     ): BaseResponse<WorkspaceMemberChartResponse> {
         return workspaceService.getWorkspaceMemberChart(workspaceId)
     }
@@ -124,7 +125,7 @@ class WorkspaceController(
     @GetMapping("/members")
     fun getWorkspaceMemberList(
         @GetAuthenticatedId userId: Long,
-        workspaceId: String
+        workspaceId: String,
     ): BaseResponse<Set<RetrieveProfileResponse>> {
         return workspaceService.getWorkspaceMemberList(workspaceId)
     }

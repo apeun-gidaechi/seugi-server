@@ -1,5 +1,7 @@
 package com.seugi.api.domain.workspace.service
 
+import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.service.CreateProfileService
@@ -29,6 +31,7 @@ class WorkspaceServiceImpl(
     @Value("\${workspace.code.secret}") private val charset: String,
     private val createProfileService: CreateProfileService,
     private val loadProfilePort: LoadProfilePort,
+    private val loadMemberPort: LoadMemberPort,
 ) : WorkspaceService {
 
     private fun genCode(length: Int = 6): String {
@@ -38,8 +41,20 @@ class WorkspaceServiceImpl(
             .joinToString("")
     }
 
+    private fun getMemberInfo(userId: Long): RetrieveMemberResponse {
+        return RetrieveMemberResponse(loadMemberPort.loadMemberWithId(userId))
+    }
+
+    private fun checkForStudent(workspaceEntity: WorkspaceEntity, userId: Long) {
+        if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+    }
+
+    private fun validateIdLength(workspaceId: String) {
+        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+    }
+
     override fun findWorkspaceById(id: String): WorkspaceEntity {
-        if (id.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+        validateIdLength(id)
         return workspaceRepository.findById(ObjectId(id)).orElseThrow {
             CustomException(WorkspaceErrorCode.NOT_FOUND)
         }
@@ -190,7 +205,10 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>> {
+    override fun getWaitList(
+        userId: Long,
+        getWaitListRequest: GetWaitListRequest,
+    ): BaseResponse<List<RetrieveMemberResponse>> {
 
         if (getWaitListRequest.workspaceId.isEmpty() or getWaitListRequest.role.name.isEmpty()) throw CustomException(
             WorkspaceErrorCode.MEDIA_TYPE_ERROR
@@ -199,13 +217,13 @@ class WorkspaceServiceImpl(
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(getWaitListRequest.workspaceId)
 
         // 학생인 경우 확인 못하게 예외를 던짐
-        if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        checkForStudent(workspaceEntity = workspaceEntity, userId = userId)
 
         when (getWaitListRequest.role) {
             WorkspaceRole.STUDENT -> {
                 return BaseResponse(
                     message = "학생 대기명단 불러오기 성공",
-                    data = workspaceEntity.studentWaitList
+                    data = workspaceEntity.studentWaitList.map { getMemberInfo(it) }
                 )
             }
 
@@ -216,7 +234,7 @@ class WorkspaceServiceImpl(
                 )
                 return BaseResponse(
                     message = "선생님 대기명단 불러오기 성공",
-                    data = workspaceEntity.teacherWaitList
+                    data = workspaceEntity.teacherWaitList.map { getMemberInfo(it) }
                 )
             }
 
@@ -224,12 +242,10 @@ class WorkspaceServiceImpl(
                 if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
                 return BaseResponse(
                     message = "선생님 대기명단 불러오기 성공",
-                    data = workspaceEntity.middleAdminWaitList
+                    data = workspaceEntity.middleAdminWaitList.map { getMemberInfo(it) }
                 )
             }
         }
-
-
     }
 
     @Transactional
@@ -240,7 +256,7 @@ class WorkspaceServiceImpl(
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
 
-        if (workspaceEntity.student.contains(userId)) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        checkForStudent(workspaceEntity = workspaceEntity, userId = userId)
 
         when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
@@ -290,7 +306,7 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
-        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+        validateIdLength(workspaceId)
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
@@ -332,7 +348,7 @@ class WorkspaceServiceImpl(
     }
 
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
-        if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
+        validateIdLength(workspaceId)
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
