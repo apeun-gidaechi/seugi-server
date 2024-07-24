@@ -1,5 +1,6 @@
 package com.seugi.api.domain.workspace.service
 
+import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.presentation.dto.request.*
@@ -17,7 +18,7 @@ interface WorkspaceService {
     fun getWorkspaceCode(userId: Long, workspaceId: String): BaseResponse<String>
     fun searchWorkspace(code: String): BaseResponse<WorkspaceInfoResponse>
     fun joinWorkspace(userId: Long, joinWorkspaceRequest: JoinWorkspaceRequest): BaseResponse<Unit>
-    fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<Set<Long>>
+    fun getWaitList(userId: Long, getWaitListRequest: GetWaitListRequest): BaseResponse<List<RetrieveMemberResponse>>
     fun addWaitListToWorkspaceMember(userId: Long, waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest): BaseResponse<Unit>
     fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit>
     fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit>
