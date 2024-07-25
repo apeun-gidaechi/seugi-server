@@ -30,7 +30,8 @@ class ChatRoomServiceImpl(
     private val messageService: MessageService
 ) : ChatRoomService {
 
-    private fun findChatRoomById(id: String): ChatRoomEntity {
+    @Transactional(readOnly = true)
+    protected fun findChatRoomById(id: String): ChatRoomEntity {
         if (id.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
         return chatRoomRepository.findById(ObjectId(id))
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }

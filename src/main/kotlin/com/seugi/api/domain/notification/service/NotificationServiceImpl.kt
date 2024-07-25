@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notification.service
 
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
+import com.seugi.api.domain.notification.domain.NotificationEntity
 import com.seugi.api.domain.notification.domain.NotificationRepository
 import com.seugi.api.domain.notification.domain.mapper.NotificationMapper
 import com.seugi.api.domain.notification.exception.NotificationErrorCode
@@ -22,7 +23,14 @@ class NotificationServiceImpl(
     private val noticeMapper: NotificationMapper,
 ) : NotificationService {
 
-    private fun findWorkspaceById(workspaceId: String): WorkspaceEntity {
+    @Transactional(readOnly = true)
+    protected fun findNotificationById(notificationId: Long): NotificationEntity {
+        return noticeRepository.findById(notificationId)
+            .orElseThrow { CustomException(NotificationErrorCode.NOT_FOUND) }
+    }
+
+    @Transactional(readOnly = true)
+    protected fun findWorkspaceById(workspaceId: String): WorkspaceEntity {
         return workspaceService.findWorkspaceById(workspaceId)
     }
 
@@ -54,8 +62,7 @@ class NotificationServiceImpl(
 
     @Transactional
     override fun updateNotice(updateNoticeRequest: UpdateNotificationRequest, userId: Long): BaseResponse<Unit> {
-        val noticeEntity = noticeRepository.findById(updateNoticeRequest.id)
-            .orElseThrow { CustomException(NotificationErrorCode.NOT_FOUND) }
+        val noticeEntity = findNotificationById(updateNoticeRequest.id)
 
         noticeEntity.updateNotice(updateNoticeRequest)
         
@@ -69,7 +76,7 @@ class NotificationServiceImpl(
     @Transactional
     override fun deleteNotice(id: Long, workspaceId: String, userId: Long): BaseResponse<Unit> {
         val workspaceEntity = findWorkspaceById(workspaceId)
-        val notice = noticeRepository.findById(id).orElseThrow { CustomException(NotificationErrorCode.NOT_FOUND) }
+        val notice = findNotificationById(id)
 
         if (workspaceEntity.workspaceAdmin != userId &&
             !workspaceEntity.middleAdmin.contains(userId) &&

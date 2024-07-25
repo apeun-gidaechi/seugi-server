@@ -24,7 +24,8 @@ class ChatMemberServiceImpl(
         if (chatRoomId.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
     }
 
-    private fun findByChatRoomId(chatRoomId: String): ChatRoomEntity {
+    @Transactional(readOnly = true)
+    protected fun findByChatRoomId(chatRoomId: String): ChatRoomEntity {
         return chatRoomRepository.findById(ObjectId(chatRoomId))
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
     }
@@ -57,7 +58,8 @@ class ChatMemberServiceImpl(
         )
     }
 
-    private fun addUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
+    @Transactional
+    protected fun addUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
         val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
@@ -78,7 +80,8 @@ class ChatMemberServiceImpl(
 
     }
 
-    private fun kickUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
+    @Transactional
+    protected fun kickUsers(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
         val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
@@ -101,7 +104,8 @@ class ChatMemberServiceImpl(
         )
     }
 
-    private fun transferAdmin(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
+    @Transactional
+    protected fun transferAdmin(userId: Long, chatMemberEventRequest: ChatMemberEventRequest): BaseResponse<Unit> {
 
         if (chatMemberEventRequest.chatMemberUsers.size != 1) throw CustomException(ChatErrorCode.CHAT_TOSS_ADMIN_ERROR)
 
