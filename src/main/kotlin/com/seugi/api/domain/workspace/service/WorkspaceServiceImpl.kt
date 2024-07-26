@@ -260,10 +260,10 @@ class WorkspaceServiceImpl(
 
         when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
-                workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.student.addAll(waitSetWorkspaceMemberRequest.userSet)
             }
 
             WorkspaceRole.TEACHER -> {
@@ -272,19 +272,19 @@ class WorkspaceServiceImpl(
                     WorkspaceErrorCode.FORBIDDEN
                 )
 
-                workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.teacher.addAll(waitSetWorkspaceMemberRequest.userSet)
             }
 
             WorkspaceRole.MIDDLE_ADMIN -> {
                 //어드민만 중간 관리자 추가 가능
                 if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
-                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.approvalUserSet)
-                workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.approvalUserSet)
+                workspaceEntity.middleAdminWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.teacher.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.userSet)
+                workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.userSet)
             }
         }
 
@@ -296,6 +296,37 @@ class WorkspaceServiceImpl(
             message = "${waitSetWorkspaceMemberRequest.role} 맴버 추가 성공"
         )
 
+    }
+
+    @Transactional
+    override fun cancelWaitListToWorkspaceMember(
+        userId: Long,
+        waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
+    ): BaseResponse<Unit> {
+
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
+
+        checkForStudent(workspaceEntity = workspaceEntity, userId = userId)
+
+        when (waitSetWorkspaceMemberRequest.role) {
+            WorkspaceRole.STUDENT -> {
+                workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+
+            WorkspaceRole.TEACHER -> {
+                workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+
+            WorkspaceRole.MIDDLE_ADMIN -> {
+                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+        }
+
+        workspaceRepository.save(workspaceEntity)
+
+        return BaseResponse(
+            message = "취소 성공"
+        )
     }
 
     private fun setRetrieveProfileResponse(userId: Long, workspaceId: String): RetrieveProfileResponse {
