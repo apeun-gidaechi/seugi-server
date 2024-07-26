@@ -298,6 +298,37 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional
+    override fun cancelWaitListToWorkspaceMember(
+        userId: Long,
+        waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
+    ): BaseResponse<Unit> {
+
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
+
+        checkForStudent(workspaceEntity = workspaceEntity, userId = userId)
+
+        when (waitSetWorkspaceMemberRequest.role) {
+            WorkspaceRole.STUDENT -> {
+                workspaceEntity.studentWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+
+            WorkspaceRole.TEACHER -> {
+                workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+
+            WorkspaceRole.MIDDLE_ADMIN -> {
+                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
+            }
+        }
+
+        workspaceRepository.save(workspaceEntity)
+
+        return BaseResponse(
+            message = "취소 성공"
+        )
+    }
+
     private fun setRetrieveProfileResponse(userId: Long, workspaceId: String): RetrieveProfileResponse {
         return RetrieveProfileResponse(
             loadProfilePort.loadProfile(userId, workspaceId)

@@ -87,6 +87,14 @@ class WorkspaceController(
         )
     }
 
+    @DeleteMapping("/cancel")
+    fun cancelWaitListToWorkspaceMember(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
+    ): BaseResponse<Unit> {
+        return workspaceService.cancelWaitListToWorkspaceMember(userId, waitSetWorkspaceMemberRequest)
+    }
+
     @GetMapping("/wait-list")
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
