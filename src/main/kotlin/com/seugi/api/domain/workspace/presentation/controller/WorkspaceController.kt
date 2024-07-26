@@ -90,7 +90,7 @@ class WorkspaceController(
     @GetMapping("/wait-list")
     fun getWaitList(
         @GetAuthenticatedId userId: Long,
-        @RequestParam("workspace", defaultValue = "") workspaceId: String,
+        @RequestParam("workspaceId", defaultValue = "") workspaceId: String,
         @RequestParam("role", defaultValue = "STUDENT") role: String,
     ): BaseResponse<List<RetrieveMemberResponse>> {
         return workspaceService.getWaitList(
