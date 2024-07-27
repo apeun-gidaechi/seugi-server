@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notification.domain
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -31,7 +32,7 @@ class NotificationEntity(
 
     @ElementCollection
     @Column(nullable = false)
-    val emoji: List<String> = emptyList(),
+    val emoji: MutableList<NotificationEmoji> = mutableListOf(),
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
