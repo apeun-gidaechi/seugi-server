@@ -3,9 +3,11 @@ package com.seugi.api.domain.notification.service
 import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
 import com.seugi.api.domain.notification.domain.NotificationEntity
 import com.seugi.api.domain.notification.domain.NotificationRepository
+import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 import com.seugi.api.domain.notification.domain.mapper.NotificationMapper
 import com.seugi.api.domain.notification.exception.NotificationErrorCode
 import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
+import com.seugi.api.domain.notification.presentation.dto.request.NotificationEmojiRequest
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
@@ -65,7 +67,7 @@ class NotificationServiceImpl(
         val noticeEntity = findNotificationById(updateNoticeRequest.id)
 
         noticeEntity.updateNotice(updateNoticeRequest)
-        
+
         noticeRepository.save(noticeEntity)
 
         return BaseResponse(
@@ -92,5 +94,45 @@ class NotificationServiceImpl(
             message = "공지 삭제 성공"
         )
     }
+
+    private fun addEmoji(
+        notification: NotificationEntity,
+        userId: Long,
+        notificationEmojiRequest: NotificationEmojiRequest,
+    ) {
+        notification.emoji.add(
+            NotificationEmoji(
+                emoji = notificationEmojiRequest.emoji,
+                userId = userId
+            )
+        )
+    }
+
+    private fun removeEmoji(
+        notification: NotificationEntity,
+        matchEmoji: NotificationEmoji,
+    ) {
+        matchEmoji.let(notification.emoji::remove)
+    }
+
+    @Transactional
+    override fun toggleEmoji(userId: Long, notificationEmojiRequest: NotificationEmojiRequest): BaseResponse<Unit> {
+        val notification = findNotificationById(notificationEmojiRequest.notificationId)
+
+        val matchedEmoji = notification.emoji.find { it.emoji == notificationEmojiRequest.emoji && it.userId == userId }
+
+        if (notification.id == notificationEmojiRequest.notificationId && matchedEmoji != null) {
+            removeEmoji(notification, matchedEmoji)
+        } else {
+            addEmoji(notification, userId, notificationEmojiRequest)
+        }
+
+        noticeRepository.save(notification)
+
+        return BaseResponse(
+            message = "성공"
+        )
+    }
+
 
 }
