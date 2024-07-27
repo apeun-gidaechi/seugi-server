@@ -5,12 +5,13 @@ import com.seugi.api.domain.notification.presentation.dto.request.NotificationEm
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.domain.Pageable
 
 interface NotificationService {
 
     fun createNotice(createNoticeRequest: CreateNotificationRequest, userId: Long): BaseResponse<Unit>
 
-    fun getNotices(workspaceId: String, userId: Long): BaseResponse<List<NotificationResponse>>
+    fun getNotices(workspaceId: String, userId: Long, pageable: Pageable): BaseResponse<List<NotificationResponse>>
 
     fun updateNotice(updateNoticeRequest: UpdateNotificationRequest, userId: Long): BaseResponse<Unit>
 

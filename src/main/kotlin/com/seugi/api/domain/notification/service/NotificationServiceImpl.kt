@@ -14,6 +14,7 @@ import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -51,10 +52,14 @@ class NotificationServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getNotices(workspaceId: String, userId: Long): BaseResponse<List<NotificationResponse>> {
+    override fun getNotices(
+        workspaceId: String,
+        userId: Long,
+        pageable: Pageable,
+    ): BaseResponse<List<NotificationResponse>> {
         return BaseResponse(
             message = "공지 불러오기 성공",
-            data = noticeRepository.findByWorkspaceId(workspaceId).map {
+            data = noticeRepository.findByWorkspaceId(workspaceId, pageable).map {
                 noticeMapper.transferNoticeResponse(
                     noticeMapper.toDomain(it)
                 )

@@ -7,6 +7,9 @@ import com.seugi.api.domain.notification.presentation.dto.response.NotificationR
 import com.seugi.api.domain.notification.service.NotificationService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -30,10 +33,12 @@ class NotificationController(
     fun getNotices(
         @PathVariable workspaceId: String,
         @GetAuthenticatedId userId: Long,
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable,
     ): BaseResponse<List<NotificationResponse>> {
         return noticeService.getNotices(
             workspaceId = workspaceId,
-            userId = userId
+            userId = userId,
+            pageable = pageable
         )
     }
 
