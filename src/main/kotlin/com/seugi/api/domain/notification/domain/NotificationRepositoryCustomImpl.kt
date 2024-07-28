@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notification.domain
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
 
@@ -9,7 +10,7 @@ class NotificationRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : NotificationRepositoryCustom {
 
-    override fun findByWorkspaceId(workspaceId: String): List<NotificationEntity> {
+    override fun findByWorkspaceId(workspaceId: String, pageable: Pageable): List<NotificationEntity> {
         val notice: QNotificationEntity = QNotificationEntity.notificationEntity
 
         return jpaQueryFactory
@@ -19,7 +20,9 @@ class NotificationRepositoryCustomImpl(
                 notice.workspaceId.eq(workspaceId),
                 notice.deleted.isFalse
             )
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
             .fetch().orEmpty().toList()
-
     }
+
 }

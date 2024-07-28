@@ -53,6 +53,7 @@ class WorkspaceServiceImpl(
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
     }
 
+    @Transactional(readOnly = true)
     override fun findWorkspaceById(id: String): WorkspaceEntity {
         validateIdLength(id)
         return workspaceRepository.findById(ObjectId(id)).orElseThrow {
@@ -60,6 +61,7 @@ class WorkspaceServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
     override fun getWorkspace(workspaceId: String, userId: Long): BaseResponse<WorkspaceResponse> {
         return BaseResponse(
             message = "워크스페이스 단건 조회 성공",
@@ -121,6 +123,7 @@ class WorkspaceServiceImpl(
 
     }
 
+    @Transactional(readOnly = true)
     override fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceInfoResponse>> {
         return BaseResponse(
             message = "자신이 대기중인 워크스페이스 모두 불러오기",
@@ -378,6 +381,7 @@ class WorkspaceServiceImpl(
         }
     }
 
+    @Transactional(readOnly = true)
     override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
         validateIdLength(workspaceId)
 
