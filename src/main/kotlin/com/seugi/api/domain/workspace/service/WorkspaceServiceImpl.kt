@@ -77,13 +77,19 @@ class WorkspaceServiceImpl(
             workspaceCode = genCode()
         } while (workspaceRepository.existsByWorkspaceCode(workspaceCode))
 
+        var workspaceEntity = workspaceMapper.toEntity(
+            workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
+        )
+
+        workspaceEntity = workspaceRepository.save(workspaceEntity)
+
+        val workspaceId = workspaceEntity.id.toString()
+
+        createProfileService.createProfile(userId, workspaceId)
+
         return BaseResponse(
             message = "워크스페이스 생성 완료",
-            data = workspaceRepository.save(
-                workspaceMapper.toEntity(
-                    workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
-                )
-            ).id.toString()
+            data = workspaceId
         )
     }
 
