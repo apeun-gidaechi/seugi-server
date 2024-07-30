@@ -51,3 +51,6 @@ application-aws.yml
 application-space.yml
 application-act.yml
 application-test.yml
+
+application-local.yml
+application-prod.yml
