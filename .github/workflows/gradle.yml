@@ -40,6 +40,9 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.yml
           cat ./src/main/resources/application-local.yml
 
+      - name: List files in src/main/resources
+        run: ls -l ./src/main/resources
+
       # Gradle build
       - name: Build with Gradle
         run: ./gradlew build
