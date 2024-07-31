@@ -40,7 +40,6 @@ out/
 .kotlin
 
 ### Seula's Setting ###
-application.yml
 application-mysql.yml
 application-oauth.yml
 application-redis.yml
@@ -51,3 +50,6 @@ application-aws.yml
 application-space.yml
 application-act.yml
 application-test.yml
+
+application-local.yml
+application-prod.yml
