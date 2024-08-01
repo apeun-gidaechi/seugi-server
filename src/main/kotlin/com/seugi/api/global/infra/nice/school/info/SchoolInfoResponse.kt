@@ -3,11 +3,11 @@ package com.seugi.api.global.infra.nice.school.info
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class SchoolInfoResponse(
-    @JsonProperty("schoolInfo") val schoolInfo: List<SchoolInfo>? = null,
+    @JsonProperty("schoolInfo") val schoolInfos: List<SchoolInfos>? = null,
     @JsonProperty("RESULT") val result: Result? = null,
 )
 
-data class SchoolInfo(
+data class SchoolInfos(
     @JsonProperty("head") val head: List<Head>? = null,
     @JsonProperty("row") val row: List<SchoolRow>? = null,
 )
