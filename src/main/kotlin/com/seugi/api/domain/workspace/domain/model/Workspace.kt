@@ -2,7 +2,7 @@ package com.seugi.api.domain.workspace.domain.model
 
 import com.seugi.api.domain.workspace.domain.enums.Status
 
-data class Workspace (
+data class Workspace(
     val workspaceId: String? = null,
     val workspaceName: String? = null,
     val workspaceImageUrl: String? = null,
@@ -14,5 +14,6 @@ data class Workspace (
     val student: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val teacher: MutableSet<Long> = emptySet<Long>().toMutableSet(),
     val workspaceCode: String? = null,
-    val workspaceStatus: Status = Status.ALIVE
+    val workspaceStatus: Status = Status.ALIVE,
+    val schoolInfo: SchoolInfo,
 )
