@@ -16,6 +16,7 @@ import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoRes
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.infra.nice.school.NiceSchoolService
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
@@ -32,6 +33,7 @@ class WorkspaceServiceImpl(
     private val createProfileService: CreateProfileService,
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
+    private val niceSchoolService: NiceSchoolService,
 ) : WorkspaceService {
 
     private fun genCode(length: Int = 6): String {
@@ -78,7 +80,14 @@ class WorkspaceServiceImpl(
         } while (workspaceRepository.existsByWorkspaceCode(workspaceCode))
 
         var workspaceEntity = workspaceMapper.toEntity(
-            workspaceMapper.toWorkspace(createWorkspaceRequest, userId, workspaceCode)
+            workspaceMapper.toWorkspace(
+                createWorkspaceRequest = createWorkspaceRequest,
+                userId = userId,
+                workspaceCode = workspaceCode,
+                schoolInfo = niceSchoolService.getSchoolInfo(
+                    schoolName = createWorkspaceRequest.workspaceName
+                )
+            )
         )
 
         workspaceEntity = workspaceRepository.save(workspaceEntity)
