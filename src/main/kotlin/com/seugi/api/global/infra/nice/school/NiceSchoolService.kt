@@ -3,7 +3,8 @@ package com.seugi.api.global.infra.nice.school
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
-import com.seugi.api.global.infra.nice.school.info.SchoolRow
+import com.seugi.api.global.infra.nice.school.meal.SchoolMealClient
+import com.seugi.api.global.infra.nice.school.meal.SchoolMealResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -22,13 +23,13 @@ class NiceSchoolService(
             schoolNm = schoolName
         )
 
-        val schoolData: SchoolRow? = schoolResponse.schoolInfos?.get(1)?.row?.get(0)
+        val schoolData = schoolResponse.schoolInfos?.get(1)?.row?.get(0)
 
         return if (schoolData == null) {
             SchoolInfo(
-                scCode = "",
-                sdCode = "",
-                scType = ""
+                scCode = " ",
+                sdCode = " ",
+                scType = "기타"
             )
         } else {
             SchoolInfo(
