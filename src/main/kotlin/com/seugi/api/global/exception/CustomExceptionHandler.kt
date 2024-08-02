@@ -35,10 +35,18 @@ class CustomExceptionHandler(
 
 
     @ExceptionHandler
-    fun handleAllException(e: Exception, webRequest: WebRequest) {
+    fun handleAllException(e: Exception, webRequest: WebRequest): ResponseEntity<Any> {
         e.printStackTrace()
         sendDiscordAlert(e, webRequest)
-        throw CustomException(CommonErrorCode.INTERNAL_SERVER_ERROR)
+
+        val response = BaseResponse<Unit>(
+            status = CommonErrorCode.INTERNAL_SERVER_ERROR.status.value(),
+            state = CommonErrorCode.INTERNAL_SERVER_ERROR.state,
+            success = false,
+            message = "서버 오류가 발생하였습니다. ${e.message}"
+        )
+
+        return ResponseEntity(response, CommonErrorCode.INTERNAL_SERVER_ERROR.status)
     }
 
     fun sendDiscordAlert(e: Exception, webRequest: WebRequest) {
