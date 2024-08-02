@@ -1,11 +1,10 @@
 package com.seugi.api.global.infra.nice.school.info
 
-import com.seugi.api.global.config.FeignConfig
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 
-@FeignClient(name = "schoolInfoClient", url = "\${nice.school.info.url}", configuration = [FeignConfig::class])
+@FeignClient(name = "schoolInfoClient", url = "\${nice.school.info.url}")
 interface SchoolInfoClient {
     @GetMapping
     fun getSchoolInfo(

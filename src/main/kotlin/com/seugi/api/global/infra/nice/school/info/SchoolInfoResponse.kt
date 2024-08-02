@@ -1,6 +1,7 @@
 package com.seugi.api.global.infra.nice.school.info
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.seugi.api.global.infra.nice.school.meal.Result
 
 data class SchoolInfoResponse(
     @JsonProperty("schoolInfo") val schoolInfos: List<SchoolInfos>? = null,
@@ -9,7 +10,7 @@ data class SchoolInfoResponse(
 
 data class SchoolInfos(
     @JsonProperty("head") val head: List<Head>? = null,
-    @JsonProperty("row") val row: List<SchoolRow>? = null,
+    @JsonProperty("row") val row: List<Row>? = null,
 )
 
 data class Head(
@@ -22,7 +23,7 @@ data class Result(
     @JsonProperty("MESSAGE") val message: String? = null,
 )
 
-data class SchoolRow(
+data class Row(
     @JsonProperty("ATPT_OFCDC_SC_CODE") val atptOfcdcScCode: String? = null,
     @JsonProperty("ATPT_OFCDC_SC_NM") val atptOfcdcScNm: String? = null,
     @JsonProperty("SD_SCHUL_CODE") val sdSchulCode: String? = null,
