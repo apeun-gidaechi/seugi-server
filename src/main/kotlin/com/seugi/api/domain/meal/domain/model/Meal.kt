@@ -9,3 +9,13 @@ data class Meal(
     val mealInfo: String? = null,
     val mealDate: String? = null,
 )
+
+data class MealResponse(
+    val id: Long? = null,
+    val workspaceId: String? = null,
+    val mealType: String? = null,
+    val menu: List<String> = emptyList(),
+    val calorie: String? = null,
+    val mealInfo: List<String> = emptyList(),
+    val mealDate: String? = null,
+)

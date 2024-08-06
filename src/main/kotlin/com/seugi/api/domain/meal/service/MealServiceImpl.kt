@@ -1,8 +1,10 @@
 package com.seugi.api.domain.meal.service
 
+import com.seugi.api.domain.meal.domain.MealEntity
 import com.seugi.api.domain.meal.domain.MealRepository
 import com.seugi.api.domain.meal.domain.mapper.MealMapper
 import com.seugi.api.domain.meal.domain.model.Meal
+import com.seugi.api.domain.meal.domain.model.MealResponse
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
@@ -49,6 +51,12 @@ class MealServiceImpl(
         )
     }
 
+    private fun toMealResponse(meals: List<MealEntity>): List<MealResponse> {
+        return meals.map {
+            mealMapper.toResponse(mealMapper.toDomain(it))
+        }
+    }
+
     @Transactional
     override fun resetMealByWorkspaceId(workspaceId: String): BaseResponse<Unit> {
 
@@ -72,7 +80,7 @@ class MealServiceImpl(
     }
 
     @Transactional
-    override fun getMealByDate(workspaceId: String, mealDate: String): BaseResponse<List<Meal>> {
+    override fun getMealByDate(workspaceId: String, mealDate: String): BaseResponse<List<MealResponse>> {
 
         if (!mealRepository.checkMeal(workspaceId)) {
             resetMealByWorkspaceId(workspaceId)
@@ -80,16 +88,20 @@ class MealServiceImpl(
 
         return BaseResponse(
             message = "날짜로 급식 조회 성공",
-            data = mealRepository.getMealsByDateAndWorkspaceId(mealDate = mealDate, workspaceId = workspaceId).map {
-                mealMapper.toDomain(it)
-            }
+            data = toMealResponse(
+                mealRepository.getMealsByDateAndWorkspaceId(
+                    mealDate = mealDate,
+                    workspaceId = workspaceId
+                )
+            )
+
         )
 
 
     }
 
     @Transactional
-    override fun getAllMeals(workspaceId: String): BaseResponse<List<Meal>> {
+    override fun getAllMeals(workspaceId: String): BaseResponse<List<MealResponse>> {
 
         if (!mealRepository.checkMeal(workspaceId)) {
             resetMealByWorkspaceId(workspaceId)
@@ -97,9 +109,7 @@ class MealServiceImpl(
 
         return BaseResponse(
             message = "모든 급식 조회 성공",
-            data = mealRepository.findAllByWorkspaceId(workspaceId).map {
-                mealMapper.toDomain(it)
-            }
+            data = toMealResponse(mealRepository.findAllByWorkspaceId(workspaceId))
         )
 
     }
