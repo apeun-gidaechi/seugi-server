@@ -10,7 +10,13 @@ class MealMapper : Mapper<Meal, MealEntity> {
 
     override fun toDomain(entity: MealEntity): Meal {
         return Meal(
-
+            id = entity.id,
+            workspaceId = entity.workspaceId,
+            mealType = entity.mealType,
+            menu = entity.menu,
+            calorie = entity.calorie,
+            mealInfo = entity.mealInfo,
+            mealDate = entity.mealDate
         )
     }
 
