@@ -36,6 +36,7 @@ class MealMapper : Mapper<Meal, MealEntity> {
         return MealResponse(
             id = meal.id,
             workspaceId = meal.workspaceId,
+            mealType = meal.mealType,
             menu = meal.menu?.split("<br/>") ?: emptyList(),
             calorie = meal.calorie,
             mealInfo = meal.mealInfo?.split("<br/>") ?: emptyList(),
