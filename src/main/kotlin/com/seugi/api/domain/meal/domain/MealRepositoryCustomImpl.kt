@@ -38,4 +38,13 @@ class MealRepositoryCustomImpl(
             .fetch()
     }
 
+    override fun deleteMealByWorkspaceId(workspaceId: String) {
+        val meal: QMealEntity = QMealEntity.mealEntity
+
+        jpaQueryFactory
+            .delete(meal)
+            .where(meal.workspaceId.eq(workspaceId))
+            .execute()
+    }
+
 }

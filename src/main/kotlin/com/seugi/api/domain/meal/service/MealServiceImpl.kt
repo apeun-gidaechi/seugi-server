@@ -70,6 +70,8 @@ class MealServiceImpl(
             workspaceId = workspaceId
         )
 
+        mealRepository.deleteMealByWorkspaceId(workspaceId)
+
         saveMeals(meals)
 
 
