@@ -9,6 +9,7 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
 import com.seugi.api.global.response.BaseResponse
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -20,6 +21,11 @@ class MealServiceImpl(
     private val workspaceService: WorkspaceService,
     private val niceSchoolService: NiceSchoolService,
 ) : MealService {
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    private fun resetAllMeal() {
+        mealRepository.deleteAll()
+    }
 
     private fun getMeals(schoolInfo: SchoolInfo, startDate: String, endDate: String): List<Meal> {
         return niceSchoolService.getSchoolMeal(
