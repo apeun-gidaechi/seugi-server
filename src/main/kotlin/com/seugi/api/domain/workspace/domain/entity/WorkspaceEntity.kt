@@ -1,13 +1,14 @@
 package com.seugi.api.domain.workspace.domain.entity
 
 import com.seugi.api.domain.workspace.domain.enums.Status
+import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
 
 @Document(collection = "workspace")
-class WorkspaceEntity (
+class WorkspaceEntity(
 
     @Id
     val id: ObjectId? = null,
@@ -32,6 +33,8 @@ class WorkspaceEntity (
 
     val workspaceCode: String? = null,
 
-    var status: Status
+    var status: Status,
 
-)
+    val schoolInfo: SchoolInfo,
+
+    )

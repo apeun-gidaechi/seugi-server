@@ -1,6 +1,7 @@
 package com.seugi.api.domain.workspace.domain.mapper
 
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
+import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.domain.model.Workspace
 import com.seugi.api.domain.workspace.presentation.dto.request.CreateWorkspaceRequest
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoResponse
@@ -24,7 +25,8 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             student = entity.student,
             teacher = entity.teacher,
             workspaceCode = entity.workspaceCode,
-            workspaceStatus = entity.status
+            workspaceStatus = entity.status,
+            schoolInfo = entity.schoolInfo
         )
     }
 
@@ -40,16 +42,23 @@ class WorkspaceMapper: Mapper<Workspace, WorkspaceEntity> {
             student = domain.student,
             teacher = domain.teacher,
             workspaceCode = domain.workspaceCode,
-            status = domain.workspaceStatus
+            status = domain.workspaceStatus,
+            schoolInfo = domain.schoolInfo
         )
     }
 
-    fun toWorkspace(createWorkspaceRequest: CreateWorkspaceRequest, userId: Long, workspaceCode: String): Workspace {
+    fun toWorkspace(
+        createWorkspaceRequest: CreateWorkspaceRequest,
+        userId: Long,
+        workspaceCode: String,
+        schoolInfo: SchoolInfo,
+    ): Workspace {
         return Workspace(
             workspaceName = createWorkspaceRequest.workspaceName,
             workspaceImageUrl = createWorkspaceRequest.workspaceImageUrl,
             workspaceAdmin = userId,
-            workspaceCode = workspaceCode
+            workspaceCode = workspaceCode,
+            schoolInfo = schoolInfo
         )
     }
 
