@@ -27,7 +27,7 @@ interface WorkspaceService {
     fun deleteWorkspace(userId: Long, workspaceId: String): BaseResponse<Unit>
     fun updateWorkspace(userId: Long, updateWorkspaceRequest: UpdateWorkspaceRequest): BaseResponse<Unit>
     fun getMyWaitList(userId: Long): BaseResponse<List<WorkspaceInfoResponse>>
-    fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse>
-    fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>>
+    fun getWorkspaceMemberChart(userId: Long, workspaceId: String): BaseResponse<WorkspaceMemberChartResponse>
+    fun getWorkspaceMemberList(userId: Long, workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>>
 
 }

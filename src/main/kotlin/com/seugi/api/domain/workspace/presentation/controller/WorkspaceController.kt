@@ -125,17 +125,17 @@ class WorkspaceController(
     @GetMapping("/members/chart")
     fun getWorkspaceMemberChart(
         @GetAuthenticatedId userId: Long,
-        workspaceId: String,
+        @RequestParam workspaceId: String,
     ): BaseResponse<WorkspaceMemberChartResponse> {
-        return workspaceService.getWorkspaceMemberChart(workspaceId)
+        return workspaceService.getWorkspaceMemberChart(userId, workspaceId)
     }
 
     @GetMapping("/members")
     fun getWorkspaceMemberList(
         @GetAuthenticatedId userId: Long,
-        workspaceId: String,
+        @RequestParam workspaceId: String,
     ): BaseResponse<Set<RetrieveProfileResponse>> {
-        return workspaceService.getWorkspaceMemberList(workspaceId)
+        return workspaceService.getWorkspaceMemberList(userId, workspaceId)
     }
 
 }

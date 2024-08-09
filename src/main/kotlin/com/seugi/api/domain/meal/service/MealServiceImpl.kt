@@ -23,7 +23,7 @@ class MealServiceImpl(
 ) : MealService {
 
     @Scheduled(cron = "0 0 0 1 * ?")
-    private fun resetAllMeal() {
+    protected fun resetAllMeal() {
         mealRepository.deleteAll()
     }
 
