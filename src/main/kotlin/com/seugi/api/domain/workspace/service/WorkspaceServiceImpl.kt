@@ -65,9 +65,14 @@ class WorkspaceServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getWorkspace(workspaceId: String, userId: Long): BaseResponse<WorkspaceResponse> {
+
+        val workspaceEntity = findWorkspaceById(workspaceId)
+
+        checkExistInWorkspace(userId, workspaceEntity)
+
         return BaseResponse(
             message = "워크스페이스 단건 조회 성공",
-            data = workspaceMapper.toWorkspaceResponse(findWorkspaceById(workspaceId))
+            data = workspaceMapper.toWorkspaceResponse(workspaceEntity)
         )
     }
 
@@ -354,10 +359,15 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWorkspaceMemberChart(workspaceId: String): BaseResponse<WorkspaceMemberChartResponse> {
+    override fun getWorkspaceMemberChart(
+        userId: Long,
+        workspaceId: String,
+    ): BaseResponse<WorkspaceMemberChartResponse> {
         validateIdLength(workspaceId)
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
+
+        checkExistInWorkspace(userId, workspaceEntity)
 
         val response = WorkspaceMemberChartResponse()
 
@@ -397,10 +407,12 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getWorkspaceMemberList(workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
+    override fun getWorkspaceMemberList(userId: Long, workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>> {
         validateIdLength(workspaceId)
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
+
+        checkExistInWorkspace(userId, workspaceEntity)
 
         val set = HashSet<RetrieveProfileResponse>()
 
