@@ -46,7 +46,7 @@ class ProfileAdapter(
                 CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
             }
 
-        return profileRepository.existByMemberIdAndWorkspaceId(memberEntity, workspaceId)
+        return profileRepository.existsByMemberIdAndWorkspaceId(memberEntity, workspaceId)
     }
 
 }
