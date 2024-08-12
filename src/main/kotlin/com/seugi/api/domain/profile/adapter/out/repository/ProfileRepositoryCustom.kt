@@ -7,6 +7,6 @@ import java.util.Optional
 interface ProfileRepositoryCustom {
 
     fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity>
-    fun existByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Boolean
+    fun existsByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Boolean
 
 }
