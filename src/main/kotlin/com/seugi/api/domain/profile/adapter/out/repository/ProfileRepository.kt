@@ -10,5 +10,6 @@ import java.util.Optional
 interface ProfileRepository : CrudRepository<ProfileEntity, Long>, ProfileRepositoryCustom {
 
     override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity>
+    override fun existsByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Boolean
 
 }
