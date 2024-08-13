@@ -55,6 +55,25 @@ class WorkspaceServiceImpl(
         if (workspaceId.length != 24) throw CustomException(WorkspaceErrorCode.NOT_FOUND)
     }
 
+    private fun hasPermission(userId: Long, workspace: WorkspaceEntity): Boolean {
+        return workspace.workspaceAdmin == userId ||
+                workspace.middleAdmin.contains(userId) ||
+                workspace.teacher.contains(userId) ||
+                workspace.student.contains(userId)
+    }
+
+    private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
+        if (hasPermission(userId, workspace)) {
+            throw CustomException(WorkspaceErrorCode.EXIST)
+        }
+    }
+
+    private fun validateInWorkspace(userId: Long, workspace: WorkspaceEntity) {
+        if (!hasPermission(userId, workspace)) {
+            throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+    }
+
     @Transactional(readOnly = true)
     override fun findWorkspaceById(id: String): WorkspaceEntity {
         validateIdLength(id)
@@ -68,7 +87,7 @@ class WorkspaceServiceImpl(
 
         val workspaceEntity = findWorkspaceById(workspaceId)
 
-        checkExistInWorkspace(userId, workspaceEntity)
+        validateInWorkspace(userId, workspaceEntity)
 
         return BaseResponse(
             message = "워크스페이스 단건 조회 성공",
@@ -191,13 +210,6 @@ class WorkspaceServiceImpl(
             )
         )
 
-    }
-
-    private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
-        if (workspace.workspaceAdmin == userId || workspace.middleAdmin.contains(userId) || workspace.teacher.contains(
-                userId
-            ) || workspace.student.contains(userId)
-        ) throw CustomException(WorkspaceErrorCode.EXIST)
     }
 
     @Transactional
@@ -367,7 +379,7 @@ class WorkspaceServiceImpl(
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
-        checkExistInWorkspace(userId, workspaceEntity)
+        validateInWorkspace(userId, workspaceEntity)
 
         val response = WorkspaceMemberChartResponse()
 
@@ -412,7 +424,7 @@ class WorkspaceServiceImpl(
 
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
 
-        checkExistInWorkspace(userId, workspaceEntity)
+        validateInWorkspace(userId, workspaceEntity)
 
         val set = HashSet<RetrieveProfileResponse>()
 
