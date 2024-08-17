@@ -37,4 +37,12 @@ class WorkspaceEntity(
 
     val schoolInfo: SchoolInfo,
 
-    )
+    ) {
+    fun updateWorkspaceName(workspaceName: String?) {
+        this.workspaceName = workspaceName
+    }
+
+    fun updateWorkspaceImageUrl(workspaceImageUrl: String?) {
+        this.workspaceImageUrl = workspaceImageUrl
+    }
+}
