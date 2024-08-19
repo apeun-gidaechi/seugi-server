@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 
 
-@FeignClient(name = "schoolMealClient", url = "\${nice.school.timetable.base.url}")
+@FeignClient(name = "schoolTimetableClient", url = "\${nice.school.timetable.base.url}")
 interface SchoolTimetableClient {
     @GetMapping("/hisTimetable")
     fun getHisTimetable(

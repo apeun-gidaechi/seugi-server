@@ -83,7 +83,7 @@ class NiceSchoolService(
         )
     }
 
-    fun getSchoolTimeTable(schoolInfo: SchoolInfo, startData: String, endData: String): List<Timetable> {
+    fun getSchoolTimeTable(schoolInfo: SchoolInfo, startDate: String, endDate: String): List<Timetable> {
         val timetables: MutableList<Timetable> = mutableListOf()
         when (schoolInfo.scType) {
             "고등학교" -> {
@@ -94,8 +94,8 @@ class NiceSchoolService(
                     pSize = 100,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
-                    startDate = startData,
-                    endDate = endData
+                    startDate = startDate,
+                    endDate = endDate
                 ).hisTimetable[1].row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
@@ -112,8 +112,8 @@ class NiceSchoolService(
                     pSize = 100,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
-                    startDate = startData,
-                    endDate = endData
+                    startDate = startDate,
+                    endDate = endDate
                 ).misTimetable[1].row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
@@ -129,8 +129,8 @@ class NiceSchoolService(
                     pSize = 100,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
-                    startDate = startData,
-                    endDate = endData
+                    startDate = startDate,
+                    endDate = endDate
                 ).elsTimetable[1].row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
