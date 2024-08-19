@@ -1,10 +1,13 @@
 package com.seugi.api.global.infra.nice.school
 
 import com.seugi.api.domain.meal.domain.model.Meal
+import com.seugi.api.domain.timetable.domain.model.Timetable
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
 import com.seugi.api.global.infra.nice.school.meal.SchoolMealClient
+import com.seugi.api.global.infra.nice.school.timetable.Row
+import com.seugi.api.global.infra.nice.school.timetable.SchoolTimetableClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service
 class NiceSchoolService(
     private val schoolInfoClient: SchoolInfoClient,
     private val schoolMealClient: SchoolMealClient,
+    private val schoolTimetableClient: SchoolTimetableClient,
     @Value("\${nice.key}") private val key: String,
 ) {
 
@@ -68,6 +72,76 @@ class NiceSchoolService(
         } ?: emptyList()
 
         return meals
+    }
+
+    private fun niceTimetableToModel(niceData: Row): Timetable {
+        return Timetable(
+            grade = niceData.grade,
+            classNum = niceData.classNm,
+            time = niceData.perio,
+            subject = niceData.itrtCntnt
+        )
+    }
+
+    fun getSchoolTimeTable(schoolInfo: SchoolInfo, startData: String, endData: String): List<Timetable> {
+        val timetables: MutableList<Timetable> = mutableListOf()
+        when (schoolInfo.scType) {
+            "고등학교" -> {
+                schoolTimetableClient.getHisTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 100,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startData,
+                    endDate = endData
+                ).hisTimetable[1].row?.map {
+                    timetables.add(
+                        niceTimetableToModel(it)
+                    )
+                }
+            }
+
+
+            "중학교" -> {
+                schoolTimetableClient.getMisTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 100,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startData,
+                    endDate = endData
+                ).misTimetable[1].row?.map {
+                    timetables.add(
+                        niceTimetableToModel(it)
+                    )
+                }
+            }
+
+            "초등학교" -> {
+                schoolTimetableClient.getElsTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 100,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startData,
+                    endDate = endData
+                ).elsTimetable[1].row?.map {
+                    timetables.add(
+                        niceTimetableToModel(it)
+                    )
+                }
+            }
+
+            else -> {}
+        }
+
+        return timetables
     }
 
 
