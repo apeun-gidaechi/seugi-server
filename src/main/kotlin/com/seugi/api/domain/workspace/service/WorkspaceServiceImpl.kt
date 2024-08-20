@@ -68,7 +68,7 @@ class WorkspaceServiceImpl(
             workspace.middleAdmin.contains(userId) -> "MIDDLE_ADMIN"
             workspace.teacher.contains(userId) -> "TEACHER"
             workspace.student.contains(userId) -> "STUDENT"
-            else -> "NO_PERMISSION"
+            else -> throw CustomException(WorkspaceErrorCode.FORBIDDEN)
         }
     }
 
