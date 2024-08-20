@@ -3,15 +3,18 @@ package com.seugi.api.global.infra.nice.school.timetable
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class HisTimetable(
-    @JsonProperty("hisTimetable") val hisTimetable: List<Item>,
+    @JsonProperty("hisTimetable") val hisTimetable: List<Item>?,
+    @JsonProperty("RESULT") val result: Result?,
 )
 
 data class MisTimetable(
-    @JsonProperty("misTimetable") val misTimetable: List<Item>,
+    @JsonProperty("misTimetable") val misTimetable: List<Item>?,
+    @JsonProperty("RESULT") val result: Result?,
 )
 
 data class ElsTimetable(
-    @JsonProperty("elsTimetable") val elsTimetable: List<Item>,
+    @JsonProperty("elsTimetable") val elsTimetable: List<Item>?,
+    @JsonProperty("RESULT") val result: Result?,
 )
 
 data class Item(

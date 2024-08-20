@@ -96,7 +96,7 @@ class NiceSchoolService(
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).hisTimetable[1].row?.map {
+                ).hisTimetable?.get(1)?.row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
                     )
@@ -114,7 +114,7 @@ class NiceSchoolService(
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).misTimetable[1].row?.map {
+                ).misTimetable?.get(1)?.row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
                     )
@@ -131,7 +131,7 @@ class NiceSchoolService(
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).elsTimetable[1].row?.map {
+                ).elsTimetable?.get(1)?.row?.map {
                     timetables.add(
                         niceTimetableToModel(it)
                     )
