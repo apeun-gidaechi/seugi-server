@@ -3,8 +3,8 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
+import com.seugi.api.domain.profile.application.port.`in`.CreateProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
-import com.seugi.api.domain.profile.application.service.CreateProfileService
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.enums.Status
@@ -30,7 +30,7 @@ class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
-    private val createProfileService: CreateProfileService,
+    private val createProfileService: CreateProfileUseCase,
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
@@ -313,7 +313,9 @@ class WorkspaceServiceImpl(
 
         workspaceRepository.save(workspaceEntity)
 
-        createProfileService.createProfile(userId, waitSetWorkspaceMemberRequest.workspaceId)
+        waitSetWorkspaceMemberRequest.userSet.map {
+            createProfileService.createProfile(it, waitSetWorkspaceMemberRequest.workspaceId)
+        }
 
         return BaseResponse(
             message = "${waitSetWorkspaceMemberRequest.role} 맴버 추가 성공"
