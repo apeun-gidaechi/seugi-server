@@ -138,4 +138,12 @@ class WorkspaceController(
         return workspaceService.getWorkspaceMemberList(userId, workspaceId)
     }
 
+    @GetMapping("/permission")
+    fun getMyPermission(
+        @GetAuthenticatedId userId: Long,
+        @RequestParam workspaceId: String)
+    : BaseResponse<String> {
+        return workspaceService.getMyPermission(userId, workspaceId)
+    }
+
 }

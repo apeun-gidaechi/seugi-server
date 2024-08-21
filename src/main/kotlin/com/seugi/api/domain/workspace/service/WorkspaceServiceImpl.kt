@@ -62,6 +62,16 @@ class WorkspaceServiceImpl(
                 workspace.student.contains(userId)
     }
 
+    private fun getPermission(userId: Long, workspace: WorkspaceEntity): String {
+        return when {
+            workspace.workspaceAdmin == userId -> "ADMIN"
+            workspace.middleAdmin.contains(userId) -> "MIDDLE_ADMIN"
+            workspace.teacher.contains(userId) -> "TEACHER"
+            workspace.student.contains(userId) -> "STUDENT"
+            else -> throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+    }
+
     private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
         if (hasPermission(userId, workspace)) {
             throw CustomException(WorkspaceErrorCode.EXIST)
@@ -447,4 +457,15 @@ class WorkspaceServiceImpl(
             data = set
         )
     }
+
+    @Transactional(readOnly = true)
+    override fun getMyPermission(userId: Long, workspaceId: String): BaseResponse<String> {
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
+
+        return BaseResponse (
+            message = "권한 조회 성공",
+            data = getPermission(userId, workspaceEntity)
+        )
+    }
+
 }
