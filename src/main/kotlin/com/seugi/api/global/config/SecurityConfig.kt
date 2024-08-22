@@ -42,17 +42,14 @@ class SecurityConfig (
             }
 
             .sessionManagement { session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
-                )
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
-                    .requestMatchers("/member/edit", "/member/myInfo").hasRole("USER")
-                    .requestMatchers("/stomp/**").permitAll()
-                    .requestMatchers("$actuatorUrl/**").permitAll()
+                    .requestMatchers("/member/edit", "/member/myInfo").authenticated()
+                    .requestMatchers("/oauth2/**", "/email/**", "/stomp/**", "$actuatorUrl/**").permitAll()
+                    .requestMatchers("/member/**").permitAll()
                     .anyRequest().authenticated()
             }
 
