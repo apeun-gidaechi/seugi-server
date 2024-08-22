@@ -71,6 +71,8 @@ class NotificationServiceImpl(
     override fun updateNotice(updateNoticeRequest: UpdateNotificationRequest, userId: Long): BaseResponse<Unit> {
         val noticeEntity = findNotificationById(updateNoticeRequest.id)
 
+        if (noticeEntity.user!!.id != userId) throw CustomException(NotificationErrorCode.FORBIDDEN)
+
         noticeEntity.updateNotice(updateNoticeRequest)
 
         noticeRepository.save(noticeEntity)
