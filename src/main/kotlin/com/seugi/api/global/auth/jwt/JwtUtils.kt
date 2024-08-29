@@ -1,7 +1,8 @@
 package com.seugi.api.global.auth.jwt
 
 import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.global.auth.jwt.exception.type.JwtErrorType
+import com.seugi.api.global.auth.jwt.exception.JwtErrorCode
+import com.seugi.api.global.exception.CustomException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
@@ -35,22 +36,21 @@ class JwtUtils(
         )
     }
 
-    fun checkTokenInfo(token: String): JwtErrorType {
+    fun checkTokenInfo(token: String) {
         try {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
-            return JwtErrorType.OK
         } catch (e: ExpiredJwtException) {
-            return JwtErrorType.ExpiredJwtException
+            throw CustomException(JwtErrorCode.JWT_TOKEN_EXPIRED)
         } catch (e: SignatureException) {
-            return JwtErrorType.SignatureException
+            throw CustomException(JwtErrorCode.JWT_TOKEN_SIGNATURE_ERROR)
         } catch (e: MalformedJwtException) {
-            return JwtErrorType.MalformedJwtException
+            throw CustomException(JwtErrorCode.JWT_TOKEN_ERROR)
         } catch (e: UnsupportedJwtException) {
-            return JwtErrorType.UnsupportedJwtException
+            throw CustomException(JwtErrorCode.JWT_TOKEN_UNSUPPORTED_ERROR)
         } catch (e: IllegalArgumentException) {
-            return JwtErrorType.IllegalArgumentException
+            throw CustomException(JwtErrorCode.JWT_TOKEN_ILL_EXCEPTION)
         } catch (e: Exception) {
-            return JwtErrorType.UNKNOWN_EXCEPTION
+            throw CustomException(JwtErrorCode.JWT_UNKNOWN_EXCEPTION)
         }
     }
 

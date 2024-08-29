@@ -1,17 +1,16 @@
 package com.seugi.api.global.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.seugi.api.global.auth.jwt.JwtAuthenticationFilter
-import com.seugi.api.global.auth.jwt.JwtUtils
+import com.seugi.api.global.auth.jwt.exception.ErrorResponseSender
+import com.seugi.api.global.auth.jwt.exception.JwtExceptionFilter
+import com.seugi.api.global.exception.CommonErrorCode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -21,8 +20,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 class SecurityConfig (
-    private val jwtUtils: JwtUtils,
-    private val objectMapper: ObjectMapper,
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val jwtExceptionFilter: JwtExceptionFilter,
+    private val responsor: ErrorResponseSender,
     @Value("\${management.endpoints.web.base-path}") private val actuatorUrl : String
 ) {
 
@@ -42,24 +42,27 @@ class SecurityConfig (
             }
 
             .sessionManagement { session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
-                )
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/member/**", "/oauth2/**", "/email/**").permitAll()
-                    .requestMatchers("/member/edit", "/member/myInfo").hasRole("USER")
-                    .requestMatchers("/stomp/**").permitAll()
-                    .requestMatchers("$actuatorUrl/**").permitAll()
+                    .requestMatchers("/member/edit", "/member/myInfo").authenticated()
+                    .requestMatchers("/oauth2/**", "/email/**", "/stomp/**", "$actuatorUrl/**").permitAll()
+                    .requestMatchers("/member/**").permitAll()
                     .anyRequest().authenticated()
             }
 
-            .addFilterBefore(JwtAuthenticationFilter(jwtUtils, objectMapper), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter::class.java)
 
             .exceptionHandling {
-                it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.NOT_FOUND))
+                it.authenticationEntryPoint { _, response, _ ->
+                    responsor.send(response, CommonErrorCode.NOT_FOUND)
+                }
+                it.accessDeniedHandler { _, response, _ ->
+                    responsor.send(response, CommonErrorCode.FORBIDDEN_REQUEST)
+                }
             }
 
             .build()

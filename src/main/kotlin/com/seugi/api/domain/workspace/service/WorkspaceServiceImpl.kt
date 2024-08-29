@@ -3,8 +3,8 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
+import com.seugi.api.domain.profile.application.port.`in`.CreateProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
-import com.seugi.api.domain.profile.application.service.CreateProfileService
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.enums.Status
@@ -30,7 +30,7 @@ class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
-    private val createProfileService: CreateProfileService,
+    private val createProfileService: CreateProfileUseCase,
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
@@ -60,6 +60,16 @@ class WorkspaceServiceImpl(
                 workspace.middleAdmin.contains(userId) ||
                 workspace.teacher.contains(userId) ||
                 workspace.student.contains(userId)
+    }
+
+    private fun getPermission(userId: Long, workspace: WorkspaceEntity): String {
+        return when {
+            workspace.workspaceAdmin == userId -> "ADMIN"
+            workspace.middleAdmin.contains(userId) -> "MIDDLE_ADMIN"
+            workspace.teacher.contains(userId) -> "TEACHER"
+            workspace.student.contains(userId) -> "STUDENT"
+            else -> throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
     }
 
     private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
@@ -325,7 +335,9 @@ class WorkspaceServiceImpl(
 
         workspaceRepository.save(workspaceEntity)
 
-        createProfileService.createProfile(userId, waitSetWorkspaceMemberRequest.workspaceId)
+        waitSetWorkspaceMemberRequest.userSet.map {
+            createProfileService.createProfile(it, waitSetWorkspaceMemberRequest.workspaceId)
+        }
 
         return BaseResponse(
             message = "${waitSetWorkspaceMemberRequest.role} 맴버 추가 성공"
@@ -447,4 +459,15 @@ class WorkspaceServiceImpl(
             data = set
         )
     }
+
+    @Transactional(readOnly = true)
+    override fun getMyPermission(userId: Long, workspaceId: String): BaseResponse<String> {
+        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
+
+        return BaseResponse (
+            message = "권한 조회 성공",
+            data = getPermission(userId, workspaceEntity)
+        )
+    }
+
 }

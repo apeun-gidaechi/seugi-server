@@ -7,6 +7,7 @@ import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 data class NotificationResponse(
     val id: Long? = null,
     val workspaceId: String? = null,
+    val userId: Long? = null,
     val userName: String? = null,
     val title: String? = null,
     val content: String? = null,

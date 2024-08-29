@@ -47,16 +47,17 @@ class NotificationMapper : Mapper<Notification, NotificationEntity> {
         )
     }
 
-    fun transferNoticeResponse(notice: Notification): NotificationResponse {
+    fun transferNoticeResponse(notification: Notification): NotificationResponse {
         return NotificationResponse(
-            id = notice.id,
-            workspaceId = notice.workspaceId,
-            userName = notice.user.name,
-            title = notice.title,
-            content = notice.content,
-            emoji = notice.emoji,
-            creationDate = notice.creationDate.toString(),
-            lastModifiedDate = notice.lastModifiedDate.toString()
+            id = notification.id,
+            workspaceId = notification.workspaceId,
+            userId = notification.user.id,
+            userName = notification.user.name,
+            title = notification.title,
+            content = notification.content,
+            emoji = notification.emoji,
+            creationDate = notification.creationDate.toString(),
+            lastModifiedDate = notification.lastModifiedDate.toString()
         )
     }
 
