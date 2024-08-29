@@ -1,7 +1,9 @@
 package com.seugi.api.domain.timetable.domain
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.stereotype.Repository
 
+@Repository
 class TimetableRepositoryCustomImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : TimetableRepositoryCustom {
@@ -15,13 +17,13 @@ class TimetableRepositoryCustomImpl(
             .fetchFirst() != null
     }
 
-    override fun findByWorkspaceId(workspaceId: String): List<TimetableEntity?> {
+    override fun findByWorkspaceId(workspaceId: String): List<TimetableEntity> {
         val timetableEntity = QTimetableEntity.timetableEntity
 
         return jpaQueryFactory
             .selectFrom(timetableEntity)
             .where(timetableEntity.workspaceId.eq(workspaceId))
-            .fetch()
+            .fetch() ?: emptyList()
     }
 
 }
