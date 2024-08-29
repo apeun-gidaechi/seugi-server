@@ -12,6 +12,7 @@ import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
 import com.seugi.api.global.response.BaseResponse
 import jakarta.transaction.Transactional
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -25,6 +26,11 @@ class TimetableServiceImpl(
     private val timetableRepository: TimetableRepository,
     private val niceSchoolService: NiceSchoolService,
 ) : TimetableService {
+
+    @Scheduled(cron = "0 0 0 ? * SUN")
+    protected fun resetAllMeal() {
+        timetableRepository.deleteAll()
+    }
 
     private fun checkUserInWorkspace(workspaceEntity: WorkspaceEntity, userId: Long) {
         if (workspaceEntity.workspaceAdmin != userId ||
