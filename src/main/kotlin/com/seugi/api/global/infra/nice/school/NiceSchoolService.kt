@@ -1,7 +1,6 @@
 package com.seugi.api.global.infra.nice.school
 
 import com.seugi.api.domain.meal.domain.model.Meal
-import com.seugi.api.domain.timetable.domain.model.Timetable
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
@@ -74,33 +73,24 @@ class NiceSchoolService(
         return meals
     }
 
-    private fun niceTimetableToModel(niceData: Row): Timetable {
-        return Timetable(
-            grade = niceData.grade,
-            classNum = niceData.classNm,
-            time = niceData.perio,
-            subject = niceData.itrtCntnt
-        )
-    }
-
-    fun getSchoolTimeTable(schoolInfo: SchoolInfo, startDate: String, endDate: String): List<Timetable> {
-        val timetables: MutableList<Timetable> = mutableListOf()
-        when (schoolInfo.scType) {
+    fun getSchoolTimeTable(
+        schoolInfo: SchoolInfo,
+        startDate: String,
+        endDate: String,
+        workspaceId: String,
+    ): List<Row>? {
+        return when (schoolInfo.scType) {
             "고등학교" -> {
                 schoolTimetableClient.getHisTimetable(
                     key = key,
                     type = "json",
                     pIndex = 1,
-                    pSize = 100,
+                    pSize = 1000,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).hisTimetable?.get(1)?.row?.map {
-                    timetables.add(
-                        niceTimetableToModel(it)
-                    )
-                }
+                ).hisTimetable?.get(1)?.row
             }
 
 
@@ -109,16 +99,12 @@ class NiceSchoolService(
                     key = key,
                     type = "json",
                     pIndex = 1,
-                    pSize = 100,
+                    pSize = 1000,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).misTimetable?.get(1)?.row?.map {
-                    timetables.add(
-                        niceTimetableToModel(it)
-                    )
-                }
+                ).misTimetable?.get(1)?.row
             }
 
             "초등학교" -> {
@@ -126,22 +112,16 @@ class NiceSchoolService(
                     key = key,
                     type = "json",
                     pIndex = 1,
-                    pSize = 100,
+                    pSize = 1000,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
                     startDate = startDate,
                     endDate = endDate
-                ).elsTimetable?.get(1)?.row?.map {
-                    timetables.add(
-                        niceTimetableToModel(it)
-                    )
-                }
+                ).elsTimetable?.get(1)?.row
             }
 
-            else -> {}
+            else -> emptyList()
         }
-
-        return timetables
     }
 
 
