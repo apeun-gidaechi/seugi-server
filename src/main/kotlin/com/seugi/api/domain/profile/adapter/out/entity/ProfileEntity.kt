@@ -21,6 +21,12 @@ class ProfileEntity (
 
     var workspaceId : String,
 
+    var schGrade: Int = 0, // 학년
+
+    var schClass: Int = 0, // 반
+
+    var schNumber: Int = 0, // 번호
+
     var status: String = "", // 상태메시지
 
     var nick: String = "", // 닉네임
