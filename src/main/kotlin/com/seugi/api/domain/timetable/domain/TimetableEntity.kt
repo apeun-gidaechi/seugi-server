@@ -1,6 +1,7 @@
 package com.seugi.api.domain.timetable.domain
 
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 class TimetableEntity(
@@ -22,6 +23,17 @@ class TimetableEntity(
     val time: String,
 
     @Column(nullable = false)
-    val subject: String,
+    var subject: String,
 
-    )
+    @Column(nullable = false)
+    val date: String,
+
+    @Column(nullable = false)
+    var updatedAt: LocalDateTime,
+
+    ) {
+    fun updateSubject(subject: String) {
+        this.subject = subject
+        this.updatedAt = LocalDateTime.now()
+    }
+}

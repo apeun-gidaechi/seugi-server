@@ -7,4 +7,5 @@ data class Timetable(
     val classNum: String? = null,
     val time: String? = null,
     val subject: String? = null,
+    val date: String? = null,
 )
