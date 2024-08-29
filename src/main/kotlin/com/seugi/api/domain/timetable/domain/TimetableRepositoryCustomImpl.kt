@@ -35,4 +35,13 @@ class TimetableRepositoryCustomImpl(
             .fetch() ?: emptyList()
     }
 
+    override fun deleteAllByWorkspaceId(workspaceId: String) {
+        val timetableEntity = QTimetableEntity.timetableEntity
+
+        jpaQueryFactory
+            .delete(timetableEntity)
+            .where(timetableEntity.workspaceId.eq(workspaceId))
+            .execute()
+    }
+
 }
