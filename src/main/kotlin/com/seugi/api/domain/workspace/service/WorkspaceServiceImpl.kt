@@ -159,10 +159,10 @@ class WorkspaceServiceImpl(
         )
 
         if (updateWorkspaceRequest.workspaceName.isNotEmpty()) {
-            workspaceEntity.workspaceName = updateWorkspaceRequest.workspaceName
+            workspaceEntity.updateWorkspaceName(updateWorkspaceRequest.workspaceName)
         }
         if (updateWorkspaceRequest.workspaceImgUrl.isNotEmpty()) {
-            workspaceEntity.workspaceImageUrl = updateWorkspaceRequest.workspaceImgUrl
+            workspaceEntity.updateWorkspaceImageUrl(updateWorkspaceRequest.workspaceImgUrl)
         }
         workspaceRepository.save(workspaceEntity)
 

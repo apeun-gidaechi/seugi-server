@@ -5,6 +5,8 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
 import com.seugi.api.global.infra.nice.school.meal.SchoolMealClient
+import com.seugi.api.global.infra.nice.school.timetable.Row
+import com.seugi.api.global.infra.nice.school.timetable.SchoolTimetableClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service
 class NiceSchoolService(
     private val schoolInfoClient: SchoolInfoClient,
     private val schoolMealClient: SchoolMealClient,
+    private val schoolTimetableClient: SchoolTimetableClient,
     @Value("\${nice.key}") private val key: String,
 ) {
 
@@ -68,6 +71,57 @@ class NiceSchoolService(
         } ?: emptyList()
 
         return meals
+    }
+
+    fun getSchoolTimeTable(
+        schoolInfo: SchoolInfo,
+        startDate: String,
+        endDate: String,
+        workspaceId: String,
+    ): List<Row>? {
+        return when (schoolInfo.scType) {
+            "고등학교" -> {
+                schoolTimetableClient.getHisTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 1000,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startDate,
+                    endDate = endDate
+                ).hisTimetable?.get(1)?.row
+            }
+
+
+            "중학교" -> {
+                schoolTimetableClient.getMisTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 1000,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startDate,
+                    endDate = endDate
+                ).misTimetable?.get(1)?.row
+            }
+
+            "초등학교" -> {
+                schoolTimetableClient.getElsTimetable(
+                    key = key,
+                    type = "json",
+                    pIndex = 1,
+                    pSize = 1000,
+                    scCode = schoolInfo.scCode,
+                    sdCode = schoolInfo.sdCode,
+                    startDate = startDate,
+                    endDate = endDate
+                ).elsTimetable?.get(1)?.row
+            }
+
+            else -> emptyList()
+        }
     }
 
 
