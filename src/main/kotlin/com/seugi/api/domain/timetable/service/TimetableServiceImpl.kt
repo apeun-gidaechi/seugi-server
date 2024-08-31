@@ -79,6 +79,8 @@ class TimetableServiceImpl(
         val workspace = workspaceService.findWorkspaceById(workspaceId)
         checkUserInWorkspace(workspace, userId)
 
+        timetableRepository.deleteAllByWorkspaceId(workspaceId)
+
         val dateRange = getDateRange()
 
         val timetables = getSchoolTimetable(workspace.schoolInfo, dateRange, workspaceId)
