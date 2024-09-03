@@ -13,5 +13,9 @@ interface ChatRoomRepository : MongoRepository<ChatRoomEntity, ObjectId> {
         joinedUserId: Long
     ): MutableList<ChatRoomEntity>?
 
-    fun findByWorkspaceIdEqualsAndJoinedUserId(workspaceId: String, joinedUserId: Set<Long>): ChatRoomEntity?
+    fun findByWorkspaceIdEqualsAndJoinedUserIdEqualsAndRoomType(
+        workspaceId: String,
+        joinedUserId: MutableSet<Long>,
+        roomType: RoomType,
+    ): ChatRoomEntity?
 }
