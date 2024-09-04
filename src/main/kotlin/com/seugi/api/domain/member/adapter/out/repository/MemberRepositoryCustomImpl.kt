@@ -35,4 +35,5 @@ class MemberRepositoryCustomImpl (
                 memberEntity.deleted.eq(false)
             ).fetchOne() != null
     }
+
 }

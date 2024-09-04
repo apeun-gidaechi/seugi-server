@@ -19,9 +19,11 @@ class MemberAdapter (
 ) : SaveMemberPort, LoadMemberPort, ExistMemberPort {
 
     @Transactional
-    override fun saveMember(member: Member) {
-        memberRepository.save(
-            memberMapper.toEntity(member)
+    override fun saveMember(member: Member): Member {
+        return memberMapper.toDomain(
+            memberRepository.save(
+                memberMapper.toEntity(member)
+            )
         )
     }
 
@@ -45,4 +47,5 @@ class MemberAdapter (
     override fun existMemberWithEmail(email: String): Boolean {
         return memberRepository.existsByEmail(email)
     }
+
 }
