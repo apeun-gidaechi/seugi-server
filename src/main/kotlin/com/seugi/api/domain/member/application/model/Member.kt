@@ -3,7 +3,6 @@ package com.seugi.api.domain.member.application.model
 import com.seugi.api.domain.member.adapter.`in`.dto.req.EditMemberRequest
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.value.*
-import com.seugi.api.global.infra.oauth.google.parse.GoogleParseResponse
 
 data class Member (
 
