@@ -47,8 +47,8 @@ class SecurityConfig (
 
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/member/edit", "/member/myInfo").authenticated()
-                    .requestMatchers("/oauth2/**", "/email/**", "/stomp/**", "$actuatorUrl/**").permitAll()
+                    .requestMatchers("/member/edit", "/member/myInfo", "/oauth/google/connect").authenticated()
+                    .requestMatchers("/oauth/**", "/email/**", "/stomp/**", "$actuatorUrl/**").permitAll()
                     .requestMatchers("/member/**").permitAll()
                     .anyRequest().authenticated()
             }
