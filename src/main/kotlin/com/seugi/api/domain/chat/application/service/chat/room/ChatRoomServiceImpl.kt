@@ -77,9 +77,11 @@ class ChatRoomServiceImpl(
     ): BaseResponse<String> {
 
         createRoomRequest.joinUsers.add(userId)
-        val existingChatRoom = chatRoomRepository.findByWorkspaceIdEqualsAndJoinedUserId(
+
+        val existingChatRoom = chatRoomRepository.findByWorkspaceIdEqualsAndJoinedUserIdEqualsAndRoomType(
             workspaceId = createRoomRequest.workspaceId,
-            joinedUserId = createRoomRequest.joinUsers
+            joinedUserId = createRoomRequest.joinUsers,
+            roomType = PERSONAL
         )
 
         return if (existingChatRoom == null) {
