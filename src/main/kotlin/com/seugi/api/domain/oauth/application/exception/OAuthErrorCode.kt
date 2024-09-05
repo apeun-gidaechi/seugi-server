@@ -9,7 +9,7 @@ enum class OAuthErrorCode (
     override val message: String,
 ) : CustomErrorCode {
 
-    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "OAUTH-001", "연동이 발견되지 않았습니다"),
-    OAUTH_ALREADY_EXIST(HttpStatus.CONFLICT, "OAUTH-002", "이미 연동되었습니다")
+    OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "연동이 발견되지 않았습니다"),
+    OAUTH_ALREADY_EXIST(HttpStatus.CONFLICT, "CONFLICT", "이미 연동되었습니다")
 
 }
