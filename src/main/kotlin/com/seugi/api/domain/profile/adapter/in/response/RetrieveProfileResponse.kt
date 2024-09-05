@@ -22,7 +22,7 @@ data class RetrieveProfileResponse (
 
     constructor (profile: Profile) : this (
         workspaceId = profile.workspaceId.value,
-        member = RetrieveMemberResponse(profile.memberId),
+        member = RetrieveMemberResponse(profile.member),
         schGrade = profile.schGrade.value,
         schClass = profile.schClass.value,
         schNumber = profile.schNumber.value,

@@ -11,7 +11,7 @@ enum class EmailErrorCode (
 
 ) : CustomErrorCode {
 
-    EMAIL_NOT_LOADED(HttpStatus.NOT_FOUND, "EMAIL-001", "이메일을 불러오지 못했어요"),
-    CODE_NOT_MATCH(HttpStatus.CONFLICT, "EMAIL-002", "코드가 일치하지 않아요"),
+    EMAIL_NOT_LOADED(HttpStatus.NOT_FOUND, "NOT_FOUND", "이메일을 불러오지 못했어요"),
+    CODE_NOT_MATCH(HttpStatus.CONFLICT, "CONFLICT", "코드가 일치하지 않아요"),
 
 }

@@ -20,7 +20,7 @@ class CreateProfileService (
             val member = loadMemberPort.loadMemberWithId(memberId)
 
             val profile = Profile(
-                memberId = member,
+                member = member,
                 workspaceId = ProfileWorkspaceId(workspaceId)
             )
 
