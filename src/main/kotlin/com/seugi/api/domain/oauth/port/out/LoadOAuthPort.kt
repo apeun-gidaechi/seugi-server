@@ -4,6 +4,6 @@ import com.seugi.api.domain.oauth.application.model.OAuth
 
 interface LoadOAuthPort {
 
-    fun loadOAuth(id: Long, provider: String): OAuth
+    fun loadOAuth(memberId: Long, provider: String): OAuth
 
 }
