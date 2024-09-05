@@ -4,7 +4,7 @@ import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleAuthRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.`in`.GoogleAuthUseCase
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
@@ -33,7 +33,7 @@ class GoogleAuthService (
 ) : GoogleAuthUseCase {
 
     @Transactional
-    override fun authenticate(dto: GoogleAuthRequest): BaseResponse<JwtInfo> {
+    override fun authenticate(dto: GoogleCodeRequest): BaseResponse<JwtInfo> {
         val decode = URLDecoder.decode(dto.code, StandardCharsets.UTF_8)
         val exchange = exchangeClient.exchange(GoogleExchangeRequest(decode, properties))
         val parse = parseClient.parse(exchange.idToken)

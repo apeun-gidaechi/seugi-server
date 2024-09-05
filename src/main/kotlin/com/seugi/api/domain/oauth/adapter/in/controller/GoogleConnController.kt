@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.adapter.`in`.controller
 
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleConnRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
 import com.seugi.api.domain.oauth.port.`in`.GoogleConnUseCase
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -16,7 +16,7 @@ class GoogleConnController (
 ) {
 
     @PostMapping("/connect")
-    fun connect(@GetAuthenticatedId id: Long, @RequestBody req: GoogleConnRequest): BaseResponse<Unit> {
+    fun connect(@GetAuthenticatedId id: Long, @RequestBody req: GoogleCodeRequest): BaseResponse<Unit> {
         return service.connect(id, req)
     }
 

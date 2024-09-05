@@ -1,7 +1,7 @@
 package com.seugi.api.domain.oauth.application.service
 
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleConnRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.exception.OAuthErrorCode
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.`in`.GoogleConnUseCase
@@ -27,7 +27,7 @@ class GoogleConnService (
 ) : GoogleConnUseCase {
 
     @Transactional
-    override fun connect(id: Long, dto: GoogleConnRequest): BaseResponse<Unit> {
+    override fun connect(id: Long, dto: GoogleCodeRequest): BaseResponse<Unit> {
         if (existOAuthPort.existOAuth(id, "google")) {
             throw CustomException(OAuthErrorCode.OAUTH_ALREADY_EXIST)
         }

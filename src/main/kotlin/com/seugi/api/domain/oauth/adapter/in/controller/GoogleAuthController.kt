@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.adapter.`in`.controller
 
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleAuthRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
 import com.seugi.api.domain.oauth.port.`in`.GoogleAuthUseCase
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.response.BaseResponse
@@ -16,7 +16,7 @@ class GoogleAuthController (
 ) {
 
     @PostMapping("/authenticate")
-    fun authentication(@RequestBody req: GoogleAuthRequest): BaseResponse<JwtInfo> {
+    fun authentication(@RequestBody req: GoogleCodeRequest): BaseResponse<JwtInfo> {
         return service.authenticate(req)
     }
 
