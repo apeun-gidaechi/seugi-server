@@ -27,7 +27,7 @@ class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
     private val loadMemberPort: LoadMemberPort,
     private val chatRoomMapper: RoomMapper,
-    private val messageService: MessageService
+    private val messageService: MessageService,
 ) : ChatRoomService {
 
     @Transactional(readOnly = true)
@@ -54,53 +54,72 @@ class ChatRoomServiceImpl(
             .toSet()
     }
 
+    private fun validateRoomCreation(createRoomRequest: CreateRoomRequest, type: RoomType) {
+        if ((type == PERSONAL && createRoomRequest.joinUsers.size != 2) ||
+            (type == GROUP && createRoomRequest.joinUsers.size < 2)
+        ) {
+            throw CustomException(ChatErrorCode.CHAT_ROOM_CREATE_ERROR)
+        }
+    }
+
+    private fun generateRoomName(createRoomRequest: CreateRoomRequest): String {
+        return createRoomRequest.joinUsers.asSequence()
+            .map { loadMemberPort.loadMemberWithId(it).name.value }
+            .takeWhile { (createRoomRequest.roomName + it).length <= 10 }
+            .joinToString(separator = ", ")
+    }
+
     @Transactional
     override fun createChatRoom(
         createRoomRequest: CreateRoomRequest,
         userId: Long,
-        type: RoomType
+        type: RoomType,
     ): BaseResponse<String> {
 
         createRoomRequest.joinUsers.add(userId)
 
-        if (
-            type == PERSONAL && createRoomRequest.joinUsers.size > 2
-            || type == GROUP && createRoomRequest.joinUsers.size < 2
-        ) throw CustomException(
-            ChatErrorCode.CHAT_ROOM_CREATE_ERROR
+        val existingChatRoom = chatRoomRepository.findByWorkspaceIdEqualsAndJoinedUserIdEqualsAndRoomType(
+            workspaceId = createRoomRequest.workspaceId,
+            joinedUserId = createRoomRequest.joinUsers,
+            roomType = PERSONAL
         )
 
-        if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
-            createRoomRequest.roomName = createRoomRequest.joinUsers.asSequence()
-                .map { loadMemberPort.loadMemberWithId(it).name.value }
-                .takeWhile { (createRoomRequest.roomName + it).length <= 10 }
-                .joinToString(separator = ", ")
-        }
+        return if (existingChatRoom == null) {
+            validateRoomCreation(createRoomRequest, type)
+            if (type == GROUP && createRoomRequest.roomName.isEmpty()) {
+                createRoomRequest.roomName = generateRoomName(createRoomRequest)
+            }
 
-        val chatRoomId = chatRoomRepository.save(
-            chatRoomMapper.toEntity(
-                chatRoomMapper.toRoom(
-                    createRoomRequest = createRoomRequest,
-                    type = type,
-                    userId = userId
+            val newChatRoomId = chatRoomRepository.save(
+                chatRoomMapper.toEntity(
+                    chatRoomMapper.toRoom(
+                        createRoomRequest = createRoomRequest,
+                        type = type,
+                        userId = userId
+                    )
                 )
+            ).id.toString()
+
+            messageService.sendAndSaveMessage(
+                chatMessageDto = ChatMessageDto(
+                    type = Type.ENTER,
+                    roomId = newChatRoomId,
+                    message = "",
+                    eventList = createRoomRequest.joinUsers,
+                ),
+                userId = userId
             )
-        ).id.toString()
 
-        messageService.sendAndSaveMessage(
-            chatMessageDto = ChatMessageDto(
-                type = Type.ENTER,
-                roomId = chatRoomId,
-                message = "",
-                eventList = createRoomRequest.joinUsers,
-            ),
-            userId = userId
-        )
-
-        return BaseResponse(
-            message = "채팅방 생성 성공 | 채팅방 ID",
-            data = chatRoomId
-        )
+            BaseResponse(
+                message = "채팅방 생성 성공 | 채팅방 ID",
+                data = newChatRoomId
+            )
+        } else {
+            BaseResponse(
+                message = "채팅방 생성 성공 | 채팅방 ID",
+                data = existingChatRoom.id.toString()
+            )
+        }
     }
 
     @Transactional(readOnly = true)
@@ -209,7 +228,7 @@ class ChatRoomServiceImpl(
     override fun searchRoomNameIn(
         searchRoomRequest: SearchRoomRequest,
         type: RoomType,
-        userId: Long
+        userId: Long,
     ): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =

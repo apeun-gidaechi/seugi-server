@@ -12,27 +12,29 @@ class ProfileRepositoryCustomImpl (
     private val jpaQueryFactory: JPAQueryFactory
 ) : ProfileRepositoryCustom {
 
-    override fun findByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Optional<ProfileEntity> {
-        val profileEntity = QProfileEntity.profileEntity
-
-        val result = jpaQueryFactory
-            .select(profileEntity)
-            .from(profileEntity)
-            .where(profileEntity.memberId.eq(memberId)
-                .and(profileEntity.workspaceId.eq(workspaceId)))
-            .fetchOne()
-
-        return Optional.ofNullable(result)
-    }
-
-    override fun existsByMemberIdAndWorkspaceId(memberId: MemberEntity, workspaceId: String): Boolean {
-        val profileEntity = QProfileEntity.profileEntity
+    override fun findByMemberAndWorkspaceId(member: MemberEntity, workspaceId: String): ProfileEntity? {
+        val entity = QProfileEntity.profileEntity
 
         return jpaQueryFactory
-            .select(profileEntity)
-            .from(profileEntity)
-            .where(profileEntity.memberId.eq(memberId)
-                .and(profileEntity.workspaceId.eq(workspaceId)))
+            .select(entity)
+            .from(entity)
+            .where(
+                entity.member.eq(member)
+                .and(entity.workspaceId.eq(workspaceId))
+            )
+            .fetchOne()
+    }
+
+    override fun existsByMemberAndWorkspaceId(member: MemberEntity, workspaceId: String): Boolean {
+        val entity = QProfileEntity.profileEntity
+
+        return jpaQueryFactory
+            .select(entity)
+            .from(entity)
+            .where(
+                entity.member.eq(member)
+                .and(entity.workspaceId.eq(workspaceId))
+            )
             .fetchFirst() != null
     }
 

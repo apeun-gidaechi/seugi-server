@@ -10,6 +10,7 @@ import com.seugi.api.domain.profile.application.port.out.ExistProfilePort
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
 import com.seugi.api.global.exception.CustomException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 
 @Component
@@ -20,18 +21,13 @@ class ProfileAdapter(
 ) : LoadProfilePort, SaveProfilePort, ExistProfilePort {
 
     override fun loadProfile(memberId: Long, workspaceId: String): Profile {
-        val memberEntity = memberRepository.findById(memberId)
-            .orElseThrow {
-                CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-            }
+        val memberEntity = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
 
-        val profileEntity = profileRepository.findByMemberIdAndWorkspaceId(memberEntity, workspaceId)
-            .orElseThrow {
-                CustomException(ProfileErrorCode.PROFILE_NOT_FOUND)
-            }
+        val profileEntity = profileRepository.findByMemberAndWorkspaceId(memberEntity, workspaceId)
+            ?: throw CustomException(ProfileErrorCode.PROFILE_NOT_FOUND)
 
         return profileMapper.toDomain(profileEntity)
-
     }
 
     override fun saveProfile(profile: Profile) {
@@ -41,12 +37,10 @@ class ProfileAdapter(
     }
 
     override fun existProfile(memberId: Long, workspaceId: String): Boolean {
-        val memberEntity = memberRepository.findById(memberId)
-            .orElseThrow {
-                CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-            }
+        val memberEntity = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
 
-        return profileRepository.existsByMemberIdAndWorkspaceId(memberEntity, workspaceId)
+        return profileRepository.existsByMemberAndWorkspaceId(memberEntity, workspaceId)
     }
 
 }

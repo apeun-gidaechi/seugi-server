@@ -8,7 +8,7 @@ import com.seugi.api.domain.profile.application.model.value.*
 data class Profile (
 
     val id: ProfileId = ProfileId(0),
-    var memberId: Member,
+    var member: Member,
     var workspaceId : ProfileWorkspaceId,
     var schGrade: ProfileSchGrade = ProfileSchGrade(0),
     var schClass: ProfileSchClass = ProfileSchClass(0),

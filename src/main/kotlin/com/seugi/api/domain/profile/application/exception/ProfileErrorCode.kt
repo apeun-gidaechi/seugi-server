@@ -9,6 +9,6 @@ enum class ProfileErrorCode (
     override val message: String,
 ) : CustomErrorCode {
 
-    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "PROFILE-001", "프로필을 찾을 수 없음")
+    PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "프로필을 찾을 수 없음")
 
 }

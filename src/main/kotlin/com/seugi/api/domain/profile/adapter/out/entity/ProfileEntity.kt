@@ -16,8 +16,7 @@ class ProfileEntity (
     val id: Long,
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    var memberId: MemberEntity,
+    var member: MemberEntity,
 
     var workspaceId : String,
 

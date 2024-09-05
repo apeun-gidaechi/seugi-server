@@ -8,7 +8,6 @@ import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 interface MemberRepository: CrudRepository<MemberEntity, Long>, MemberRepositoryCustom {
 
     override fun findByEmail(email: String): MemberEntity?
-
     override fun existsByEmail(email: String): Boolean
 
 }
