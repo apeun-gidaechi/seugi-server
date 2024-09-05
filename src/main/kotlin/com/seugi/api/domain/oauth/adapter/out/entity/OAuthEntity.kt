@@ -17,8 +17,7 @@ class OAuthEntity (
     val id: Long,
 
     @OneToOne
-    @JoinColumn(name = "member_id")
-    val memberId: MemberEntity,
+    val member: MemberEntity,
 
     @NotNull
     val provider: String,

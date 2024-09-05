@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository
 
 interface OAuthRepository : CrudRepository<OAuthEntity, Long>, OAuthCustomRepository {
 
-    override fun findByMemberIdAndProvider(id: MemberEntity, provider: String): OAuthEntity?
-    override fun existsByMemberIdAndProvider(id: MemberEntity, provider: String): Boolean
+    override fun findByMemberAndProvider(member: MemberEntity, provider: String): OAuthEntity?
+    override fun existsByMemberAndProvider(member: MemberEntity, provider: String): Boolean
 
 }

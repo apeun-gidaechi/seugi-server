@@ -15,7 +15,7 @@ class OAuthMapper (
     override fun toDomain(entity: OAuthEntity): OAuth {
         return OAuth (
             id = OAuthId(entity.id),
-            memberId = memberMapper.toDomain(entity.memberId),
+            member = memberMapper.toDomain(entity.member),
             provider = OAuthProvider(entity.provider),
             accessToken = OAuthAccessToken(entity.accessToken),
             refreshToken = OAuthRefreshToken(entity.refreshToken)
@@ -25,7 +25,7 @@ class OAuthMapper (
     override fun toEntity(domain: OAuth): OAuthEntity {
         return OAuthEntity (
             id = domain.id.value,
-            memberId = memberMapper.toEntity(domain.memberId),
+            member = memberMapper.toEntity(domain.member),
             provider = domain.provider.value,
             accessToken = domain.accessToken.value,
             refreshToken = domain.refreshToken.value

@@ -5,7 +5,7 @@ import com.seugi.api.domain.oauth.adapter.out.entity.OAuthEntity
 
 interface OAuthCustomRepository {
 
-    fun findByMemberIdAndProvider(id: MemberEntity, provider: String): OAuthEntity?
-    fun existsByMemberIdAndProvider(id: MemberEntity, provider: String): Boolean
+    fun findByMemberAndProvider(member: MemberEntity, provider: String): OAuthEntity?
+    fun existsByMemberAndProvider(member: MemberEntity, provider: String): Boolean
 
 }

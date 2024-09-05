@@ -7,7 +7,7 @@ import com.seugi.api.global.infra.oauth.google.exchange.GoogleExchangeResponse
 class OAuth (
 
     val id: OAuthId,
-    val memberId: Member,
+    val member: Member,
     val provider: OAuthProvider,
     val accessToken: OAuthAccessToken,
     val refreshToken: OAuthRefreshToken
@@ -16,7 +16,7 @@ class OAuth (
 
     constructor(dto: GoogleExchangeResponse, member: Member): this (
         id = OAuthId(0),
-        memberId = member,
+        member = member,
         provider = OAuthProvider("google"),
         accessToken = OAuthAccessToken(dto.accessToken),
         refreshToken = OAuthRefreshToken(dto.refreshToken)
