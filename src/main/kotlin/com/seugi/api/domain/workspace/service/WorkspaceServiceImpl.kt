@@ -62,16 +62,6 @@ class WorkspaceServiceImpl(
                 workspace.student.contains(userId)
     }
 
-    private fun getPermission(userId: Long, workspace: WorkspaceEntity): String {
-        return when {
-            workspace.workspaceAdmin == userId -> "ADMIN"
-            workspace.middleAdmin.contains(userId) -> "MIDDLE_ADMIN"
-            workspace.teacher.contains(userId) -> "TEACHER"
-            workspace.student.contains(userId) -> "STUDENT"
-            else -> throw CustomException(WorkspaceErrorCode.FORBIDDEN)
-        }
-    }
-
     private fun checkExistInWorkspace(userId: Long, workspace: WorkspaceEntity) {
         if (hasPermission(userId, workspace)) {
             throw CustomException(WorkspaceErrorCode.EXIST)
@@ -128,7 +118,7 @@ class WorkspaceServiceImpl(
 
         val workspaceId = workspaceEntity.id.toString()
 
-        createProfileService.createProfile(userId, workspaceId)
+        createProfileService.createProfile(userId, workspaceId, WorkspaceRole.ADMIN)
 
         return BaseResponse(
             message = "워크스페이스 생성 완료",
@@ -239,7 +229,7 @@ class WorkspaceServiceImpl(
                 workspace.teacherWaitList.add(userId)
             }
 
-            WorkspaceRole.MIDDLE_ADMIN -> Unit
+            else -> Unit
         }
 
         workspaceRepository.save(workspace)
@@ -290,6 +280,8 @@ class WorkspaceServiceImpl(
                     data = workspaceEntity.middleAdminWaitList.map { getMemberInfo(it) }
                 )
             }
+
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
     }
 
@@ -331,12 +323,18 @@ class WorkspaceServiceImpl(
                 workspaceEntity.student.removeAll(waitSetWorkspaceMemberRequest.userSet)
                 workspaceEntity.middleAdmin.addAll(waitSetWorkspaceMemberRequest.userSet)
             }
+
+            WorkspaceRole.ADMIN -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspaceEntity)
 
         waitSetWorkspaceMemberRequest.userSet.map {
-            createProfileService.createProfile(it, waitSetWorkspaceMemberRequest.workspaceId)
+            createProfileService.createProfile(
+                it,
+                waitSetWorkspaceMemberRequest.workspaceId,
+                waitSetWorkspaceMemberRequest.role
+            )
         }
 
         return BaseResponse(
@@ -367,6 +365,8 @@ class WorkspaceServiceImpl(
             WorkspaceRole.MIDDLE_ADMIN -> {
                 workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
             }
+
+            WorkspaceRole.ADMIN -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspaceEntity)
@@ -457,16 +457,6 @@ class WorkspaceServiceImpl(
         return BaseResponse(
             message = "멤버 전체를 조회하였습니다",
             data = set
-        )
-    }
-
-    @Transactional(readOnly = true)
-    override fun getMyPermission(userId: Long, workspaceId: String): BaseResponse<String> {
-        val workspaceEntity: WorkspaceEntity = findWorkspaceById(workspaceId)
-
-        return BaseResponse (
-            message = "권한 조회 성공",
-            data = getPermission(userId, workspaceEntity)
         )
     }
 

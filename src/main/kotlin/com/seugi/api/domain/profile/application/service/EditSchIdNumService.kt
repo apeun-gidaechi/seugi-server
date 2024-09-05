@@ -4,8 +4,8 @@ import com.seugi.api.domain.profile.adapter.`in`.request.EditSchIdNumRequest
 import com.seugi.api.domain.profile.application.port.`in`.EditSchIdNumUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
+import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.exception.WorkspaceErrorCode
-import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.stereotype.Service
@@ -14,13 +14,12 @@ import org.springframework.stereotype.Service
 class EditSchIdNumService (
     private val loadProfilePort: LoadProfilePort,
     private val saveProfilePort: SaveProfilePort,
-    private val workspaceService: WorkspaceService
 ) : EditSchIdNumUseCase {
 
     override fun editSchIdNum(dto: EditSchIdNumRequest, workspaceId: String, id: Long): BaseResponse<Unit> {
-        val permission = workspaceService.getMyPermission(id, workspaceId)
+        val permission = loadProfilePort.loadProfile(id, workspaceId).permission
 
-        if (permission.data == "STUDENT") {
+        if (permission.value == WorkspaceRole.STUDENT) {
             throw CustomException(WorkspaceErrorCode.FORBIDDEN)
         }
 

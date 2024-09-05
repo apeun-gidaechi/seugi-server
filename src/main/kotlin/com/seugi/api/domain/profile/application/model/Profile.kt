@@ -10,16 +10,17 @@ data class Profile (
     val id: ProfileId = ProfileId(0),
     var member: Member,
     var workspaceId : ProfileWorkspaceId,
-    var schGrade: ProfileSchGrade = ProfileSchGrade(0),
-    var schClass: ProfileSchClass = ProfileSchClass(0),
-    var schNumber: ProfileSchNumber = ProfileSchNumber(0),
+    var permission: ProfilePermission, // 워크스페이스 권한
+    var schGrade: ProfileSchGrade = ProfileSchGrade(0), // 학년
+    var schClass: ProfileSchClass = ProfileSchClass(0), // 반
+    var schNumber: ProfileSchNumber = ProfileSchNumber(0), // 번호
     var status: ProfileStatus = ProfileStatus(""), // 상태메시지
     var nick: ProfileNick = ProfileNick(""), // 닉네임
     var spot: ProfileSpot = ProfileSpot(""), // 직위
     var belong: ProfileBelong = ProfileBelong(""), // 소속
     var phone: ProfilePhone = ProfilePhone(""), // 휴대전화번호
     var wire: ProfileWire = ProfileWire(""), // 유선전화번호
-    var location: ProfileLocation = ProfileLocation("") // 근무위치
+    var location: ProfileLocation = ProfileLocation(""), // 근무위치
 
 ) {
 

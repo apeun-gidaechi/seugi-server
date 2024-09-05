@@ -26,7 +26,8 @@ class ProfileMapper (
             spot = ProfileSpot(entity.spot),
             status = ProfileStatus(entity.status),
             wire = ProfileWire(entity.wire),
-            workspaceId = ProfileWorkspaceId(entity.workspaceId)
+            workspaceId = ProfileWorkspaceId(entity.workspaceId),
+            permission = ProfilePermission(entity.permission)
         )
     }
 
@@ -44,7 +45,8 @@ class ProfileMapper (
             spot = domain.spot.value,
             status = domain.status.value,
             wire = domain.wire.value,
-            workspaceId = domain.workspaceId.value
+            workspaceId = domain.workspaceId.value,
+            permission = domain.permission.value
         )
     }
 

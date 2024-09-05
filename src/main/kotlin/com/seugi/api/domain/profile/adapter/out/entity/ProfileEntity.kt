@@ -1,12 +1,8 @@
 package com.seugi.api.domain.profile.adapter.out.entity
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
+import jakarta.persistence.*
 
 @Entity
 class ProfileEntity (
@@ -19,6 +15,9 @@ class ProfileEntity (
     var member: MemberEntity,
 
     var workspaceId : String,
+
+    @Enumerated(value = EnumType.STRING)
+    var permission: WorkspaceRole,
 
     var schGrade: Int = 0, // 학년
 
