@@ -11,29 +11,29 @@ class MemberRepositoryCustomImpl (
 ) : MemberRepositoryCustom {
 
     override fun findByEmail(email: String): MemberEntity? {
-        val memberEntity: QMemberEntity = QMemberEntity.memberEntity
+        val entity = QMemberEntity.memberEntity
 
-        val result = jpaQueryFactory
-            .select(memberEntity)
-            .from(memberEntity)
+        return jpaQueryFactory
+            .select(entity)
+            .from(entity)
             .where(
-                memberEntity.email.eq(email),
-                memberEntity.deleted.eq(false)
-            ).fetchOne()
-
-        return result
+                entity.email.eq(email),
+                entity.deleted.eq(false)
+            )
+            .fetchOne()
     }
 
     override fun existsByEmail(email: String): Boolean {
-        val memberEntity: QMemberEntity = QMemberEntity.memberEntity
+        val entity = QMemberEntity.memberEntity
 
         return jpaQueryFactory
             .selectOne()
-            .from(memberEntity)
+            .from(entity)
             .where(
-                memberEntity.email.eq(email),
-                memberEntity.deleted.eq(false)
-            ).fetchOne() != null
+                entity.email.eq(email),
+                entity.deleted.eq(false)
+            )
+            .fetchOne() != null
     }
 
 }
