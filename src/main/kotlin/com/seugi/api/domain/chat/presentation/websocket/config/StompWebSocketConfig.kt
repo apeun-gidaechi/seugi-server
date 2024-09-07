@@ -94,9 +94,17 @@ class StompWebSocketConfig(
 
                     SimpMessageType.HEARTBEAT,
                     SimpMessageType.DISCONNECT,
+                        -> {
+                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                        val userId = simpAttributes.getAttribute("user-id") as String
+                        messageService.unSub(
+                            userId = userId.toLong()
+                        )
+                    }
                     SimpMessageType.DISCONNECT_ACK,
                     SimpMessageType.OTHER,
-                    null -> {
+                    null,
+                        -> {
                     }
                 }
 
