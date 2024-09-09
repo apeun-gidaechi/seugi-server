@@ -35,6 +35,7 @@ class TimetableServiceImpl(
     private fun checkUserInWorkspace(workspaceEntity: WorkspaceEntity, userId: Long) {
         if (workspaceEntity.workspaceAdmin != userId ||
             !workspaceEntity.middleAdmin.contains(userId) ||
+            !workspaceEntity.teacher.contains(userId) ||
             !workspaceEntity.student.contains(userId)
         ) throw CustomException(TimetableException.FORBIDDEN)
     }
