@@ -2,8 +2,10 @@ package com.seugi.api.domain.notification.domain.mapper
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.domain.notification.domain.NotificationEntity
+import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 import com.seugi.api.domain.notification.domain.model.Notification
 import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
+import com.seugi.api.domain.notification.presentation.dto.response.NotificationEmojiResponse
 import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
@@ -55,10 +57,22 @@ class NotificationMapper : Mapper<Notification, NotificationEntity> {
             userName = notification.user.name,
             title = notification.title,
             content = notification.content,
-            emoji = notification.emoji,
+            emoji = toNotificationEmojiResponse(notification.emoji),
             creationDate = notification.creationDate.toString(),
             lastModifiedDate = notification.lastModifiedDate.toString()
         )
+    }
+
+    private fun toNotificationEmojiResponse(emojiList: List<NotificationEmoji>?): List<NotificationEmojiResponse>? {
+
+        val emojiGroup = emojiList?.groupBy { it.emoji }
+
+        return emojiGroup?.map { (emoji, emojiUsers) ->
+            NotificationEmojiResponse(
+                emoji = emoji,
+                userList = emojiUsers.map { it.userId }
+            )
+        }
     }
 
 
