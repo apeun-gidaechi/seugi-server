@@ -229,7 +229,7 @@ class WorkspaceServiceImpl(
                 workspace.teacherWaitList.add(userId)
             }
 
-            else -> Unit
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspace)
@@ -354,11 +354,7 @@ class WorkspaceServiceImpl(
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
             }
 
-            WorkspaceRole.MIDDLE_ADMIN -> {
-                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
-            }
-
-            WorkspaceRole.ADMIN -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspaceEntity)
@@ -450,6 +446,52 @@ class WorkspaceServiceImpl(
             message = "멤버 전체를 조회하였습니다",
             data = set
         )
+    }
+
+    @Transactional
+    override fun manageWorkspaceMemberPermission(
+        userId: Long,
+        manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
+    ): BaseResponse<Unit> {
+
+        val workspace = findWorkspaceById(manageWorkspaceMemberPermissionRequest.workspaceId)
+        val workspaceRole = manageWorkspaceMemberPermissionRequest.workspaceRole
+
+        validateUserPermission(userId, workspace, workspaceRole)
+        updateWorkspaceRole(userId, workspace, workspaceRole)
+
+        workspaceRepository.save(workspace)
+
+        return BaseResponse(
+            message = "유저 권한 변경 성공!"
+        )
+    }
+
+    private fun validateUserPermission(userId: Long, workspace: WorkspaceEntity, workspaceRole: WorkspaceRole) {
+        if (workspaceRole == WorkspaceRole.MIDDLE_ADMIN && workspace.workspaceAdmin != userId) {
+            throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+
+        if (!workspace.middleAdmin.contains(userId)) {
+            throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+    }
+
+    private fun updateWorkspaceRole(userId: Long, workspace: WorkspaceEntity, workspaceRole: WorkspaceRole) {
+        removeUserFromWorkspace(userId, workspace)
+
+        when (workspaceRole) {
+            WorkspaceRole.STUDENT -> workspace.student.add(userId)
+            WorkspaceRole.TEACHER -> workspace.teacher.add(userId)
+            WorkspaceRole.MIDDLE_ADMIN -> workspace.middleAdmin.add(userId)
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+        }
+    }
+
+    private fun removeUserFromWorkspace(userId: Long, workspace: WorkspaceEntity) {
+        workspace.student.remove(userId)
+        workspace.teacher.remove(userId)
+        workspace.middleAdmin.remove(userId)
     }
 
 }

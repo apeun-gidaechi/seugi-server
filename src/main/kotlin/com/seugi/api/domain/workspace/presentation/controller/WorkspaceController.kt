@@ -139,4 +139,12 @@ class WorkspaceController(
         return workspaceService.getWorkspaceMemberList(userId, workspaceId)
     }
 
+    @PatchMapping("/permission")
+    fun manageWorkspaceMemberPermission(
+        @GetAuthenticatedId userId: Long,
+        @Valid @RequestBody manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
+    ): BaseResponse<Unit> {
+        return workspaceService.manageWorkspaceMemberPermission(userId, manageWorkspaceMemberPermissionRequest)
+    }
+
 }
