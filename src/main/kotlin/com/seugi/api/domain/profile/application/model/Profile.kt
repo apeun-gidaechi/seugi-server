@@ -15,7 +15,7 @@ data class Profile (
     var schClass: ProfileSchClass = ProfileSchClass(0), // 반
     var schNumber: ProfileSchNumber = ProfileSchNumber(0), // 번호
     var status: ProfileStatus = ProfileStatus(""), // 상태메시지
-    var nick: ProfileNick = ProfileNick(""), // 닉네임
+    var nick: ProfileNick = ProfileNick(member.name.value), // 닉네임
     var spot: ProfileSpot = ProfileSpot(""), // 직위
     var belong: ProfileBelong = ProfileBelong(""), // 소속
     var phone: ProfilePhone = ProfilePhone(""), // 휴대전화번호
