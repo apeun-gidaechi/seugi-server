@@ -111,7 +111,7 @@ class WorkspaceController(
     @PatchMapping(path = ["", "/"])
     fun updateWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest,
+        @Valid @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest,
     ): BaseResponse<Unit> {
         return workspaceService.updateWorkspace(userId = userId, updateWorkspaceRequest = updateWorkspaceRequest)
     }
