@@ -10,6 +10,7 @@ import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceRespons
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 
 
@@ -22,7 +23,7 @@ class WorkspaceController(
     @PostMapping(path = ["", "/"])
     fun createWorkspace(
         @GetAuthenticatedId userId: Long,
-        @RequestBody createWorkspaceRequest: CreateWorkspaceRequest,
+        @Valid @RequestBody createWorkspaceRequest: CreateWorkspaceRequest,
     ): BaseResponse<String> {
         return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
     }
