@@ -3,7 +3,7 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
-import com.seugi.api.domain.profile.application.port.`in`.CreateProfileUseCase
+import com.seugi.api.domain.profile.application.port.`in`.ManageProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
@@ -30,7 +30,7 @@ class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
-    private val createProfileService: CreateProfileUseCase,
+    private val manageProfileUseCase: ManageProfileUseCase,
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
@@ -118,7 +118,7 @@ class WorkspaceServiceImpl(
 
         val workspaceId = workspaceEntity.id.toString()
 
-        createProfileService.createProfile(userId, workspaceId, WorkspaceRole.ADMIN)
+        manageProfileUseCase.manageProfile(userId, workspaceId, WorkspaceRole.ADMIN)
 
         return BaseResponse(
             message = "워크스페이스 생성 완료",
@@ -273,14 +273,6 @@ class WorkspaceServiceImpl(
                 )
             }
 
-            WorkspaceRole.MIDDLE_ADMIN -> {
-                if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
-                return BaseResponse(
-                    message = "선생님 대기명단 불러오기 성공",
-                    data = workspaceEntity.middleAdminWaitList.map { getMemberInfo(it) }
-                )
-            }
-
             else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
     }
@@ -330,7 +322,7 @@ class WorkspaceServiceImpl(
         workspaceRepository.save(workspaceEntity)
 
         waitSetWorkspaceMemberRequest.userSet.map {
-            createProfileService.createProfile(
+            manageProfileUseCase.manageProfile(
                 it,
                 waitSetWorkspaceMemberRequest.workspaceId,
                 waitSetWorkspaceMemberRequest.role

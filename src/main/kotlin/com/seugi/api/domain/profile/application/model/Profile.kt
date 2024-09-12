@@ -24,6 +24,10 @@ data class Profile (
 
 ) {
 
+    fun changeRole(permission: ProfilePermission) {
+        this.permission = permission
+    }
+
     fun editProfile(dto: EditProfileRequest) {
         this.status = ProfileStatus(dto.status)
         this.nick = ProfileNick(dto.nick)
