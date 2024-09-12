@@ -1,7 +1,10 @@
 package com.seugi.api.domain.workspace.presentation.dto.request
 
-data class UpdateWorkspaceRequest (
+import jakarta.validation.constraints.NotBlank
+
+data class UpdateWorkspaceRequest(
     val workspaceId: String = "",
+    @field:NotBlank(message = "워크스페이스 이름은 공백일 수 없습니다.")
     val workspaceName: String = "",
-    val workspaceImgUrl: String = ""
+    val workspaceImgUrl: String = "",
 )
