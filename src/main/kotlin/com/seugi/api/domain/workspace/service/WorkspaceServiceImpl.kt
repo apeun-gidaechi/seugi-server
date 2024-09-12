@@ -460,6 +460,12 @@ class WorkspaceServiceImpl(
         validateUserPermission(userId, workspace, workspaceRole)
         updateWorkspaceRole(userId, workspace, workspaceRole)
 
+        manageProfileUseCase.manageProfile(
+            manageWorkspaceMemberPermissionRequest.memberId,
+            manageWorkspaceMemberPermissionRequest.workspaceId,
+            manageWorkspaceMemberPermissionRequest.workspaceRole
+        )
+
         workspaceRepository.save(workspace)
 
         return BaseResponse(
