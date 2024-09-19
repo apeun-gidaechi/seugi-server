@@ -74,7 +74,7 @@ class FCMService(
         val sendMember = getMember(userId)
 
         val notification = buildNotification(
-            title = room.chatName,
+            title = room.chatName.ifEmpty { "1대1 채팅" },
             body = "${sendMember.name.value} : $message",
             imageUrl = getAlarmImage(workspaceId = "", type = FCMEnums.CHAT, member = sendMember)
         )
@@ -87,10 +87,10 @@ class FCMService(
     fun sendAlert(workspaceId: String, userId: Long, message: String) {
         val workspace = workspaceService.findWorkspaceById(workspaceId)
         val sendUser = getMember(userId)
-        val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin - userId
+        val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin
 
         val notification = buildNotification(
-            title = "${FCMEnums.NOTIFICATION.type} : ${workspace.workspaceName}",
+            title = "[공지] ${workspace.workspaceName}",
             body = "${sendUser.name.value} : $message",
             imageUrl = getAlarmImage(workspaceId, FCMEnums.NOTIFICATION, sendUser)
         )
