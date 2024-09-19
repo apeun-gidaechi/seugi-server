@@ -15,6 +15,7 @@ import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessag
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -27,7 +28,8 @@ class MessageServiceImpl(
     private val messageRepository: MessageRepository,
     private val messageMapper: MessageMapper,
     private val roomInfoRepository: RoomInfoRepository,
-    private val rabbitTemplate: RabbitTemplate
+    private val rabbitTemplate: RabbitTemplate,
+    private val fcmService: FCMService,
 ) : MessageService {
 
     @Transactional
@@ -43,19 +45,21 @@ class MessageServiceImpl(
         )
     }
 
-//    private fun sendAlarm(message: Message){
-//        fcmService.sendAlarm(
-//            body =
-//        )
-//    }
-
+    private fun sendAlarm(message: Message, readUser: List<Long>, userId: Long) {
+        fcmService.sendChatAlarm(
+            message = message.message,
+            chatRoomId = message.chatRoomId,
+            readUser = readUser,
+            userId = userId
+        )
+    }
 
     private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
 
-        return messageMapper.toDomain(
+        val message = messageMapper.toDomain(
             messageRepository.save(
                 messageMapper.toEntity(
                     messageMapper.toMessage(
@@ -66,6 +70,10 @@ class MessageServiceImpl(
                 )
             )
         )
+
+        sendAlarm(message, readUsers, userId)
+
+        return message
 
     }
 
