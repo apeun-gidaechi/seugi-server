@@ -13,6 +13,7 @@ import com.seugi.api.domain.notification.presentation.dto.response.NotificationR
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -24,6 +25,7 @@ class NotificationServiceImpl(
     private val workspaceService: WorkspaceService,
     private val noticeRepository: NotificationRepository,
     private val noticeMapper: NotificationMapper,
+    private val fcmService: FCMService,
 ) : NotificationService {
 
     @Transactional(readOnly = true)
@@ -37,6 +39,10 @@ class NotificationServiceImpl(
         return workspaceService.findWorkspaceById(workspaceId)
     }
 
+    private fun sendAlert(workspaceId: String, userId: Long, message: String) {
+        fcmService.sendAlert(workspaceId, userId, message)
+    }
+
     @Transactional
     override fun createNotice(createNoticeRequest: CreateNotificationRequest, userId: Long): BaseResponse<Unit> {
         val workspaceEntity = findWorkspaceById(createNoticeRequest.workspaceId)
@@ -45,6 +51,8 @@ class NotificationServiceImpl(
 
         val notice = noticeMapper.transferNoticeEntity(createNoticeRequest, memberRepository.findById(userId).get())
         noticeRepository.save(notice)
+
+        sendAlert(createNoticeRequest.workspaceId, userId, createNoticeRequest.title)
 
         return BaseResponse(
             message = "공지 등록 성공"

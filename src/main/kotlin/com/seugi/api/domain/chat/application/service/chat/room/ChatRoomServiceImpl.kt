@@ -69,11 +69,6 @@ class ChatRoomServiceImpl(
             .joinToString(separator = ", ")
     }
 
-    @Transactional(readOnly = true)
-    override fun findRoomById(roomId: String): ChatRoomEntity {
-        return findChatRoomById(roomId)
-    }
-
     @Transactional
     override fun createChatRoom(
         createRoomRequest: CreateRoomRequest,
