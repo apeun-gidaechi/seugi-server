@@ -28,7 +28,7 @@ class TimetableServiceImpl(
 ) : TimetableService {
 
     @Scheduled(cron = "0 0 0 ? * SUN")
-    protected fun resetAllMeal() {
+    protected fun resetAllTimetable() {
         timetableRepository.deleteAll()
     }
 

@@ -12,9 +12,11 @@ import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
+import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -27,7 +29,8 @@ class MessageServiceImpl(
     private val messageRepository: MessageRepository,
     private val messageMapper: MessageMapper,
     private val roomInfoRepository: RoomInfoRepository,
-    private val rabbitTemplate: RabbitTemplate
+    private val rabbitTemplate: RabbitTemplate,
+    private val fcmService: FCMService,
 ) : MessageService {
 
     @Transactional
@@ -37,20 +40,27 @@ class MessageServiceImpl(
         )
     }
 
-    @Transactional
-    override fun sendEventMessage(message: MessageEventDto, roomId: String) {
+    private fun sendEventMessage(message: MessageEventDto, roomId: String) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${roomId}", message
         )
     }
 
-    @Transactional
-    override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
+    private fun sendAlarm(message: Message, readUser: List<Long>, userId: Long) {
+        fcmService.sendChatAlarm(
+            message = message.message,
+            chatRoomId = message.chatRoomId,
+            readUser = readUser,
+            userId = userId
+        )
+    }
+
+    private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): MessageResponse {
 
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
 
-        return messageMapper.toDomain(
+        val message = messageMapper.toDomain(
             messageRepository.save(
                 messageMapper.toEntity(
                     messageMapper.toMessage(
@@ -61,6 +71,10 @@ class MessageServiceImpl(
                 )
             )
         )
+
+        sendAlarm(message, readUsers, userId)
+
+        return messageMapper.toMessageResponse(message, chatMessageDto.uuid)
 
     }
 

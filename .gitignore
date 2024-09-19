@@ -51,5 +51,9 @@ application-space.yml
 application-act.yml
 application-test.yml
 
+### Common ###
 application-local.yml
 application-prod.yml
+
+### FCM File ###
+seugi-ea80b-firebase-adminsdk-1zvbc-3d7b46cb6b.json

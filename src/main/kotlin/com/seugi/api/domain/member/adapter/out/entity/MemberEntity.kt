@@ -1,13 +1,9 @@
 package com.seugi.api.domain.member.adapter.out.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 @Entity
-data class MemberEntity (
+data class MemberEntity(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +29,7 @@ data class MemberEntity (
 
     var deleted: Boolean = false,
 
-)
+    @ElementCollection
+    val tokenList: MutableSet<String>,
+
+    )

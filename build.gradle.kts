@@ -62,6 +62,8 @@ dependencies {
 
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
+    implementation("com.google.firebase:firebase-admin:9.3.0")
+
 }
 
 val springCloudVersion by extra("2023.0.2")
