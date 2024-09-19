@@ -12,6 +12,7 @@ import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
 import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
+import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.exception.CustomException
@@ -54,7 +55,7 @@ class MessageServiceImpl(
         )
     }
 
-    private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
+    private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): MessageResponse {
 
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
@@ -73,7 +74,7 @@ class MessageServiceImpl(
 
         sendAlarm(message, readUsers, userId)
 
-        return message
+        return messageMapper.toMessageResponse(message, chatMessageDto.uuid)
 
     }
 
