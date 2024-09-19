@@ -7,6 +7,7 @@ import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class MessageMapper : Mapper<Message, MessageEntity> {
@@ -69,12 +70,12 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             userId = message.userId,
             message = message.message,
             uuid = uuid ?: "",
-            eventList = message.eventList!!,
+            eventList = message.eventList ?: emptySet(),
             emojiList = message.emojiList,
             emoticon = message.emoticon,
             mention = message.mention,
             mentionAll = message.mentionAll,
-            timestamp = message.timestamp!!,
+            timestamp = message.timestamp ?: LocalDateTime.now().toString(),
             read = message.read,
             messageStatus = message.messageStatus,
         )
