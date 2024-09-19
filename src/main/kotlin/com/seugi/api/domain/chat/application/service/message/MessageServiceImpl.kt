@@ -37,15 +37,20 @@ class MessageServiceImpl(
         )
     }
 
-    @Transactional
-    override fun sendEventMessage(message: MessageEventDto, roomId: String) {
+    private fun sendEventMessage(message: MessageEventDto, roomId: String) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${roomId}", message
         )
     }
 
-    @Transactional
-    override fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
+//    private fun sendAlarm(message: Message){
+//        fcmService.sendAlarm(
+//            body =
+//        )
+//    }
+
+
+    private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): Message {
 
         val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
         val readUsers = readUser.map { it.userId }
