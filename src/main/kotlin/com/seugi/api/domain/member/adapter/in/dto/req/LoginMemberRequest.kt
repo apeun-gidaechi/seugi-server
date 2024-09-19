@@ -6,6 +6,6 @@ data class LoginMemberRequest(
 
     @JsonProperty("email") val email: String,
     @JsonProperty("password") val password: String,
-    @JsonProperty("code") val token: String,
+    @JsonProperty("token") val token: String,
 
     )
