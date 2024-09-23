@@ -64,6 +64,8 @@ dependencies {
 
     implementation("com.google.firebase:firebase-admin:9.3.0")
 
+    implementation("org.apache.tika:tika-core:2.9.1")
+
 }
 
 val springCloudVersion by extra("2023.0.2")
