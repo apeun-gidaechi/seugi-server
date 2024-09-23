@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
+import com.seugi.api.domain.file.presentation.dto.response.FileResponse
 import com.seugi.api.global.auth.oauth.S3Properties
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.aws.s3.exception.S3Exception
@@ -34,8 +35,8 @@ class S3(
 
     fun uploadMultipleFile(
         @RequestPart file: MultipartFile,
-        type: FileType
-    ): String {
+        type: FileType,
+    ): FileResponse {
 
         if (file.isEmpty || file.equals("")) {
             throw CustomException(S3Exception.FILE_EMPTY)
@@ -61,7 +62,11 @@ class S3(
             throw CustomException(S3Exception.FILE_UPLOAD_FAIL)
         }
 
-        return amazonS3Client().getUrl(s3Properties.bucket, fileName).toString()
+        return FileResponse(
+            url = amazonS3Client().getUrl(s3Properties.bucket, fileName).toString(),
+            name = file.originalFilename ?: "",
+            byte = file.size
+        )
     }
 
     private fun createFileName(type: FileType, originalName: String, file: MultipartFile): String {
