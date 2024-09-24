@@ -65,6 +65,10 @@ dependencies {
     implementation("org.bouncycastle:bcprov-jdk18on:1.75")
     implementation("org.bouncycastle:bcpkix-jdk18on:1.75")
 
+    implementation("com.google.firebase:firebase-admin:9.3.0")
+
+    implementation("org.apache.tika:tika-core:2.9.1")
+
 }
 
 val springCloudVersion by extra("2023.0.2")

@@ -3,9 +3,11 @@ package com.seugi.api.domain.chat.domain.chat.mapper
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
+import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class MessageMapper : Mapper<Message, MessageEntity> {
@@ -45,7 +47,7 @@ class MessageMapper : Mapper<Message, MessageEntity> {
     fun toMessage(
         chatMessageDto: ChatMessageDto,
         author: Long,
-        readUsers: List<Long>
+        readUsers: List<Long>,
     ): Message {
         return Message(
             type = chatMessageDto.type!!,
@@ -57,6 +59,25 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention ?: emptySet(),
             mentionAll = chatMessageDto.mentionAll
+        )
+    }
+
+    fun toMessageResponse(message: Message, uuid: String?): MessageResponse {
+        return MessageResponse(
+            id = message.id!!,
+            chatRoomId = message.chatRoomId,
+            type = message.type,
+            userId = message.userId,
+            message = message.message,
+            uuid = uuid ?: "",
+            eventList = message.eventList ?: emptySet(),
+            emojiList = message.emojiList,
+            emoticon = message.emoticon,
+            mention = message.mention,
+            mentionAll = message.mentionAll,
+            timestamp = message.timestamp ?: LocalDateTime.now().toString(),
+            read = message.read,
+            messageStatus = message.messageStatus,
         )
     }
 

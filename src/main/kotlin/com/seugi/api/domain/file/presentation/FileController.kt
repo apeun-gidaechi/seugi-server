@@ -1,5 +1,6 @@
 package com.seugi.api.domain.file.presentation
 
+import com.seugi.api.domain.file.presentation.dto.response.FileResponse
 import com.seugi.api.domain.file.service.FileService
 import com.seugi.api.global.infra.aws.s3.type.FileType
 import com.seugi.api.global.response.BaseResponse
@@ -15,8 +16,8 @@ class FileController(
     @PostMapping("/upload/{type}")
     fun uploadFile(
         @PathVariable type: FileType,
-        @RequestPart("file") file: MultipartFile
-    ): BaseResponse<String> {
+        @RequestPart("file") file: MultipartFile,
+    ): BaseResponse<FileResponse> {
         return fileService.uploadFile(type, file)
     }
 

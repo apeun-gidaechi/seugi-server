@@ -1,10 +1,10 @@
 package com.seugi.api.domain.member.adapter.out.mapper
 
-import org.springframework.stereotype.Component
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.model.value.*
 import com.seugi.api.global.common.Mapper
+import org.springframework.stereotype.Component
 
 @Component
 class MemberMapper: Mapper<Member, MemberEntity> {
@@ -18,7 +18,8 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             password = MemberPassword(entity.password),
             birth = MemberBirth(entity.birth),
             role = MemberRole(entity.role),
-            deleted = MemberDeleted(entity.deleted)
+            deleted = MemberDeleted(entity.deleted),
+            fcmToken = MemberFCMToken(entity.tokenList)
         )
     }
 
@@ -30,7 +31,8 @@ class MemberMapper: Mapper<Member, MemberEntity> {
             picture = domain.picture.value,
             password = domain.password.value,
             birth = domain.birth.value,
-            deleted = domain.deleted.value
+            deleted = domain.deleted.value,
+            tokenList = domain.fcmToken.token
         )
     }
 

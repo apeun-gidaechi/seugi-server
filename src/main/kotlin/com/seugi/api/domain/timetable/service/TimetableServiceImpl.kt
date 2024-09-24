@@ -28,14 +28,14 @@ class TimetableServiceImpl(
 ) : TimetableService {
 
     @Scheduled(cron = "0 0 0 ? * SUN")
-    protected fun resetAllMeal() {
+    protected fun resetAllTimetable() {
         timetableRepository.deleteAll()
     }
 
     private fun checkUserInWorkspace(workspaceEntity: WorkspaceEntity, userId: Long) {
-        if (workspaceEntity.workspaceAdmin != userId ||
-            !workspaceEntity.middleAdmin.contains(userId) ||
-            !workspaceEntity.teacher.contains(userId) ||
+        if (workspaceEntity.workspaceAdmin != userId &&
+            !workspaceEntity.middleAdmin.contains(userId) &&
+            !workspaceEntity.teacher.contains(userId) &&
             !workspaceEntity.student.contains(userId)
         ) throw CustomException(TimetableException.FORBIDDEN)
     }
@@ -94,7 +94,7 @@ class TimetableServiceImpl(
 
     @Transactional
     override fun getWeekendTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
-        if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
+        if (timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
 
@@ -109,7 +109,7 @@ class TimetableServiceImpl(
 
     @Transactional
     override fun getDayTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
-        if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
+        if (timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
         val today = getToday()

@@ -4,7 +4,7 @@ import com.seugi.api.domain.member.adapter.`in`.dto.req.EditMemberRequest
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.value.*
 
-data class Member (
+data class Member(
 
     val id: MemberId?,
     var name: MemberName,
@@ -13,9 +13,10 @@ data class Member (
     val password: MemberPassword,
     var birth: MemberBirth,
     val role: MemberRole,
-    var deleted: MemberDeleted
+    var deleted: MemberDeleted,
+    val fcmToken: MemberFCMToken,
 
-) {
+    ) {
 
     constructor(dto: RegisterMemberRequest, encrypted: String) : this (
         id = MemberId(0),
@@ -25,7 +26,8 @@ data class Member (
         password = MemberPassword(encrypted),
         birth =  MemberBirth(""),
         role = MemberRole("ROLE_USER"),
-        deleted = MemberDeleted(false)
+        deleted = MemberDeleted(false),
+        fcmToken = MemberFCMToken()
     )
 
     constructor(name: String, email: String): this (
@@ -36,13 +38,22 @@ data class Member (
         password = MemberPassword("GOOGLE"),
         birth = MemberBirth(""),
         role = MemberRole("ROLE_USER"),
-        deleted = MemberDeleted(false )
+        deleted = MemberDeleted(false),
+        fcmToken = MemberFCMToken()
     )
 
     fun editMember (dto: EditMemberRequest) {
         this.picture = MemberPicture(dto.picture)
         this.name = MemberName(dto.name)
         this.birth = MemberBirth(dto.birth)
+    }
+
+    fun addFCMToken(token: String) {
+        fcmToken.token.add(token)
+    }
+
+    fun removeFCMToken(token: String) {
+        fcmToken.token.remove(token)
     }
 
 }
