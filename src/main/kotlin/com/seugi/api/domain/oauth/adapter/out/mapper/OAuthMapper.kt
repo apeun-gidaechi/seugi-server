@@ -17,6 +17,7 @@ class OAuthMapper (
             id = OAuthId(entity.id),
             member = memberMapper.toDomain(entity.member),
             provider = OAuthProvider(entity.provider),
+            sub = OAuthSub(entity.sub),
             accessToken = OAuthAccessToken(entity.accessToken),
             refreshToken = OAuthRefreshToken(entity.refreshToken)
         )
@@ -27,6 +28,7 @@ class OAuthMapper (
             id = domain.id.value,
             member = memberMapper.toEntity(domain.member),
             provider = domain.provider.value,
+            sub = domain.sub.value,
             accessToken = domain.accessToken.value,
             refreshToken = domain.refreshToken.value
         )
