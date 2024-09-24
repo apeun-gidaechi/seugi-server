@@ -24,6 +24,19 @@ class OAuthRepositoryCustomImpl (
             .fetchOne()
     }
 
+    override fun findByProviderAndSub(provider: String, sub: String): OAuthEntity? {
+        val entity = QOAuthEntity.oAuthEntity
+
+        return jpaQueryFactory
+            .select(entity)
+            .from(entity)
+            .where(
+                entity.provider.eq(provider),
+                entity.sub.eq(sub)
+            )
+            .fetchOne()
+    }
+
     override fun existsByMemberAndProvider(member: MemberEntity, provider: String): Boolean {
         val entity = QOAuthEntity.oAuthEntity
 
@@ -33,7 +46,8 @@ class OAuthRepositoryCustomImpl (
             .where(
                 entity.member.eq(member),
                 entity.provider.eq(provider)
-            ).fetchOne() != null
+            )
+            .fetchOne() != null
     }
 
 }
