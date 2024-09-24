@@ -1,8 +1,8 @@
-package com.seugi.api.global.infra.oauth.google.exchange
+package com.seugi.api.global.infra.oauth.google
 
-import com.seugi.api.global.infra.oauth.google.exchange.req.GoogleExchangeRequest
-import com.seugi.api.global.infra.oauth.google.exchange.res.GoogleExchangeResponse
-import com.seugi.api.global.infra.oauth.google.exchange.res.GoogleParseResponse
+import com.seugi.api.global.infra.oauth.google.req.GoogleExchangeRequest
+import com.seugi.api.global.infra.oauth.google.res.GoogleExchangeResponse
+import com.seugi.api.global.infra.oauth.google.res.GoogleParseResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

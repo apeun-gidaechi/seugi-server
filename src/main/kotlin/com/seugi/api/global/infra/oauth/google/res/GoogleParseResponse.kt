@@ -1,4 +1,4 @@
-package com.seugi.api.global.infra.oauth.google.exchange.res
+package com.seugi.api.global.infra.oauth.google.res
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
