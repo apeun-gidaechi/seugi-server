@@ -4,16 +4,15 @@ import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.request.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.`in`.GoogleAuthUseCase
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
-import com.seugi.api.global.auth.oauth.GoogleProperties
-import com.seugi.api.global.infra.oauth.google.exchange.GoogleExchangeClient
-import com.seugi.api.global.infra.oauth.google.exchange.GoogleExchangeRequest
-import com.seugi.api.global.infra.oauth.google.parse.GoogleParseClient
+import com.seugi.api.global.auth.oauth.google.GoogleProperties
+import com.seugi.api.global.infra.oauth.google.GoogleClient
+import com.seugi.api.global.infra.oauth.google.req.GoogleExchangeRequest
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,8 +22,7 @@ import java.nio.charset.StandardCharsets
 @Service
 class GoogleAuthService (
     private val properties: GoogleProperties,
-    private val exchangeClient: GoogleExchangeClient,
-    private val parseClient: GoogleParseClient,
+    private val client: GoogleClient,
     private val saveOAuthPort: SaveOAuthPort,
     private val existMemberPort: ExistMemberPort,
     private val loadMemberPort: LoadMemberPort,
@@ -35,14 +33,14 @@ class GoogleAuthService (
     @Transactional
     override fun authenticate(dto: GoogleCodeRequest): BaseResponse<JwtInfo> {
         val decode = URLDecoder.decode(dto.code, StandardCharsets.UTF_8)
-        val exchange = exchangeClient.exchange(GoogleExchangeRequest(decode, properties))
-        val parse = parseClient.parse(exchange.idToken)
+        val exchange = client.exchange(GoogleExchangeRequest(decode, properties))
+        val parse = client.parse(exchange.idToken)
 
         if (!existMemberPort.existMemberWithEmail(parse.email)) {
-            val model = Member(parse)
+            val model = Member(parse.name, parse.email)
             val member = saveMemberPort.saveMember(model)
 
-            val oauth = OAuth(exchange, member)
+            val oauth = OAuth("google", parse.sub, exchange.accessToken, exchange.refreshToken, member)
             saveOAuthPort.saveOAuth(oauth)
 
             return BaseResponse (
