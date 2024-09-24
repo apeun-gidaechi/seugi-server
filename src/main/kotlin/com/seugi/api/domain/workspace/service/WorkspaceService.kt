@@ -30,4 +30,9 @@ interface WorkspaceService {
     fun getWorkspaceMemberChart(userId: Long, workspaceId: String): BaseResponse<WorkspaceMemberChartResponse>
     fun getWorkspaceMemberList(userId: Long, workspaceId: String): BaseResponse<Set<RetrieveProfileResponse>>
 
+    fun manageWorkspaceMemberPermission(
+        userId: Long,
+        manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
+    ): BaseResponse<Unit>
+
 }

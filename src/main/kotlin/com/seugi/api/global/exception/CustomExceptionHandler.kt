@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
@@ -29,6 +30,18 @@ class CustomExceptionHandler(
             status = customException.customErrorCode.status,
             state = customException.customErrorCode.state,
             message = customException.customErrorCode.message
+        )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleMethodArgumentNotValidException(
+        e: MethodArgumentNotValidException,
+        webRequest: WebRequest,
+    ): ResponseEntity<BaseResponse<Unit>> {
+        return createErrorResponse(
+            status = CommonErrorCode.BAD_REQUEST.status,
+            state = CommonErrorCode.BAD_REQUEST.state,
+            message = "유효성 검증 오류가 발생하였습니다. | ${e.fieldError?.defaultMessage} |",
         )
     }
 

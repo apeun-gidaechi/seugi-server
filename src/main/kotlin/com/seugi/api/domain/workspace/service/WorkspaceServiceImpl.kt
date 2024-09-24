@@ -3,7 +3,7 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
-import com.seugi.api.domain.profile.application.port.`in`.CreateProfileUseCase
+import com.seugi.api.domain.profile.application.port.`in`.ManageProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
@@ -30,7 +30,7 @@ class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
     private val workspaceRepository: WorkspaceRepository,
     @Value("\${workspace.code.secret}") private val charset: String,
-    private val createProfileService: CreateProfileUseCase,
+    private val manageProfileUseCase: ManageProfileUseCase,
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
@@ -118,7 +118,7 @@ class WorkspaceServiceImpl(
 
         val workspaceId = workspaceEntity.id.toString()
 
-        createProfileService.createProfile(userId, workspaceId, WorkspaceRole.ADMIN)
+        manageProfileUseCase.manageProfile(userId, workspaceId, WorkspaceRole.ADMIN)
 
         return BaseResponse(
             message = "워크스페이스 생성 완료",
@@ -229,7 +229,7 @@ class WorkspaceServiceImpl(
                 workspace.teacherWaitList.add(userId)
             }
 
-            else -> Unit
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspace)
@@ -270,14 +270,6 @@ class WorkspaceServiceImpl(
                 return BaseResponse(
                     message = "선생님 대기명단 불러오기 성공",
                     data = workspaceEntity.teacherWaitList.map { getMemberInfo(it) }
-                )
-            }
-
-            WorkspaceRole.MIDDLE_ADMIN -> {
-                if (workspaceEntity.workspaceAdmin != userId) throw CustomException(WorkspaceErrorCode.FORBIDDEN)
-                return BaseResponse(
-                    message = "선생님 대기명단 불러오기 성공",
-                    data = workspaceEntity.middleAdminWaitList.map { getMemberInfo(it) }
                 )
             }
 
@@ -330,7 +322,7 @@ class WorkspaceServiceImpl(
         workspaceRepository.save(workspaceEntity)
 
         waitSetWorkspaceMemberRequest.userSet.map {
-            createProfileService.createProfile(
+            manageProfileUseCase.manageProfile(
                 it,
                 waitSetWorkspaceMemberRequest.workspaceId,
                 waitSetWorkspaceMemberRequest.role
@@ -362,11 +354,7 @@ class WorkspaceServiceImpl(
                 workspaceEntity.teacherWaitList.removeAll(waitSetWorkspaceMemberRequest.userSet)
             }
 
-            WorkspaceRole.MIDDLE_ADMIN -> {
-                workspaceEntity.middleAdmin.removeAll(waitSetWorkspaceMemberRequest.userSet)
-            }
-
-            WorkspaceRole.ADMIN -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
         }
 
         workspaceRepository.save(workspaceEntity)
@@ -458,6 +446,58 @@ class WorkspaceServiceImpl(
             message = "멤버 전체를 조회하였습니다",
             data = set
         )
+    }
+
+    @Transactional
+    override fun manageWorkspaceMemberPermission(
+        userId: Long,
+        manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
+    ): BaseResponse<Unit> {
+
+        val workspace = findWorkspaceById(manageWorkspaceMemberPermissionRequest.workspaceId)
+        val workspaceRole = manageWorkspaceMemberPermissionRequest.workspaceRole
+
+        validateUserPermission(userId, workspace, workspaceRole)
+        updateWorkspaceRole(userId, workspace, workspaceRole)
+
+        manageProfileUseCase.manageProfile(
+            manageWorkspaceMemberPermissionRequest.memberId,
+            manageWorkspaceMemberPermissionRequest.workspaceId,
+            manageWorkspaceMemberPermissionRequest.workspaceRole
+        )
+
+        workspaceRepository.save(workspace)
+
+        return BaseResponse(
+            message = "유저 권한 변경 성공!"
+        )
+    }
+
+    private fun validateUserPermission(userId: Long, workspace: WorkspaceEntity, workspaceRole: WorkspaceRole) {
+        if (workspaceRole == WorkspaceRole.MIDDLE_ADMIN && workspace.workspaceAdmin != userId) {
+            throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+
+        if (!workspace.middleAdmin.contains(userId)) {
+            throw CustomException(WorkspaceErrorCode.FORBIDDEN)
+        }
+    }
+
+    private fun updateWorkspaceRole(userId: Long, workspace: WorkspaceEntity, workspaceRole: WorkspaceRole) {
+        removeUserFromWorkspace(userId, workspace)
+
+        when (workspaceRole) {
+            WorkspaceRole.STUDENT -> workspace.student.add(userId)
+            WorkspaceRole.TEACHER -> workspace.teacher.add(userId)
+            WorkspaceRole.MIDDLE_ADMIN -> workspace.middleAdmin.add(userId)
+            else -> throw CustomException(WorkspaceErrorCode.MEDIA_TYPE_ERROR)
+        }
+    }
+
+    private fun removeUserFromWorkspace(userId: Long, workspace: WorkspaceEntity) {
+        workspace.student.remove(userId)
+        workspace.teacher.remove(userId)
+        workspace.middleAdmin.remove(userId)
     }
 
 }
