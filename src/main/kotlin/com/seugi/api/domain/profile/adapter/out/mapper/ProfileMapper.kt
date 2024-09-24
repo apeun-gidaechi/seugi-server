@@ -40,7 +40,7 @@ class ProfileMapper (
             schGrade = domain.schGrade.value,
             schClass = domain.schClass.value,
             schNumber = domain.schNumber.value,
-            nick = domain.location.value,
+            nick = domain.nick.value,
             phone = domain.phone.value,
             spot = domain.spot.value,
             status = domain.status.value,
