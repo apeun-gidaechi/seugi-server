@@ -3,7 +3,6 @@ package com.seugi.api.domain.member.application.model
 import com.seugi.api.domain.member.adapter.`in`.dto.req.EditMemberRequest
 import com.seugi.api.domain.member.adapter.`in`.dto.req.RegisterMemberRequest
 import com.seugi.api.domain.member.application.model.value.*
-import com.seugi.api.global.infra.oauth.google.parse.GoogleParseResponse
 
 data class Member (
 
@@ -29,10 +28,10 @@ data class Member (
         deleted = MemberDeleted(false)
     )
 
-    constructor(dto: GoogleParseResponse): this (
+    constructor(name: String, email: String): this (
         id = MemberId(0),
-        name = MemberName(dto.name),
-        email = MemberEmail(dto.email),
+        name = MemberName(name),
+        email = MemberEmail(email),
         picture = MemberPicture(""),
         password = MemberPassword("GOOGLE"),
         birth = MemberBirth(""),
