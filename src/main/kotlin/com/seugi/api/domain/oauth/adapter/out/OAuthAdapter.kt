@@ -20,11 +20,18 @@ class OAuthAdapter (
     private val oAuthMapper: OAuthMapper
 ): LoadOAuthPort, ExistOAuthPort, SaveOAuthPort {
 
-    override fun loadOAuth(memberId: Long, provider: String): OAuth {
+    override fun loadOAuthByMemberIdAndProvider(memberId: Long, provider: String): OAuth {
         val member = memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
 
         val oAuth = oAuthRepository.findByMemberAndProvider(member, provider)
+            ?: throw CustomException(OAuthErrorCode.OAUTH_NOT_FOUND)
+
+        return oAuthMapper.toDomain(oAuth)
+    }
+
+    override fun loadOAuthByProviderAndSub(provider: String, sub: String): OAuth {
+        val oAuth = oAuthRepository.findByProviderAndSub(provider, sub)
             ?: throw CustomException(OAuthErrorCode.OAUTH_NOT_FOUND)
 
         return oAuthMapper.toDomain(oAuth)
