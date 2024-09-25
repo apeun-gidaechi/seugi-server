@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.adapter.`in`.controller
 
-import com.seugi.api.domain.oauth.adapter.`in`.dto.GoogleCodeRequest
+import com.seugi.api.domain.oauth.adapter.`in`.dto.request.GoogleCodeRequest
 import com.seugi.api.domain.oauth.port.`in`.GoogleConnUseCase
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse

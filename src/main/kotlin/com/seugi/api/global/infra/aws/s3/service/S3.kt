@@ -8,7 +8,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.seugi.api.domain.file.presentation.dto.response.FileResponse
-import com.seugi.api.global.auth.oauth.S3Properties
+import com.seugi.api.global.infra.aws.s3.properties.S3Properties
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.aws.s3.exception.S3Exception
 import com.seugi.api.global.infra.aws.s3.type.FileType

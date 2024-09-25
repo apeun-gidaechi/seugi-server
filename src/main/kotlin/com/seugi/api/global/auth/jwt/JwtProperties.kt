@@ -1,15 +1,13 @@
 package com.seugi.api.global.auth.jwt
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.bind.ConstructorBinding
 
-@Component
-data class JwtProperties (
+@ConfigurationProperties(prefix = "jwt")
+data class JwtProperties @ConstructorBinding constructor (
 
-    @Value("\${jwt.secret}") val secretKey: String,
-
-    @Value("\${jwt.expire.access}") val accessExpired: Long,
-
-    @Value("\${jwt.expire.refresh}") val refreshExpired: Long
+    val secretKey: String,
+    val accessExpired: Long,
+    val refreshExpired: Long
 
 )

@@ -23,6 +23,9 @@ class OAuthEntity (
     val provider: String,
 
     @NotNull
+    val sub: String,
+
+    @NotNull
     var accessToken: String,
 
     @NotNull
