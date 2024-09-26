@@ -94,7 +94,7 @@ class TimetableServiceImpl(
 
     @Transactional
     override fun getWeekendTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
-        if (timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
+        if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
 
@@ -109,7 +109,7 @@ class TimetableServiceImpl(
 
     @Transactional
     override fun getDayTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
-        if (timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
+        if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
         val today = getToday()
