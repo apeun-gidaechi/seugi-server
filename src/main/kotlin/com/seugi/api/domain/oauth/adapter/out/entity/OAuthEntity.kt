@@ -1,12 +1,8 @@
 package com.seugi.api.domain.oauth.adapter.out.entity
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.OneToOne
+import com.seugi.api.global.common.enums.Provider
+import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
@@ -20,7 +16,8 @@ class OAuthEntity (
     val member: MemberEntity,
 
     @NotNull
-    val provider: String,
+    @Enumerated(EnumType.STRING)
+    val provider: Provider,
 
     @NotNull
     val sub: String,
