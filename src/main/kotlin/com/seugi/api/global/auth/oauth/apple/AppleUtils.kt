@@ -2,6 +2,7 @@ package com.seugi.api.global.auth.oauth.apple
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.seugi.api.global.common.enums.Platform
 import com.seugi.api.global.infra.oauth.apple.AppleClient
 import com.seugi.api.global.infra.oauth.apple.req.AppleExchangeRequest
 import com.seugi.api.global.infra.oauth.apple.res.AppleExchangeResponse
@@ -106,6 +107,11 @@ class AppleUtils (
             .build()
             .parseSignedClaims(idToken)
             .payload
+    }
+
+    fun getClientId(platform: Platform): String {
+        return if (platform == Platform.WEB) properties.serviceId
+            else properties.appId
     }
 
 }
