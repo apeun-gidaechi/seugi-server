@@ -12,9 +12,8 @@ import com.seugi.api.domain.oauth.port.out.LoadOAuthPort
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
-import com.seugi.api.global.auth.oauth.apple.AppleProperties
 import com.seugi.api.global.auth.oauth.apple.AppleUtils
-import com.seugi.api.global.common.enums.Platform
+import com.seugi.api.global.common.enums.Provider
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.stereotype.Service
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service
 @Service
 class AppleAuthService (
     private val appleUtils: AppleUtils,
-    private val properties: AppleProperties,
     private val jwtUtils: JwtUtils,
     private val existMemberPort: ExistMemberPort,
     private val saveMemberPort: SaveMemberPort,
@@ -32,9 +30,7 @@ class AppleAuthService (
 ): AppleAuthUseCase {
 
     override fun authenticate(dto: AppleCodeRequest): BaseResponse<JwtInfo> {
-        val clientId: String =
-            if (dto.platform == Platform.IOS) properties.appId
-            else properties.serviceId
+        val clientId: String = appleUtils.getClientId(dto.platform)
 
         val exchange = appleUtils.exchange(dto.code, clientId)
 
@@ -45,7 +41,7 @@ class AppleAuthService (
 
         if (dto.isNameAndEmailEmpty()) {
             val sub = claims.subject
-            val oauth = loadOAuthPort.loadOAuthByProviderAndSub("apple", sub)
+            val oauth = loadOAuthPort.loadOAuthByProviderAndSub(Provider.APPLE, sub)
             val member = loadMemberPort.loadMemberWithId(oauth.member.id!!.value)
 
             return BaseResponse(
@@ -58,7 +54,7 @@ class AppleAuthService (
             val model = Member(dto.name, dto.email)
             val member = saveMemberPort.saveMember(model)
 
-            val oauth = OAuth("apple", claims.subject, exchange.accessToken, exchange.refreshToken, member)
+            val oauth = OAuth(Provider.APPLE, claims.subject, exchange.accessToken, exchange.refreshToken, member)
             saveOAuthPort.saveOAuth(oauth)
 
             return BaseResponse(
