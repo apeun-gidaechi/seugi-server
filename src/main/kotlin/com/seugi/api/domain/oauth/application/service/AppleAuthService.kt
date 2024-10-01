@@ -54,7 +54,13 @@ class AppleAuthService (
             val model = Member(dto.name, dto.email)
             val member = saveMemberPort.saveMember(model)
 
-            val oauth = OAuth(Provider.APPLE, claims.subject, exchange.accessToken, exchange.refreshToken, member)
+            val oauth = OAuth(
+                Provider.APPLE,
+                claims.subject,
+                exchange.accessToken,
+                exchange.refreshToken!!,
+                member
+            )
             saveOAuthPort.saveOAuth(oauth)
 
             return BaseResponse(
