@@ -1,12 +1,12 @@
 package com.seugi.api.domain.oauth.application.service
 
 import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.domain.member.application.port.out.ExistMemberPort
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.member.application.port.out.SaveMemberPort
 import com.seugi.api.domain.oauth.adapter.`in`.dto.request.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.`in`.GoogleAuthUseCase
-import com.seugi.api.domain.oauth.port.out.ExistOAuthPort
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets
 @Service
 class GoogleAuthService (
     private val saveOAuthPort: SaveOAuthPort,
-    private val existOAuthPort: ExistOAuthPort,
+    private val existMemberPort: ExistMemberPort,
     private val loadMemberPort: LoadMemberPort,
     private val saveMemberPort: SaveMemberPort,
     private val jwtUtils: JwtUtils,
@@ -36,7 +36,7 @@ class GoogleAuthService (
         val exchange = googleUtils.exchange(decode, redirectUri)
         val parse = googleUtils.parse(exchange.idToken)
 
-        if (!existOAuthPort.existOAuthBySubAndProvider(parse.sub, Provider.GOOGLE)) {
+        if (!existMemberPort.existMemberWithEmail(parse.email)) {
             val model = Member(parse.name, parse.email)
             val member = saveMemberPort.saveMember(model)
 

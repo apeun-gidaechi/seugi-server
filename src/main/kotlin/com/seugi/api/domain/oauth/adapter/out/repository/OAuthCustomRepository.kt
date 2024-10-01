@@ -9,6 +9,5 @@ interface OAuthCustomRepository {
     fun findByMemberAndProvider(member: MemberEntity, provider: Provider): OAuthEntity?
     fun findByProviderAndSub(provider: Provider, sub: String): OAuthEntity?
     fun existsByMemberAndProvider(member: MemberEntity, provider: Provider): Boolean
-    fun existsBySubAndProvider(sub: String, provider: Provider): Boolean
 
 }

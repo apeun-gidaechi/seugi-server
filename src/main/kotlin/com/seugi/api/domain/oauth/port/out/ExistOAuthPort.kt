@@ -5,6 +5,5 @@ import com.seugi.api.global.auth.oauth.enums.Provider
 interface ExistOAuthPort {
 
     fun existOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): Boolean
-    fun existOAuthBySubAndProvider(sub: String, provider: Provider): Boolean
 
 }

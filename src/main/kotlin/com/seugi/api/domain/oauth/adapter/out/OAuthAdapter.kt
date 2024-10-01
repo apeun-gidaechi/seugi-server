@@ -45,10 +45,6 @@ class OAuthAdapter (
         return oAuthRepository.existsByMemberAndProvider(member, provider)
     }
 
-    override fun existOAuthBySubAndProvider(sub: String, provider: Provider): Boolean {
-        return oAuthRepository.existsBySubAndProvider(sub, provider)
-    }
-
     override fun saveOAuth(oauth: OAuth) {
         oAuthRepository.save(
             oAuthMapper.toEntity(oauth)
