@@ -9,7 +9,7 @@ import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.out.ExistOAuthPort
 import com.seugi.api.domain.oauth.port.out.LoadOAuthPort
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
-import com.seugi.api.global.common.enums.Provider
+import com.seugi.api.global.auth.oauth.enums.Provider
 import com.seugi.api.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component

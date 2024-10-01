@@ -1,7 +1,7 @@
 package com.seugi.api.domain.oauth.adapter.out.entity
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
-import com.seugi.api.global.common.enums.Provider
+import com.seugi.api.global.auth.oauth.enums.Provider
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 

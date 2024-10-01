@@ -13,7 +13,7 @@ import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
 import com.seugi.api.global.auth.jwt.JwtInfo
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.auth.oauth.apple.AppleUtils
-import com.seugi.api.global.common.enums.Provider
+import com.seugi.api.global.auth.oauth.enums.Provider
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.stereotype.Service

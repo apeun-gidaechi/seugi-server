@@ -2,7 +2,7 @@ package com.seugi.api.domain.oauth.adapter.out.repository
 
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.domain.oauth.adapter.out.entity.OAuthEntity
-import com.seugi.api.global.common.enums.Provider
+import com.seugi.api.global.auth.oauth.enums.Provider
 
 interface OAuthCustomRepository {
 
