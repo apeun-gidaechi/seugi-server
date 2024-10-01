@@ -8,17 +8,17 @@ data class GoogleExchangeRequest (
     @JsonProperty("code") val code: String,
     @JsonProperty("client_id") val clientId: String,
     @JsonProperty("client_secret") val clientSecret: String,
+    @JsonProperty("redirect_uri") val redirectUri: String,
     @JsonProperty("grant_type") val grantType: String,
-    @JsonProperty("redirect-uri") val redirectUri: String
 
 ) {
 
-    constructor(code: String, properties: GoogleProperties): this (
+    constructor(code: String, redirectUri: String, properties: GoogleProperties): this (
         code = code,
         clientId = properties.clientId,
         clientSecret = properties.clientSecret,
+        redirectUri = redirectUri,
         grantType = properties.grantType,
-        redirectUri = properties.redirectUri
     )
 
 }

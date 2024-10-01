@@ -5,6 +5,6 @@ import com.seugi.api.global.response.BaseResponse
 
 interface GoogleConnUseCase {
 
-    fun connect(id: Long, code: GoogleCodeRequest): BaseResponse<Unit>
+    fun connect(id: Long, dto: GoogleCodeRequest): BaseResponse<Unit>
 
 }

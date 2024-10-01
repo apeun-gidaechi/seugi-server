@@ -2,6 +2,7 @@ package com.seugi.api.domain.oauth.application.model
 
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.oauth.application.model.vo.*
+import com.seugi.api.global.auth.oauth.enums.Provider
 
 class OAuth (
 
@@ -14,7 +15,7 @@ class OAuth (
 
 ) {
 
-    constructor(provider: String, sub: String, accessToken: String, refreshToken: String, member: Member): this (
+    constructor(provider: Provider, sub: String, accessToken: String, refreshToken: String, member: Member): this (
         id = OAuthId(0),
         member = member,
         provider = OAuthProvider(provider),

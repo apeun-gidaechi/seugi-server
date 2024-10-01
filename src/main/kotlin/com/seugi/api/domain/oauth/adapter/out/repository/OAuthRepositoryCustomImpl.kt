@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
 import com.seugi.api.domain.oauth.adapter.out.entity.OAuthEntity
 import com.seugi.api.domain.oauth.adapter.out.entity.QOAuthEntity
+import com.seugi.api.global.auth.oauth.enums.Provider
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -11,7 +12,7 @@ class OAuthRepositoryCustomImpl (
     private val jpaQueryFactory: JPAQueryFactory
 ) : OAuthCustomRepository {
 
-    override fun findByMemberAndProvider(member: MemberEntity, provider: String): OAuthEntity? {
+    override fun findByMemberAndProvider(member: MemberEntity, provider: Provider): OAuthEntity? {
         val entity = QOAuthEntity.oAuthEntity
 
         return jpaQueryFactory
@@ -24,7 +25,7 @@ class OAuthRepositoryCustomImpl (
             .fetchOne()
     }
 
-    override fun findByProviderAndSub(provider: String, sub: String): OAuthEntity? {
+    override fun findByProviderAndSub(provider: Provider, sub: String): OAuthEntity? {
         val entity = QOAuthEntity.oAuthEntity
 
         return jpaQueryFactory
@@ -37,7 +38,7 @@ class OAuthRepositoryCustomImpl (
             .fetchOne()
     }
 
-    override fun existsByMemberAndProvider(member: MemberEntity, provider: String): Boolean {
+    override fun existsByMemberAndProvider(member: MemberEntity, provider: Provider): Boolean {
         val entity = QOAuthEntity.oAuthEntity
 
         return jpaQueryFactory

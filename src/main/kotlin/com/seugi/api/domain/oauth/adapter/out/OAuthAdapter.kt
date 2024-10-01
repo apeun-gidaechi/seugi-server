@@ -9,6 +9,7 @@ import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.out.ExistOAuthPort
 import com.seugi.api.domain.oauth.port.out.LoadOAuthPort
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
+import com.seugi.api.global.auth.oauth.enums.Provider
 import com.seugi.api.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ class OAuthAdapter (
     private val oAuthMapper: OAuthMapper
 ): LoadOAuthPort, ExistOAuthPort, SaveOAuthPort {
 
-    override fun loadOAuthByMemberIdAndProvider(memberId: Long, provider: String): OAuth {
+    override fun loadOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): OAuth {
         val member = memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
 
@@ -30,14 +31,14 @@ class OAuthAdapter (
         return oAuthMapper.toDomain(oAuth)
     }
 
-    override fun loadOAuthByProviderAndSub(provider: String, sub: String): OAuth {
+    override fun loadOAuthByProviderAndSub(provider: Provider, sub: String): OAuth {
         val oAuth = oAuthRepository.findByProviderAndSub(provider, sub)
             ?: throw CustomException(OAuthErrorCode.OAUTH_NOT_FOUND)
 
         return oAuthMapper.toDomain(oAuth)
     }
 
-    override fun existOAuth(memberId: Long, provider: String): Boolean {
+    override fun existOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): Boolean {
         val member = memberRepository.findByIdOrNull(memberId)
             ?: throw  CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
 
