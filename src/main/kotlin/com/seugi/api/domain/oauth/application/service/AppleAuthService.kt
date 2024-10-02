@@ -44,6 +44,9 @@ class AppleAuthService (
             val oauth = loadOAuthPort.loadOAuthByProviderAndSub(Provider.APPLE, sub)
             val member = loadMemberPort.loadMemberWithId(oauth.member.id!!.value)
 
+            member.addFCMToken(dto.token)
+            saveMemberPort.saveMember(member)
+
             return BaseResponse(
                 message = "애플 로그인 성공 !!",
                 data = jwtUtils.generate(member)
@@ -51,7 +54,7 @@ class AppleAuthService (
         }
 
         if (!existMemberPort.existMemberWithEmail(dto.email)) {
-            val model = Member(dto.name, dto.email)
+            val model = Member(dto.name, dto.token, dto.email)
             val member = saveMemberPort.saveMember(model)
 
             val oauth = OAuth(
