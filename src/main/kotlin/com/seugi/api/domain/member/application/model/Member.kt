@@ -30,7 +30,7 @@ data class Member(
         fcmToken = MemberFCMToken()
     )
 
-    constructor(name: String, email: String): this (
+    constructor(name: String, token: String, email: String): this (
         id = MemberId(0),
         name = MemberName(name),
         email = MemberEmail(email),
@@ -39,7 +39,7 @@ data class Member(
         birth = MemberBirth(""),
         role = MemberRole("ROLE_USER"),
         deleted = MemberDeleted(false),
-        fcmToken = MemberFCMToken()
+        fcmToken = MemberFCMToken(mutableSetOf(token))
     )
 
     fun editMember (dto: EditMemberRequest) {
