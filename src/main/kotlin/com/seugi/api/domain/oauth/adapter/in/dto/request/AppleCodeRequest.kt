@@ -10,6 +10,9 @@ class AppleCodeRequest (
     @JsonProperty("code")
     val code: String,
 
+    @JsonProperty("token")
+    val token: String,
+
     @JsonProperty("platform")
     val platform: Platform,
 

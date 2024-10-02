@@ -37,7 +37,7 @@ class GoogleAuthService (
         val parse = googleUtils.parse(exchange.idToken)
 
         if (!existMemberPort.existMemberWithEmail(parse.email)) {
-            val model = Member(parse.name, parse.email)
+            val model = Member(parse.name, dto.token, parse.email)
             val member = saveMemberPort.saveMember(model)
 
             val oauth = OAuth(
@@ -56,11 +56,13 @@ class GoogleAuthService (
             )
         }
 
+        val member = loadMemberPort.loadMemberWithEmail(parse.email)
+        member.addFCMToken(dto.token)
+        saveMemberPort.saveMember(member)
+
         return BaseResponse (
             message = "구글 로그인 성공 !!",
-            data = jwtUtils.generate(
-                loadMemberPort.loadMemberWithEmail(parse.email)
-            )
+            data = jwtUtils.generate(member)
         )
     }
 
