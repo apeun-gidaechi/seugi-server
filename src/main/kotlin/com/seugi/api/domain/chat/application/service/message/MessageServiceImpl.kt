@@ -8,8 +8,7 @@ import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
-import com.seugi.api.domain.chat.domain.room.info.RoomInfoEntity
-import com.seugi.api.domain.chat.domain.room.info.RoomInfoRepository
+import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
@@ -23,12 +22,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class MessageServiceImpl(
     private val messageRepository: MessageRepository,
     private val messageMapper: MessageMapper,
-    private val roomInfoRepository: RoomInfoRepository,
     private val rabbitTemplate: RabbitTemplate,
     private val fcmService: FCMService,
 ) : MessageService {
@@ -40,7 +39,7 @@ class MessageServiceImpl(
         )
     }
 
-    private fun sendEventMessage(message: MessageEventDto, roomId: String) {
+    override fun sendEventMessage(message: MessageEventDto, roomId: String) {
         rabbitTemplate.convertAndSend(
             "chat.exchange", "room.${roomId}", message
         )
@@ -57,22 +56,18 @@ class MessageServiceImpl(
 
     private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): MessageResponse {
 
-        val readUser = roomInfoRepository.findByRoomId(chatMessageDto.roomId.toString()).orEmpty()
-        val readUsers = readUser.map { it.userId }
-
         val message = messageMapper.toDomain(
             messageRepository.save(
                 messageMapper.toEntity(
                     messageMapper.toMessage(
                         chatMessageDto = chatMessageDto,
                         author = userId,
-                        readUsers = readUsers
                     )
                 )
             )
         )
 
-        sendAlarm(message, readUsers, userId)
+//        sendAlarm(message, readUsers, userId)
 
         return messageMapper.toMessageResponse(message, chatMessageDto.uuid)
 
@@ -90,23 +85,6 @@ class MessageServiceImpl(
         val allMessages =
             messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
 
-
-        val unreadMessages: List<MessageEntity> =
-            messageRepository.findByChatRoomIdEqualsAndReadNotContains(chatRoomId, userId)
-
-        if (unreadMessages.isNotEmpty()) {
-            unreadMessages.map { it.read.add(userId) }
-
-            messageRepository.saveAll(unreadMessages).last()
-
-            return BaseResponse(
-                message = "채팅 불러오기 성공",
-                data = GetMessageResponse(
-                    firstMessageId = unreadMessages.first().id?.toString(),
-                    messages = allMessages
-                )
-            )
-        } else {
             return BaseResponse(
                 message = "채팅 불러오기 성공",
                 data = GetMessageResponse(
@@ -114,12 +92,16 @@ class MessageServiceImpl(
                     messages = allMessages
                 )
             )
-        }
+
     }
 
     @Transactional(readOnly = true)
-    override fun getNotReadMessageCount(chatRoomId: String, userId: Long): Int {
-        return messageRepository.findByChatRoomIdEqualsAndReadNotContains(chatRoomId, userId).count()
+    override fun getNotReadMessageCount(chatRoom: ChatRoomEntity, userId: Long): Int {
+        val timestamp = chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp
+        return messageRepository.findByChatRoomIdEqualsAndTimestampBefore(
+            chatRoomId = chatRoom.id.toString(),
+            timestamp = timestamp ?: LocalDateTime.now()
+        ).count()
     }
 
     @Transactional
@@ -192,31 +174,6 @@ class MessageServiceImpl(
         return BaseResponse(
             message = "메시지 지워짐으로 상태변경 성공"
         )
-    }
-
-    @Transactional
-    override fun sub(userId: Long, roomId: String) {
-        if (roomId != "message" && roomId.length == 24) {
-
-            sendEventMessage(
-                message = MessageEventDto(
-                    userId = userId,
-                    type = Type.SUB
-                ),
-                roomId = roomId
-            )
-            roomInfoRepository.save(
-                RoomInfoEntity(
-                    userId = userId,
-                    roomId = roomId
-                )
-            )
-        }
-    }
-
-    @Transactional
-    override fun unSub(userId: Long) {
-        roomInfoRepository.deleteById(userId)
     }
 
 }

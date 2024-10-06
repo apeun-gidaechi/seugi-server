@@ -17,6 +17,5 @@ data class MessageResponse(
     val mention: Set<Long> = emptySet(),
     val mentionAll: Boolean,
     val timestamp: String,
-    val read: List<Long>,
     val messageStatus: ChatStatusEnum,
 )
