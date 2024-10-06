@@ -38,8 +38,6 @@ class MessageEntity(
 
     var timestamp: LocalDateTime = LocalDateTime.now(),
 
-    val read: MutableSet<Long> = mutableSetOf(),
-
     var messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 
 )

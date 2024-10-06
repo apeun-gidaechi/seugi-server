@@ -2,6 +2,7 @@ package com.seugi.api.domain.chat.domain.room
 
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
+import com.seugi.api.domain.chat.domain.room.model.JoinUserInfo
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
@@ -27,8 +28,8 @@ class ChatRoomEntity(
 
     val createdAt: LocalDateTime,
 
-    var joinedUserId: Set<Long>,
+    var joinedUserInfo: Set<JoinUserInfo>,
 
     @Enumerated(EnumType.STRING)
-    var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
+    var chatStatus: ChatStatusEnum = ChatStatusEnum.ALIVE,
 )
