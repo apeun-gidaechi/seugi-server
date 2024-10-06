@@ -13,5 +13,5 @@ data class Room(
     val chatRoomImg: String,
     val createdAt: LocalDateTime,
     val chatStatusEnum: ChatStatusEnum? = null,
-    val joinUserId: Set<Long>
+    val joinUserInfo: Set<JoinUserInfo>,
 )

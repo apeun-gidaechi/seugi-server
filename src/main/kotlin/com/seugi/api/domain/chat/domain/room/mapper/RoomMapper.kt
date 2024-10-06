@@ -3,6 +3,7 @@ package com.seugi.api.domain.chat.domain.room.mapper
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.enums.type.RoomType.GROUP
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
+import com.seugi.api.domain.chat.domain.room.model.JoinUserInfo
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
@@ -22,7 +23,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             chatName = entity.chatName,
             chatRoomImg = entity.chatRoomImg,
             createdAt = entity.createdAt,
-            joinUserId = entity.joinedUserId,
+            joinUserInfo = entity.joinedUserInfo,
             chatStatusEnum = entity.chatStatus
         )
     }
@@ -34,7 +35,14 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = domain.roomAdmin,
             roomType = domain.type,
             createdAt = domain.createdAt,
-            joinedUserId = domain.joinUserId
+            joinedUserInfo = domain.joinUserInfo
+        )
+    }
+
+    private fun toJoinUserInfo(userId: Long): JoinUserInfo {
+        return JoinUserInfo(
+            userId = userId,
+            timestamp = LocalDateTime.now()
         )
     }
 
@@ -47,7 +55,9 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = if (type == GROUP) userId else -1,
             chatRoomImg = createRoomRequest.chatRoomImg,
             createdAt = LocalDateTime.now(),
-            joinUserId = createRoomRequest.joinUsers
+            joinUserInfo = createRoomRequest.joinUsers.map {
+                toJoinUserInfo(it)
+            }.toSet()
         )
     }
 
