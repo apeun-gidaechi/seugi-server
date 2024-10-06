@@ -14,6 +14,7 @@ import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRe
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
+import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.exception.CustomException
@@ -21,6 +22,7 @@ import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class ChatRoomServiceImpl(
@@ -31,10 +33,28 @@ class ChatRoomServiceImpl(
 ) : ChatRoomService {
 
     @Transactional(readOnly = true)
-    protected fun findChatRoomById(id: String): ChatRoomEntity {
+    override fun findChatRoomById(id: String): ChatRoomEntity {
         if (id.length != 24) throw CustomException(ChatErrorCode.CHAT_ROOM_ID_ERROR)
         return chatRoomRepository.findById(ObjectId(id))
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
+    }
+
+    @Transactional
+    override fun sub(userId: Long, roomId: String) {
+        if (roomId != "message" && roomId.length == 24) {
+
+            messageService.sendEventMessage(
+                message = MessageEventDto(
+                    userId = userId,
+                    type = Type.SUB
+                ),
+                roomId = roomId
+            )
+        }
+
+        val chatRoom = findChatRoomById(roomId)
+        chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp = LocalDateTime.now()
+
     }
 
     private fun toResponse(chatRoomEntity: ChatRoomEntity, userId: Long): RoomResponse {
@@ -44,13 +64,13 @@ class ChatRoomServiceImpl(
             members = getUserInfo(chatRoomEntity),
             lastMessage = lastMessageEntity?.message ?: "",
             lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString(),
-            notReadCnt = messageService.getNotReadMessageCount(chatRoomEntity.id.toString(), userId)
+            notReadCnt = messageService.getNotReadMessageCount(chatRoomEntity, userId)
         )
     }
 
     //채팅방 반환시 유저 모델 전달용 함수
     private fun getUserInfo(chatRoomEntity: ChatRoomEntity): Set<RetrieveMemberResponse> {
-        return chatRoomEntity.joinedUserId.map { RetrieveMemberResponse(loadMemberPort.loadMemberWithId(it)) }
+        return chatRoomEntity.joinedUserInfo.map { RetrieveMemberResponse(loadMemberPort.loadMemberWithId(it.userId)) }
             .toSet()
     }
 
@@ -78,7 +98,7 @@ class ChatRoomServiceImpl(
 
         createRoomRequest.joinUsers.add(userId)
 
-        val existingChatRoom = chatRoomRepository.findByWorkspaceIdEqualsAndJoinedUserIdEqualsAndRoomType(
+        val existingChatRoom = chatRoomRepository.findByWorkspaceIdAndJoinedUserInfoUserIdInAndRoomType(
             workspaceId = createRoomRequest.workspaceId,
             joinedUserId = createRoomRequest.joinUsers,
             roomType = PERSONAL
@@ -127,12 +147,13 @@ class ChatRoomServiceImpl(
 
         val data = findChatRoomById(roomId)
 
-        if (!data.joinedUserId.contains(userId)) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
-
+        if (data.joinedUserInfo.none { it.userId == userId }) {
+            throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
+        }
         when (type) {
             PERSONAL -> {
                 data.apply {
-                    val member = loadMemberPort.loadMemberWithId(joinedUserId.filter { id -> id != userId }[0])
+                    val member = loadMemberPort.loadMemberWithId(joinedUserInfo.first { it.userId != userId }.userId)
                     chatName = member.name.value
                     chatRoomImg = member.picture.value
                 }
@@ -156,20 +177,21 @@ class ChatRoomServiceImpl(
     override fun getRooms(workspaceId: String, userId: Long, type: RoomType): BaseResponse<List<RoomResponse>> {
 
         val chatRoomEntity =
-            chatRoomRepository.findByWorkspaceIdEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+            chatRoomRepository.findByWorkspaceIdAndChatStatusAndRoomTypeAndJoinedUserInfoUserId(
                 workspaceId = workspaceId,
                 chatStatus = ChatStatusEnum.ALIVE,
                 roomType = type,
-                joinedUserId = userId
+                userId = userId
             ).orEmpty()
 
         when (type) {
             PERSONAL -> {
-                val rooms: List<ChatRoomEntity> = chatRoomEntity.map {
+                val rooms: List<ChatRoomEntity> = chatRoomEntity.map { it ->
 
                     val room = findChatRoomById(it.id.toString())
                     room.apply {
-                        val member = loadMemberPort.loadMemberWithId(it.joinedUserId.filter { id -> id != userId }[0])
+                        val member =
+                            loadMemberPort.loadMemberWithId(joinedUserInfo.first { it.userId != userId }.userId)
                         chatName = member.name.value
                         chatRoomImg = member.picture.value
                     }
@@ -194,15 +216,15 @@ class ChatRoomServiceImpl(
         val chatRoomEntity = findChatRoomById(roomId)
 
         //방장인지 확인하는 로직, 방장일경우 못나감 하지만 방 인원이 자신뿐이라면 넘어감
-        if (chatRoomEntity.roomAdmin == userId && chatRoomEntity.joinedUserId.size != 1)
+        if (chatRoomEntity.roomAdmin == userId && chatRoomEntity.joinedUserInfo.size != 1)
             throw CustomException(ChatErrorCode.CHAT_LEFT_ERROR)
 
         //그룹채팅방만 나갈 수 있음
         if (chatRoomEntity.roomType != GROUP) throw CustomException(ChatErrorCode.CHAT_TYPE_ERROR)
 
-        chatRoomEntity.joinedUserId -= userId
+        chatRoomEntity.joinedUserInfo -= chatRoomEntity.joinedUserInfo.find { it.userId == userId }!!
 
-        if (chatRoomEntity.joinedUserId.isEmpty()) {
+        if (chatRoomEntity.joinedUserInfo.isEmpty()) {
             chatRoomEntity.chatStatus = ChatStatusEnum.DELETE
         }
 
@@ -231,20 +253,20 @@ class ChatRoomServiceImpl(
         userId: Long,
     ): BaseResponse<List<RoomResponse>> {
 
-        val chatRoomEntity =
-            chatRoomRepository.findByWorkspaceIdEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+        val chatRoomEntities =
+            chatRoomRepository.findByWorkspaceIdAndChatStatusAndRoomTypeAndJoinedUserInfoUserId(
                 workspaceId = searchRoomRequest.workspaceId,
                 chatStatus = ChatStatusEnum.ALIVE,
                 roomType = type,
-                joinedUserId = userId
+                userId = userId
             ).orEmpty()
 
         when (type) {
             PERSONAL -> {
 
-                val entity = chatRoomEntity.mapNotNull {
+                val entity = chatRoomEntities.mapNotNull { it ->
                     val member =
-                        loadMemberPort.loadMemberWithId(it.joinedUserId.firstOrNull { id -> id != userId }!!)
+                        loadMemberPort.loadMemberWithId(it.joinedUserInfo.first { it.userId != userId }.userId)
                     if (member.name.value.contains(searchRoomRequest.word)) {
                         val chatRoom = chatRoomRepository.findById(it.id!!)
                             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
@@ -266,7 +288,7 @@ class ChatRoomServiceImpl(
 
             GROUP -> return BaseResponse(
                 message = "채팅방 검색 성공",
-                data = chatRoomEntity.map {
+                data = chatRoomEntities.map {
                     toResponse(it, userId)
                 }
             )
