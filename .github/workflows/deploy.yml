@@ -29,9 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - run: touch ./src/main/resources/application-prod.yml
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
-      - run: cat ./src/main/resources/application-prod.yml
+      - run: touch ./src/main/resources/application-local.yml
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.yml
+      - run: cat ./src/main/resources/application-local.yml
 
       - name: Build with Gradle
         run: ./gradlew clean build
@@ -70,6 +70,6 @@ jobs:
             fi
 
             # 새로운 컨테이너 실행
-            sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
+            sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 -p 9090:9090 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
 
 
