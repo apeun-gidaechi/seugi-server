@@ -8,14 +8,14 @@ import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessag
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.data.domain.Pageable
+import java.time.LocalDateTime
 
 interface MessageService {
 
     fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long)
     fun sendEventMessage(message: MessageEventDto, roomId: String)
     fun getMessage(roomId: String): MessageEntity?
-    fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse>
+    fun getMessages(chatRoomId: String, userId: Long, timestamp: LocalDateTime): BaseResponse<GetMessageResponse>
     fun getNotReadMessageCount(chatRoom: ChatRoomEntity, userId: Long): Int
 
     fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>

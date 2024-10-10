@@ -19,7 +19,6 @@ import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
-import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -79,10 +78,15 @@ class MessageServiceImpl(
 
 
     @Transactional(readOnly = true)
-    override fun getMessages(chatRoomId: String, userId: Long, pageable: Pageable): BaseResponse<GetMessageResponse> {
+    override fun getMessages(
+        chatRoomId: String,
+        userId: Long,
+        timestamp: LocalDateTime,
+    ): BaseResponse<GetMessageResponse> {
 
         val allMessages =
-            messageRepository.findByChatRoomIdEquals(chatRoomId, pageable).map { messageMapper.toDomain(it) }
+            messageRepository.findTop30ByChatRoomIdEqualsAndTimestampBefore(chatRoomId, timestamp)
+                .map { messageMapper.toDomain(it) }
 
             return BaseResponse(
                 message = "채팅 불러오기 성공",
