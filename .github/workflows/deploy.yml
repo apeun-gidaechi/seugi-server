@@ -62,24 +62,17 @@ jobs:
           username: ubuntu
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             
-            # Docker 이미지 풀
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
             
-            # 기존 컨테이너 중지 및 제거
             if sudo docker ps -a --format '{{.Names}}' | grep -q ${{ secrets.DOCKER_PROJECT}}; then
                 sudo docker stop ${{ secrets.DOCKER_PROJECT}} || true
                 sudo docker rm ${{ secrets.DOCKER_PROJECT}} || true
             fi
             
-            # Docker 이미지 삭제
             if sudo docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
                 sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
             fi
 
-            # 새로운 컨테이너 실행
             sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 -p 9090:9090 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
-
-
