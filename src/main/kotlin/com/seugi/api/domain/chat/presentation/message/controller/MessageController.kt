@@ -6,10 +6,8 @@ import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 /**
  * 메시지 삭제, 이모지 달기, 읽음표시
@@ -58,12 +56,12 @@ class MessageController(
     fun getMessages(
         @GetAuthenticatedId userId: Long,
         @PathVariable roomId: String,
-        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable
+        @RequestParam("timestamp", required = false) timestamp: LocalDateTime = LocalDateTime.now(),
     ): BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
             userId = userId,
-            pageable = pageable
+            timestamp = timestamp
         )
     }
 
