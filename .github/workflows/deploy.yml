@@ -3,7 +3,7 @@ name: CI/CD using GitHub Actions & Docker
 on:
   push:
     branches:
-      - main
+      - test
 
 permissions:
   contents: write
@@ -29,9 +29,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - run: touch ./src/main/resources/application-prod.yml
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
-      - run: cat ./src/main/resources/application-prod.yml
+      - name: Create application.yml file
+        run: |
+          mkdir -p ./src/main/resources
+          touch ./src/main/resources/application-local.yml
+          touch ./src/main/resources/application-prod.yml
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.yml
+          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
+          cat ./src/main/resources/application-local.yml
+
+      - name: List files in src/main/resources
+        run: ls -l ./src/main/resources
 
       - run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
