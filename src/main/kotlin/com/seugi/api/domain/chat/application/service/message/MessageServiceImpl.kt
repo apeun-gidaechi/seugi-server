@@ -45,11 +45,10 @@ class MessageServiceImpl(
         )
     }
 
-    private fun sendAlarm(message: Message, readUser: List<Long>, userId: Long) {
+    private fun sendAlarm(message: Message, userId: Long) {
         fcmService.sendChatAlarm(
             message = message.message,
             chatRoomId = message.chatRoomId,
-            readUser = readUser,
             userId = userId
         )
     }
@@ -67,7 +66,7 @@ class MessageServiceImpl(
             )
         )
 
-//        sendAlarm(message, readUsers, userId)
+        sendAlarm(message, userId)
 
         return messageMapper.toMessageResponse(message, chatMessageDto.uuid)
 

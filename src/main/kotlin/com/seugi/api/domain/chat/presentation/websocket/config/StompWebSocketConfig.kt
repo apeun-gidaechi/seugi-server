@@ -88,6 +88,16 @@ class StompWebSocketConfig(
                     SimpMessageType.UNSUBSCRIBE,
                     SimpMessageType.HEARTBEAT,
                     SimpMessageType.DISCONNECT,
+                        -> {
+                        if (accessor.destination != null) {
+                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                            val userId = simpAttributes.getAttribute("user-id") as String
+                            chatRoomService.unSub(
+                                userId = userId.toLong(),
+                                roomId = accessor.destination?.substringAfterLast(".").toString()
+                            )
+                        }
+                    }
                     SimpMessageType.DISCONNECT_ACK,
                     SimpMessageType.OTHER,
                     null,

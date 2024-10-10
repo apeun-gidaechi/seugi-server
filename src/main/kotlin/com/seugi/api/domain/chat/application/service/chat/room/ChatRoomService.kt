@@ -27,5 +27,6 @@ interface ChatRoomService {
     fun findChatRoomById(id: String): ChatRoomEntity
 
     fun sub(userId: Long, roomId: String)
+    fun unSub(userId: Long, roomId: String)
 
 }

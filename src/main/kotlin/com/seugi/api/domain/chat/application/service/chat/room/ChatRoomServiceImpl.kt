@@ -19,6 +19,7 @@ import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
+import com.seugi.api.global.util.DateTimeUtil
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -39,22 +40,35 @@ class ChatRoomServiceImpl(
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
     }
 
-    @Transactional
-    override fun sub(userId: Long, roomId: String) {
+    private fun sendEventMessage(roomId: String, userId: Long, type: Type) {
         if (roomId != "message" && roomId.length == 24) {
 
             messageService.sendEventMessage(
                 message = MessageEventDto(
                     userId = userId,
-                    type = Type.SUB
+                    type = type
                 ),
                 roomId = roomId
             )
         }
+    }
+
+    @Transactional
+    override fun sub(userId: Long, roomId: String) {
+
+        sendEventMessage(roomId, userId, Type.SUB)
+
+        val chatRoom = findChatRoomById(roomId)
+        chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp = DateTimeUtil.localDateTime
+    }
+
+    @Transactional
+    override fun unSub(userId: Long, roomId: String) {
+
+        sendEventMessage(roomId, userId, Type.UNSUB)
 
         val chatRoom = findChatRoomById(roomId)
         chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp = LocalDateTime.now()
-
     }
 
     private fun toResponse(chatRoomEntity: ChatRoomEntity, userId: Long): RoomResponse {
