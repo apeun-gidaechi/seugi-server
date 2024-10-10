@@ -1,0 +1,72 @@
+name: CI/CD using GitHub Actions & Docker
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  CI-CD:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+  
+      - run: touch ./src/main/resources/application-prod.yml
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
+      - run: cat ./src/main/resources/application-prod.yml
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker build & push to prod
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker buildx build --platform linux/arm64/v8 -t "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}" --push .
+
+      - name: Deploy to 1 server
+        uses: appleboy/ssh-action@master
+        id: deploy-prod-1
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          username: ubuntu
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            # Docker 이미지 풀
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
+            
+            # 기존 컨테이너 중지 및 제거
+            if sudo docker ps -a --format '{{.Names}}' | grep -q ${{ secrets.DOCKER_PROJECT}}; then
+                sudo docker stop ${{ secrets.DOCKER_PROJECT}} || true
+                sudo docker rm ${{ secrets.DOCKER_PROJECT}} || true
+            fi
+            
+            # Docker 이미지 삭제
+            if sudo docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
+                sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
+            fi
+
+            # 새로운 컨테이너 실행
+            sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
+
+    \
