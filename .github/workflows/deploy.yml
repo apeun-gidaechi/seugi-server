@@ -29,9 +29,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
   
-      - run: touch ./src/main/resources/application-local.yml
-      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.yml
-      - run: cat ./src/main/resources/application-local.yml
+      - run: touch ./src/main/resources/application-prod.yml
+      - run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
+      - run: cat ./src/main/resources/application-prod.yml
+
+      - run: cat "${{ secrets.FIREBASE }}" > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
