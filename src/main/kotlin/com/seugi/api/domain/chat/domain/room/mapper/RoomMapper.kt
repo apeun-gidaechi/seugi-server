@@ -3,9 +3,11 @@ package com.seugi.api.domain.chat.domain.room.mapper
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.domain.enums.type.RoomType.GROUP
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
+import com.seugi.api.domain.chat.domain.room.model.JoinUserInfo
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
+import com.seugi.api.domain.chat.presentation.chat.room.dto.response.UserInfoResponse
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
@@ -22,7 +24,7 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             chatName = entity.chatName,
             chatRoomImg = entity.chatRoomImg,
             createdAt = entity.createdAt,
-            joinUserId = entity.joinedUserId,
+            joinUserInfo = entity.joinedUserInfo,
             chatStatusEnum = entity.chatStatus
         )
     }
@@ -34,7 +36,14 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = domain.roomAdmin,
             roomType = domain.type,
             createdAt = domain.createdAt,
-            joinedUserId = domain.joinUserId
+            joinedUserInfo = domain.joinUserInfo
+        )
+    }
+
+    private fun toJoinUserInfo(userId: Long): JoinUserInfo {
+        return JoinUserInfo(
+            userId = userId,
+            timestamp = LocalDateTime.now()
         )
     }
 
@@ -47,7 +56,9 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             roomAdmin = if (type == GROUP) userId else -1,
             chatRoomImg = createRoomRequest.chatRoomImg,
             createdAt = LocalDateTime.now(),
-            joinUserId = createRoomRequest.joinUsers
+            joinUserInfo = createRoomRequest.joinUsers.map {
+                toJoinUserInfo(it)
+            }.toSet()
         )
     }
 
@@ -67,10 +78,21 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             createdAt = room.createdAt.toString(),
             chatStatusEnum = room.chatStatusEnum!!,
             type = room.type,
-            joinUserId = members,
+            joinUserInfo = toJoinUserInfo(members, room),
             lastMessage = lastMessage,
             lastMessageTimestamp = lastMessageTimeStamp,
             notReadCnt = notReadCnt
         )
+    }
+
+    private fun toJoinUserInfo(members: Set<RetrieveMemberResponse>, room: Room): Set<UserInfoResponse> {
+
+        return members.map { member ->
+            UserInfoResponse(
+                userInfo = member,
+                timestamp = room.joinUserInfo.find { it.userId == member.id }?.timestamp.toString()
+            )
+        }.toSet()
+
     }
 }

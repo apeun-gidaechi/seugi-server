@@ -1,6 +1,6 @@
 package com.seugi.api.domain.chat.presentation.websocket.config
 
-import com.seugi.api.domain.chat.application.service.message.MessageService
+import com.seugi.api.domain.chat.application.service.chat.room.ChatRoomService
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
 import com.seugi.api.global.auth.jwt.JwtUserDetails
 import com.seugi.api.global.auth.jwt.JwtUtils
@@ -27,8 +27,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 class StompWebSocketConfig(
     private val jwtUtils: JwtUtils,
-    private val messageService: MessageService,
-    @Value("\${spring.rabbitmq.host}") private val rabbitmqHost: String
+    private val chatRoomService: ChatRoomService,
+    @Value("\${spring.rabbitmq.host}") private val rabbitmqHost: String,
 ) : WebSocketMessageBrokerConfigurer {
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
@@ -73,33 +73,30 @@ class StompWebSocketConfig(
 
                     SimpMessageType.CONNECT_ACK,
                     SimpMessageType.MESSAGE,
-                    SimpMessageType.SUBSCRIBE -> {
+                    SimpMessageType.SUBSCRIBE,
+                        -> {
                         if (accessor.destination != null) {
                             val simpAttributes = SimpAttributesContextHolder.currentAttributes()
                             val userId = simpAttributes.getAttribute("user-id") as String
-                            messageService.sub(
+                            chatRoomService.sub(
                                 userId = userId.toLong(),
                                 roomId = accessor.destination?.substringAfterLast(".").toString()
                             )
                         }
                     }
 
-                    SimpMessageType.UNSUBSCRIBE -> {
-                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                        val userId = simpAttributes.getAttribute("user-id") as String
-                        messageService.unSub(
-                            userId = userId.toLong()
-                        )
-                    }
-
+                    SimpMessageType.UNSUBSCRIBE,
                     SimpMessageType.HEARTBEAT,
                     SimpMessageType.DISCONNECT,
                         -> {
-                        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                        val userId = simpAttributes.getAttribute("user-id") as String
-                        messageService.unSub(
-                            userId = userId.toLong()
-                        )
+                        if (accessor.destination != null) {
+                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                            val userId = simpAttributes.getAttribute("user-id") as String
+                            chatRoomService.unSub(
+                                userId = userId.toLong(),
+                                roomId = accessor.destination?.substringAfterLast(".").toString()
+                            )
+                        }
                     }
                     SimpMessageType.DISCONNECT_ACK,
                     SimpMessageType.OTHER,

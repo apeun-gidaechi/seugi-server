@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.type.EventType
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
+import com.seugi.api.domain.chat.domain.room.model.JoinUserInfo
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.request.ChatMemberEventRequest
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
@@ -13,6 +14,7 @@ import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class ChatMemberServiceImpl(
@@ -63,7 +65,12 @@ class ChatMemberServiceImpl(
 
         val chatRoomEntity = findByChatRoomId(chatMemberEventRequest.chatRoomId)
 
-        chatRoomEntity.joinedUserId += chatMemberEventRequest.chatMemberUsers
+        chatRoomEntity.joinedUserInfo += chatMemberEventRequest.chatMemberUsers.map {
+            JoinUserInfo(
+                it,
+                LocalDateTime.now()
+            )
+        }
 
         chatRoomRepository.save(chatRoomEntity)
 
@@ -88,8 +95,9 @@ class ChatMemberServiceImpl(
 
         if (chatRoomEntity.roomAdmin != userId) throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
 
-        chatRoomEntity.joinedUserId -= chatMemberEventRequest.chatMemberUsers
-
+        chatRoomEntity.joinedUserInfo -= chatMemberEventRequest.chatMemberUsers.mapNotNull {
+            chatRoomEntity.joinedUserInfo.find { it.userId == userId }
+        }
         chatRoomRepository.save(chatRoomEntity)
 
         sendMessage(

@@ -1,6 +1,7 @@
 package com.seugi.api.domain.chat.application.service.chat.room
 
 import com.seugi.api.domain.chat.domain.enums.type.RoomType
+import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
@@ -22,5 +23,10 @@ interface ChatRoomService {
         type: RoomType,
         userId: Long
     ): BaseResponse<List<RoomResponse>>
+
+    fun findChatRoomById(id: String): ChatRoomEntity
+
+    fun sub(userId: Long, roomId: String)
+    fun unSub(userId: Long, roomId: String)
 
 }

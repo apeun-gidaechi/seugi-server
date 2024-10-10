@@ -6,14 +6,14 @@ import org.bson.types.ObjectId
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface ChatRoomRepository : MongoRepository<ChatRoomEntity, ObjectId> {
-    fun findByWorkspaceIdEqualsAndChatStatusEqualsAndRoomTypeAndJoinedUserIdContains(
+    fun findByWorkspaceIdAndChatStatusAndRoomTypeAndJoinedUserInfoUserId(
         workspaceId: String,
         chatStatus: ChatStatusEnum,
         roomType: RoomType,
-        joinedUserId: Long
+        userId: Long,
     ): MutableList<ChatRoomEntity>?
 
-    fun findByWorkspaceIdEqualsAndJoinedUserIdEqualsAndRoomType(
+    fun findByWorkspaceIdAndJoinedUserInfoUserIdInAndRoomType(
         workspaceId: String,
         joinedUserId: MutableSet<Long>,
         roomType: RoomType,

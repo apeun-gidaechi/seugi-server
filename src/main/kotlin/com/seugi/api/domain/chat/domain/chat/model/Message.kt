@@ -15,6 +15,5 @@ data class Message(
     val mention: Set<Long> = emptySet(),
     val mentionAll: Boolean = false,
     val timestamp: String? = null,
-    val read: List<Long> = emptyList(),
     val messageStatus: ChatStatusEnum = ChatStatusEnum.ALIVE
 )

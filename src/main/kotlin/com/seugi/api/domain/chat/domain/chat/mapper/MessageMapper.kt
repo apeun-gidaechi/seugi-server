@@ -25,7 +25,6 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             timestamp = entity.timestamp.toString(),
             mention = entity.mention,
             mentionAll = entity.mentionALl,
-            read = entity.read.toMutableList(),
             messageStatus = entity.messageStatus
         )
     }
@@ -36,7 +35,6 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             chatRoomId = domain.chatRoomId,
             userId = domain.userId,
             message = domain.message,
-            read = domain.read.toMutableSet(),
             eventList = domain.eventList,
             emoticon = domain.emoticon,
             mention = domain.mention,
@@ -47,14 +45,12 @@ class MessageMapper : Mapper<Message, MessageEntity> {
     fun toMessage(
         chatMessageDto: ChatMessageDto,
         author: Long,
-        readUsers: List<Long>,
     ): Message {
         return Message(
             type = chatMessageDto.type!!,
             chatRoomId = chatMessageDto.roomId!!,
             userId = author,
             message = chatMessageDto.message ?: "",
-            read = readUsers,
             eventList = chatMessageDto.eventList,
             emoticon = chatMessageDto.emoticon,
             mention = chatMessageDto.mention ?: emptySet(),
@@ -76,7 +72,6 @@ class MessageMapper : Mapper<Message, MessageEntity> {
             mention = message.mention,
             mentionAll = message.mentionAll,
             timestamp = message.timestamp ?: LocalDateTime.now().toString(),
-            read = message.read,
             messageStatus = message.messageStatus,
         )
     }
