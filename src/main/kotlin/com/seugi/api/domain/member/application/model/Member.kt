@@ -6,7 +6,7 @@ import com.seugi.api.domain.member.application.model.value.*
 
 data class Member(
 
-    val id: MemberId?,
+    val id: MemberId,
     var name: MemberName,
     val email: MemberEmail,
     var picture: MemberPicture,
