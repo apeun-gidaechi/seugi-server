@@ -10,6 +10,7 @@ import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.util.DateTimeUtil
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -66,11 +67,10 @@ class FCMService(
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
     }
 
-    fun sendChatAlarm(message: String, chatRoomId: String, readUser: List<Long>, userId: Long) {
+    fun sendChatAlarm(message: String, chatRoomId: String, userId: Long) {
 
         val room = findChatRoomById(chatRoomId)
 
-        val unReadUsers = room.joinedUserId - readUser.toSet()
         val sendMember = getMember(userId)
 
         val notification = buildNotification(
@@ -79,8 +79,10 @@ class FCMService(
             imageUrl = getAlarmImage(workspaceId = "", type = FCMEnums.CHAT, member = sendMember)
         )
 
-        unReadUsers.forEach {
-            sendFCMNotifications(getMember(it).getFCMToken(), notification)
+        room.joinedUserInfo.forEach {
+            if (it.timestamp != DateTimeUtil.localDateTime) {
+                sendFCMNotifications(getMember(it.userId).getFCMToken(), notification)
+            }
         }
     }
 
