@@ -7,6 +7,7 @@ import com.seugi.api.domain.chat.domain.room.model.JoinUserInfo
 import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
+import com.seugi.api.domain.chat.presentation.chat.room.dto.response.UserInfoResponse
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
@@ -77,10 +78,21 @@ class RoomMapper : Mapper<Room, ChatRoomEntity> {
             createdAt = room.createdAt.toString(),
             chatStatusEnum = room.chatStatusEnum!!,
             type = room.type,
-            joinUserId = members,
+            joinUserInfo = toJoinUserInfo(members, room),
             lastMessage = lastMessage,
             lastMessageTimestamp = lastMessageTimeStamp,
             notReadCnt = notReadCnt
         )
+    }
+
+    private fun toJoinUserInfo(members: Set<RetrieveMemberResponse>, room: Room): Set<UserInfoResponse> {
+
+        return members.map { member ->
+            UserInfoResponse(
+                userInfo = member,
+                timestamp = room.joinUserInfo.find { it.userId == member.id }?.timestamp.toString()
+            )
+        }.toSet()
+
     }
 }

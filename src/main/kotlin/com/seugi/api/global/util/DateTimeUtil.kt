@@ -5,5 +5,5 @@ import java.time.format.DateTimeFormatter
 
 object DateTimeUtil {
     val localDateTime: LocalDateTime =
-        LocalDateTime.parse("0000-01-01T00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
+        LocalDateTime.parse("0001-01-01T00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"))
 }
