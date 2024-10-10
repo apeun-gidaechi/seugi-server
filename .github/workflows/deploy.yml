@@ -69,4 +69,4 @@ jobs:
             # 새로운 컨테이너 실행
             sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
 
-    \
+
