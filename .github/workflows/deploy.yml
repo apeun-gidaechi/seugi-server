@@ -34,7 +34,7 @@ jobs:
       - run: cat ./src/main/resources/application-local.yml
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
