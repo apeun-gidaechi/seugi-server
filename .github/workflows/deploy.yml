@@ -34,7 +34,7 @@ jobs:
         
       - name: Write APPLICATION_YML to file
         run: |
-          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application-local.yml
+          echo "test content" > ./src/main/resources/application-local.yml
           cat ./src/main/resources/application-local.yml
 
       - name: Create firebase file
