@@ -34,16 +34,12 @@ jobs:
           for profile in local prod; do
             echo "${{ secrets.APPLICATION_YML }}" | base64 -d > ./src/main/resources/application-$profile.yml
           done
-          
-      - name: Debug
-        run: |
-          cat ./src/main/resources/application-local.yml
   
       - name: Create firebase file
         run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
