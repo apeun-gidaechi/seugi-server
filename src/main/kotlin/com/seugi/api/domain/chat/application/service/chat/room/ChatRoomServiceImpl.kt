@@ -60,6 +60,7 @@ class ChatRoomServiceImpl(
 
         val chatRoom = findChatRoomById(roomId)
         chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp = DateTimeUtil.localDateTime
+        chatRoomRepository.save(chatRoom).joinedUserInfo.find { it.userId == userId }?.timestamp
     }
 
     @Transactional
@@ -69,6 +70,7 @@ class ChatRoomServiceImpl(
 
         val chatRoom = findChatRoomById(roomId)
         chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp = LocalDateTime.now()
+        chatRoomRepository.save(chatRoom).joinedUserInfo.find { it.userId == userId }?.timestamp
     }
 
     private fun toResponse(chatRoomEntity: ChatRoomEntity, userId: Long): RoomResponse {
