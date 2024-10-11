@@ -32,7 +32,7 @@ jobs:
       - name: Write APPLICATION_YML to file
         run: |
           cat <<EOF > ./src/main/resources/application-local.yml
-          ${secrets.APPLICATION_YML}
+          ${{ secrets.APPLICATION_YML }}
           EOF
 
       - name: Create firebase file
