@@ -2,7 +2,11 @@ name: CI for seugi-server
 
 on:
   push:
-    branches: ["main"]
+    branches-ignore:
+      - main
+  pull_request:
+    branches-ignore:
+      - main
 
 permissions:
   contents: read
@@ -15,13 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 21
+      - name: Set up Temurin JDK 21
         uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Gradle Caching
+      - name: Load gradle cache
         uses: actions/cache@v3
         with:
           path: |
@@ -31,5 +35,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle
+      - name: Build without test
         run: ./gradlew clean build -x test
