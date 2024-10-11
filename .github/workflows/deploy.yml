@@ -33,6 +33,9 @@ jobs:
         run: |
           touch ./src/main/resources/application-local.yml
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application-local.yml
+          
+      - name: Debug application.yml content
+        run: cat ./src/main/resources/application-local.yml
 
       - name: Create firebase file
         run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
