@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      
+            
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
             
             if docker ps -a --format '{{.Names}}' | grep -q ${{ secrets.DOCKER_PROJECT}}; then
@@ -68,7 +68,7 @@ jobs:
             
             if docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
                 echo "Removing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"
-                docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
+                docker rmi -f $(docker images -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}") || true
             else
                 echo "Image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} not found"
             fi
