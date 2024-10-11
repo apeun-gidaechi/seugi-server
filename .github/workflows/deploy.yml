@@ -29,14 +29,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
             
-      - name: Write APPLICATION_YML to files
+      - name: Create application file
         run: |
           for profile in local prod; do
             echo "${{ secrets.APPLICATION_YML }}" | base64 -d > ./src/main/resources/application-$profile.yml
           done
   
       - name: Create firebase file
-        run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
+        run: echo "${{ secrets.FIREBASE }}" | base64 -d > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
