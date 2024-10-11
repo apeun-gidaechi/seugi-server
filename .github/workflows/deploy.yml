@@ -32,19 +32,13 @@ jobs:
       - name: Create application.yml file
         run: |
           touch ./src/main/resources/application-local.yml
-          touch ./src/main/resources/application-prod.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-local.yml
-          echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application-prod.yml
-          cat ./src/main/resources/application-local.yml
-          find src
+          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application-local.yml
 
-      - name: List files in src/main/resources
-        run: ls -l ./src/main/resources
-
+      - name: Create firebase file
       - run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
