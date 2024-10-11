@@ -34,6 +34,9 @@ jobs:
           cat <<EOF > ./src/main/resources/application-local.yml
           ${{ secrets.APPLICATION_YML }}
           EOF
+
+      - name: Set file permissions
+        run: chmod 644 ./src/main/resources/application-local.yml
           
       - name: Verify application-local.yml
         run: |
