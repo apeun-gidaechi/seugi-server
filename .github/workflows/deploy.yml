@@ -13,13 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 21
+      
+      - name: Setup Temurin JDK 21
         uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Gradle Caching
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Load gradle cache
         uses: actions/cache@v3
         with:
           path: |
@@ -29,29 +33,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
             
-      - name: Create application file
+      - name: Create application yml files
         run: |
           for profile in local prod; do
             echo "${{ secrets.APPLICATION_YML }}" | base64 -d > ./src/main/resources/application-$profile.yml
           done
   
-      - name: Create firebase file
+      - name: Create firebase config
         run: echo "${{ secrets.FIREBASE }}" | base64 -d > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
         run: ./gradlew clean build
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Docker build & push to prod
+      - name: Build docker image & push
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker buildx build --platform linux/arm64/v8 -t "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}" --push .
 
-      - name: Deploy to 1 server
+      - name: Deploy docker container
         uses: appleboy/ssh-action@master
-        id: deploy-prod-1
         with:
           host: ${{ secrets.HOST_PROD }}
           username: ubuntu
@@ -67,17 +67,11 @@ jobs:
             fi
             
             if docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
-                echo "Removing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"
                 docker rmi -f $(docker images -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}") || true
-            else
-                echo "Image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} not found"
             fi
             
             if docker volume ls -q --filter "name=${{ secrets.DOCKER_PROJECT}}" | grep -q .; then
-                echo "Removing volumes for ${{ secrets.DOCKER_PROJECT}}"
                 docker volume rm $(docker volume ls -q --filter "name=${{ secrets.DOCKER_PROJECT}}") || true
-            else
-                echo "No volumes to remove for ${{ secrets.DOCKER_PROJECT}}"
             fi
       
             docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 -p 9090:9090 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
