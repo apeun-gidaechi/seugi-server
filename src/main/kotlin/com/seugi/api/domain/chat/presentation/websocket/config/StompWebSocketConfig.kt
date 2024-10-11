@@ -50,64 +50,56 @@ class StompWebSocketConfig(
                 val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)!!
 
                 when (accessor.messageType) {
-                    SimpMessageType.CONNECT -> {
-                        val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
-
-                        if (authToken != null && authToken.startsWith("Bearer ")) {
-                            val auth = jwtUtils.getAuthentication(authToken)
-
-                            val userDetails = auth.principal as? JwtUserDetails
-
-                            val userId: String? = userDetails?.id?.value?.toString()
-
-                            if (userId != null) {
-                                val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                                simpAttributes.setAttribute("user-id", userId)
-
-                                return MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
-                            } else {
-                                throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-                            }
-                        }
-                    }
-
-                    SimpMessageType.CONNECT_ACK,
-                    SimpMessageType.MESSAGE,
-                    SimpMessageType.SUBSCRIBE,
-                        -> {
-                        if (accessor.destination != null) {
-                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                            val userId = simpAttributes.getAttribute("user-id") as String
-                            chatRoomService.sub(
-                                userId = userId.toLong(),
-                                roomId = accessor.destination?.substringAfterLast(".").toString()
-                            )
-                        }
-                    }
-
-                    SimpMessageType.UNSUBSCRIBE,
-                    SimpMessageType.HEARTBEAT,
-                    SimpMessageType.DISCONNECT,
-                        -> {
-                        if (accessor.destination != null) {
-                            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                            val userId = simpAttributes.getAttribute("user-id") as String
-                            chatRoomService.unSub(
-                                userId = userId.toLong(),
-                                roomId = accessor.destination?.substringAfterLast(".").toString()
-                            )
-                        }
-                    }
-                    SimpMessageType.DISCONNECT_ACK,
-                    SimpMessageType.OTHER,
-                    null,
-                        -> {
-                    }
+                    SimpMessageType.CONNECT -> handleConnect(message, accessor)
+                    SimpMessageType.SUBSCRIBE -> handleSubscribe(accessor)
+                    SimpMessageType.UNSUBSCRIBE, SimpMessageType.DISCONNECT -> handleUnsubscribeOrDisconnect()
+                    else -> {}
                 }
-
                 return message
-
             }
         })
+    }
+
+    private fun handleConnect(message: Message<*>, accessor: StompHeaderAccessor) {
+        val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
+        if (authToken != null && authToken.startsWith("Bearer ")) {
+            val auth = jwtUtils.getAuthentication(authToken)
+            val userDetails = auth.principal as? JwtUserDetails
+            val userId: String? = userDetails?.id?.value?.toString()
+
+            if (userId != null) {
+                val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+                simpAttributes.setAttribute("user-id", userId)
+                MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
+            } else {
+                throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            }
+        }
+    }
+
+    private fun handleSubscribe(accessor: StompHeaderAccessor) {
+        accessor.destination?.let {
+            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+            simpAttributes.setAttribute("sub", it.substringAfterLast("."))
+            val userId = simpAttributes.getAttribute("user-id") as String
+            chatRoomService.sub(
+                userId = userId.toLong(),
+                roomId = it.substringAfterLast(".")
+            )
+        }
+    }
+
+    private fun handleUnsubscribeOrDisconnect() {
+        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+        val userId = simpAttributes.getAttribute("user-id") as String?
+        val roomId = simpAttributes.getAttribute("sub") as String?
+        userId?.let {
+            roomId?.let {
+                chatRoomService.unSub(
+                    userId = userId.toLong(),
+                    roomId = it
+                )
+            }
+        }
     }
 }
