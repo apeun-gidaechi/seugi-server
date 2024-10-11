@@ -29,24 +29,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
             
-      - name: Write APPLICATION_YML to file
+      - name: Write APPLICATION_YML to files
         run: |
-          cat <<EOF > ./src/main/resources/application-local.yml
-          ${{ secrets.APPLICATION_YML }}
-          EOF
-
-      - name: Set file permissions
-        run: chmod 644 ./src/main/resources/application-local.yml
-          
-      - name: Verify application-local.yml
-        run: |
-          cat ./src/main/resources/application-local.yml
-
+          for profile in local prod; do
+            cat <<EOF > ./src/main/resources/application-$profile.yml
+            ${{ secrets.APPLICATION_YML }}
+            EOF
+          done
+  
       - name: Create firebase file
         run: echo "${{ secrets.FIREBASE }}" | sed 's/\\n/\n/g' > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
