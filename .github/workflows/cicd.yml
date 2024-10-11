@@ -1,9 +1,8 @@
 name: CI/CD using GitHub Actions & Docker
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: write
