@@ -32,7 +32,7 @@ jobs:
       - name: Write APPLICATION_YML to files
         run: |
           for profile in local prod; do
-            echo "${{ secrets.APPLICATION_YML }}" | base64 -d > application-$profile.yml
+            echo "${{ secrets.APPLICATION_YML }}" | base64 -d > ./src/main/resources/application-$profile.yml
           done
           
       - name: Debug
