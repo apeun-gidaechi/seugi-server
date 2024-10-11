@@ -3,7 +3,7 @@ name: CI/CD using GitHub Actions & Docker
 on:
   push:
     branches:
-      - test
+      - main
 
 permissions:
   contents: write
