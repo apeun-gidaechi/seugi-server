@@ -32,10 +32,10 @@ jobs:
       - name: Write APPLICATION_YML to files
         run: |
           for profile in local prod; do
-            printf "%s" "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application-$profile.yml
+            echo "${{ secrets.APPLICATION_YML }}" | base64 -d > application-$profile.yml
           done
           
-      - name: Write APPLICATION_YML to files
+      - name: Debug
         run: |
           cat ./src/main/resources/application-local.yml
   
