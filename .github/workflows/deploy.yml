@@ -39,7 +39,7 @@ jobs:
         run: echo "${{ secrets.FIREBASE }}" | base64 -d > ./src/main/resources/"${{ secrets.FIREBASE_FILE_NAME }}"
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -58,16 +58,26 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
             
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
-            
-            if sudo docker ps -a --format '{{.Names}}' | grep -q ${{ secrets.DOCKER_PROJECT}}; then
-                sudo docker stop ${{ secrets.DOCKER_PROJECT}} || true
-                sudo docker rm ${{ secrets.DOCKER_PROJECT}} || true
+            if docker ps -a --format '{{.Names}}' | grep -q ${{ secrets.DOCKER_PROJECT}}; then
+                docker stop ${{ secrets.DOCKER_PROJECT}} || true
+                docker rm ${{ secrets.DOCKER_PROJECT}} || true
             fi
             
-            if sudo docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
-                sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
+            if docker images | grep -q "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"; then
+                echo "Removing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}"
+                docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} || true
+            else
+                echo "Image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}} not found"
             fi
-
-            sudo docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 -p 9090:9090 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
+            
+            if docker volume ls -q --filter "name=${{ secrets.DOCKER_PROJECT}}" | grep -q .; then
+                echo "Removing volumes for ${{ secrets.DOCKER_PROJECT}}"
+                docker volume rm $(docker volume ls -q --filter "name=${{ secrets.DOCKER_PROJECT}}") || true
+            else
+                echo "No volumes to remove for ${{ secrets.DOCKER_PROJECT}}"
+            fi
+      
+            docker run -d --name ${{ secrets.DOCKER_PROJECT}} -p 80:8080 -p 9090:9090 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_PROJECT}}
