@@ -5,16 +5,20 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
 import com.seugi.api.global.infra.nice.school.meal.SchoolMealClient
+import com.seugi.api.global.infra.nice.school.schedule.ScheduleRow
+import com.seugi.api.global.infra.nice.school.schedule.SchoolScheduleClient
 import com.seugi.api.global.infra.nice.school.timetable.Row
 import com.seugi.api.global.infra.nice.school.timetable.SchoolTimetableClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class NiceSchoolService(
     private val schoolInfoClient: SchoolInfoClient,
     private val schoolMealClient: SchoolMealClient,
     private val schoolTimetableClient: SchoolTimetableClient,
+    private val schoolScheduleClient: SchoolScheduleClient,
     @Value("\${nice.key}") private val key: String,
 ) {
 
@@ -124,5 +128,19 @@ class NiceSchoolService(
         }
     }
 
+    fun getSchoolSchedule(
+        schoolInfo: SchoolInfo,
+    ): List<ScheduleRow> {
+        return schoolScheduleClient.getSchoolSchedule(
+            key = key,
+            type = "json",
+            pIndex = 1,
+            pSize = 1000,
+            scCode = schoolInfo.scCode,
+            sdCode = schoolInfo.sdCode,
+            startDate = LocalDate.now().year.toString() + "01" + "01",
+            endDate = LocalDate.now().year.toString() + "12" + "31"
+        ).schoolSchedule?.get(1)?.row ?: emptyList()
+    }
 
 }
