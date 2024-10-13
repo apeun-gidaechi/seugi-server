@@ -24,9 +24,9 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
         return ScheduleEntity(
             workspaceId = domain.workspaceId!!,
             date = domain.date!!,
-            eventName = domain.eventName!!,
-            eventContent = domain.eventContent!!,
-            grade = domain.grade!!
+            eventName = domain.eventName ?: "",
+            eventContent = domain.eventContent ?: "",
+            grade = domain.grade ?: emptyList()
         )
     }
 
