@@ -8,7 +8,7 @@ import com.seugi.api.domain.chat.domain.chat.mapper.MessageMapper
 import com.seugi.api.domain.chat.domain.chat.model.Message
 import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.enums.status.ChatStatusEnum
-import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
+import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.message.dto.MessageResponse
@@ -99,10 +99,10 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getNotReadMessageCount(chatRoom: ChatRoomEntity, userId: Long): Int {
-        val timestamp = chatRoom.joinedUserInfo.find { it.userId == userId }?.timestamp
+    override fun getNotReadMessageCount(room: Room, userId: Long): Int {
+        val timestamp = room.joinUserInfo.find { it.userId == userId }?.timestamp
         return messageRepository.findByChatRoomIdEqualsAndTimestampBefore(
-            chatRoomId = chatRoom.id.toString(),
+            chatRoomId = room.id.toString(),
             timestamp = timestamp ?: LocalDateTime.now()
         ).count()
     }

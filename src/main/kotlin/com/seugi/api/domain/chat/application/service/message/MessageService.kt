@@ -3,7 +3,7 @@ package com.seugi.api.domain.chat.application.service.message
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
-import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
+import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
@@ -16,7 +16,7 @@ interface MessageService {
     fun sendEventMessage(message: MessageEventDto, roomId: String)
     fun getMessage(roomId: String): MessageEntity?
     fun getMessages(chatRoomId: String, userId: Long, timestamp: LocalDateTime): BaseResponse<GetMessageResponse>
-    fun getNotReadMessageCount(chatRoom: ChatRoomEntity, userId: Long): Int
+    fun getNotReadMessageCount(room: Room, userId: Long): Int
 
     fun addEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
     fun deleteEmojiToMessage(userId: Long, emoji: AddEmoji): BaseResponse<Unit>
