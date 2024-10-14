@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class SchoolScheduleResponse(
     @JsonProperty("SchoolSchedule") val schoolSchedule: List<ScheduleInfo>? = null,
+    @JsonProperty("RESULT") val result: Result? = null,
 )
 
 data class ScheduleInfo(
