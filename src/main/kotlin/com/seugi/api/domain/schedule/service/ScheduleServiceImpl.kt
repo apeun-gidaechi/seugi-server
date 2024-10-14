@@ -38,7 +38,7 @@ class ScheduleServiceImpl(
         return workspaceEntity.schoolInfo
     }
 
-    private fun resetTimetable(workspaceId: String, userId: Long): List<Schedule> {
+    private fun resetSchedule(workspaceId: String, userId: Long): List<Schedule> {
         val schoolInfo = getWorkspaceInfo(workspaceId, userId)
         val schoolSchedules = getSchoolSchedules(schoolInfo, workspaceId)
         val scheduleEntities = schoolSchedules.map { scheduleMapper.toEntity(it) }
@@ -48,7 +48,7 @@ class ScheduleServiceImpl(
     override fun getSchoolSchedules(userId: Long, workspaceId: String): BaseResponse<List<Schedule>> {
         return BaseResponse(
             message = "학사일정 전부 불러오기 성공",
-            data = if (scheduleRepository.existsByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
+            data = if (!scheduleRepository.existsByWorkspaceId(workspaceId)) resetSchedule(workspaceId, userId)
             else scheduleRepository.findByWorkspaceId(workspaceId).map { scheduleMapper.toDomain(it) }
         )
     }
@@ -56,8 +56,8 @@ class ScheduleServiceImpl(
     override fun getMonthSchoolSchedules(userId: Long, workspaceId: String, month: Int): BaseResponse<List<Schedule>> {
         return BaseResponse(
             message = "학사일정 한달치 불러오기 성공",
-            data = if (scheduleRepository.existsByWorkspaceId(workspaceId)) {
-                resetTimetable(workspaceId, userId).filter { sc ->
+            data = if (!scheduleRepository.existsByWorkspaceId(workspaceId)) {
+                resetSchedule(workspaceId, userId).filter { sc ->
                     sc.date?.split("-")?.get(1)?.toIntOrNull() == month
                 }
             } else scheduleRepository.findByMonth(workspaceId, month).map { scheduleMapper.toDomain(it) }
