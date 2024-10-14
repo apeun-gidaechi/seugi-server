@@ -20,14 +20,4 @@ class AppleCodeRequest (
     @JsonSetter(nulls = Nulls.AS_EMPTY)
     val name: String = "",
 
-    @JsonProperty("email")
-    @JsonSetter(nulls = Nulls.AS_EMPTY)
-    val email: String = ""
-
-) {
-
-    fun isNameAndEmailEmpty(): Boolean {
-        return name.isEmpty() && email.isEmpty()
-    }
-
-}
+)
