@@ -26,7 +26,6 @@ class AppleAuthService (
     private val saveMemberPort: SaveMemberPort,
     private val saveOAuthPort: SaveOAuthPort,
     private val loadMemberPort: LoadMemberPort,
-    private val loadOAuthPort: LoadOAuthPort
 ): AppleAuthUseCase {
 
     override fun authenticate(dto: AppleCodeRequest): BaseResponse<JwtInfo> {
@@ -39,22 +38,10 @@ class AppleAuthService (
         val publicKey = appleUtils.generate(headers, keys)
         val claims = appleUtils.extractClaims(exchange.idToken, publicKey)
 
-        if (dto.isNameAndEmailEmpty()) {
-            val sub = claims.subject
-            val oauth = loadOAuthPort.loadOAuthByProviderAndSub(Provider.APPLE, sub)
-            val member = loadMemberPort.loadMemberWithId(oauth.member.id!!.value)
+        val email = claims["email"] as String
 
-            member.addFCMToken(dto.token)
-            saveMemberPort.saveMember(member)
-
-            return BaseResponse(
-                message = "애플 로그인 성공 !!",
-                data = jwtUtils.generate(member)
-            )
-        }
-
-        if (!existMemberPort.existMemberWithEmail(dto.email)) {
-            val model = Member(dto.name, dto.token, dto.email)
+        if (!existMemberPort.existMemberWithEmail(email)) {
+            val model = Member(dto.name, dto.token, email)
             val member = saveMemberPort.saveMember(model)
 
             val oauth = OAuth(
@@ -72,6 +59,13 @@ class AppleAuthService (
             )
         }
 
-        throw CustomException(OAuthErrorCode.OAUTH_NOT_SUFFICIENT)
+        val member = loadMemberPort.loadMemberWithEmail(email)
+        member.addFCMToken(dto.token)
+        saveMemberPort.saveMember(member)
+
+        return BaseResponse(
+            message = "애플 로그인 성공 !!",
+            data = jwtUtils.generate(member)
+        )
     }
 }
