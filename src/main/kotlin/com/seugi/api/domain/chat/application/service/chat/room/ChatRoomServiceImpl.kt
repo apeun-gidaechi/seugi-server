@@ -115,9 +115,10 @@ class ChatRoomServiceImpl(
 
         createRoomRequest.joinUsers.add(userId)
 
-        val existingChatRoom = chatRoomRepository.findByWorkspaceIdAndJoinedUserInfoUserIdInAndRoomType(
+        val existingChatRoom = chatRoomRepository.findByWorkspaceIdAndRoomTypeAndExactJoinedUserIds(
             workspaceId = createRoomRequest.workspaceId,
-            joinedUserId = createRoomRequest.joinUsers,
+            joinedUserIds = createRoomRequest.joinUsers,
+            userCount = createRoomRequest.joinUsers.size,
             roomType = PERSONAL
         )
 
