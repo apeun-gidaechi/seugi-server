@@ -164,6 +164,8 @@ class ChatRoomServiceImpl(
 
         val data = findChatRoomById(roomId)
 
+        if (data.roomType != type) throw CustomException(ChatErrorCode.NO_TYPE_ROOM)
+
         if (data.joinedUserInfo.none { it.userId == userId }) {
             throw CustomException(ChatErrorCode.NO_ACCESS_ROOM)
         }
@@ -205,6 +207,8 @@ class ChatRoomServiceImpl(
         ).orEmpty()
 
         val chatRooms = chatRoomEntity.map { chatRoomMapper.toDomain(it) }
+
+        if (chatRoomEntity.first().roomType != type) throw CustomException(ChatErrorCode.NO_TYPE_ROOM)
 
         val rooms: List<RoomResponse> = when (type) {
             PERSONAL -> {
