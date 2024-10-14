@@ -35,8 +35,8 @@ class NiceSchoolService(
 
         return if (schoolData == null) {
             SchoolInfo(
-                scCode = " ",
-                sdCode = " ",
+                scCode = "x",
+                sdCode = "x",
                 scType = "기타"
             )
         } else {
