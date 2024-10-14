@@ -209,7 +209,7 @@ class ChatRoomServiceImpl(
 
         val chatRooms = chatRoomEntity.map { chatRoomMapper.toDomain(it) }
 
-        if (chatRoomEntity.first().roomType != type) throw CustomException(ChatErrorCode.NO_TYPE_ROOM)
+        if (chatRooms.isNotEmpty() && chatRoomEntity.first().roomType != type) throw CustomException(ChatErrorCode.NO_TYPE_ROOM)
 
         val rooms: List<RoomResponse> = when (type) {
             PERSONAL -> {
