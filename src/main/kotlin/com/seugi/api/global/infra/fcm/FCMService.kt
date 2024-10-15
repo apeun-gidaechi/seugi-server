@@ -73,6 +73,8 @@ class FCMService(
 
         val sendMember = getMember(userId)
 
+        if (message.isEmpty()) return
+
         val notification = buildNotification(
             title = room.chatName.ifEmpty { "1대1 채팅" },
             body = "${sendMember.name.value} : $message",
@@ -80,7 +82,7 @@ class FCMService(
         )
 
         room.joinedUserInfo.forEach {
-            if (it.timestamp != DateTimeUtil.localDateTime) {
+            if (it.timestamp != DateTimeUtil.localDateTime || it.userId != userId) {
                 sendFCMNotifications(getMember(it.userId).getFCMToken(), notification)
             }
         }
@@ -89,7 +91,7 @@ class FCMService(
     fun sendAlert(workspaceId: String, userId: Long, message: String) {
         val workspace = workspaceService.findWorkspaceById(workspaceId)
         val sendUser = getMember(userId)
-        val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin
+        val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin - userId
 
         val notification = buildNotification(
             title = "[공지] ${workspace.workspaceName}",
