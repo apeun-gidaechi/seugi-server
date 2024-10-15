@@ -85,7 +85,7 @@ class MessageServiceImpl(
     ): BaseResponse<GetMessageResponse> {
 
         val allMessages =
-            messageRepository.findTop30ByChatRoomIdEqualsAndTimestampBefore(chatRoomId, timestamp)
+            messageRepository.findTop30ByChatRoomIdAndTimestampBeforeOrderByTimestampDesc(chatRoomId, timestamp)
                 .map { messageMapper.toDomain(it) }
 
             return BaseResponse(

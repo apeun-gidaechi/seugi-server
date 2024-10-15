@@ -7,7 +7,7 @@ import com.seugi.api.domain.chat.domain.chat.model.Type
 data class MessageEventDto(
     val type: Type? = null,
     val userId: Long? = null,
-    val eventList: List<Long> = emptyList(),
+    val eventList: List<Long>? = null,
     val messageId: String? = null,
     val emojiId: Int? = null
 )
