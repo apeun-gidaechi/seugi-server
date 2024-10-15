@@ -75,7 +75,7 @@ class ChatRoomServiceImpl(
     }
 
     private fun toResponse(room: Room, userId: Long): RoomResponse {
-        val lastMessageEntity = messageService.getMessage(room.id.toString())
+        val lastMessageEntity = messageService.getLastMessage(room.id.toString())
         return chatRoomMapper.toResponse(
             room = room,
             members = getUserInfo(room),
