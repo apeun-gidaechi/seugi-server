@@ -6,6 +6,6 @@ import java.time.LocalDateTime
 
 interface MessageRepository : MongoRepository<MessageEntity, ObjectId> {
     fun findByChatRoomId(chatRoomId: String): List<MessageEntity>
-    fun findByChatRoomIdEqualsAndTimestampBefore(chatRoomId: String, timestamp: LocalDateTime): List<MessageEntity>
+    fun findByChatRoomIdEqualsAndTimestampAfter(chatRoomId: String, timestamp: LocalDateTime): List<MessageEntity>
     fun findTop30ByChatRoomIdEqualsAndTimestampBefore(chatRoomId: String, timestamp: LocalDateTime): List<MessageEntity>
 }
