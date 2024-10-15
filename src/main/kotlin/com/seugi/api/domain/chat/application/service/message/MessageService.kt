@@ -14,7 +14,7 @@ interface MessageService {
 
     fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long)
     fun sendEventMessage(message: MessageEventDto, roomId: String)
-    fun getMessage(roomId: String): MessageEntity?
+    fun getLastMessage(roomId: String): MessageEntity?
     fun getMessages(chatRoomId: String, userId: Long, timestamp: LocalDateTime): BaseResponse<GetMessageResponse>
     fun getNotReadMessageCount(room: Room, userId: Long): Int
 

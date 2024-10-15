@@ -72,7 +72,7 @@ class MessageServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getMessage(roomId: String): MessageEntity? {
+    override fun getLastMessage(roomId: String): MessageEntity? {
         return messageRepository.findByChatRoomId(roomId).lastOrNull()
     }
 
@@ -101,7 +101,7 @@ class MessageServiceImpl(
     @Transactional(readOnly = true)
     override fun getNotReadMessageCount(room: Room, userId: Long): Int {
         val timestamp = room.joinUserInfo.find { it.userId == userId }?.timestamp
-        return messageRepository.findByChatRoomIdEqualsAndTimestampBefore(
+        return messageRepository.findByChatRoomIdEqualsAndTimestampAfter(
             chatRoomId = room.id.toString(),
             timestamp = timestamp ?: LocalDateTime.now()
         ).count()
