@@ -5,6 +5,7 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoClient
 import com.seugi.api.global.infra.nice.school.info.SchoolInfoResponse
 import com.seugi.api.global.infra.nice.school.meal.SchoolMealClient
+import com.seugi.api.global.infra.nice.school.meal.SchoolMealConvertor
 import com.seugi.api.global.infra.nice.school.schedule.ScheduleRow
 import com.seugi.api.global.infra.nice.school.schedule.SchoolScheduleClient
 import com.seugi.api.global.infra.nice.school.timetable.Row
@@ -67,7 +68,7 @@ class NiceSchoolService(
         val meals = row?.map {
             Meal(
                 mealType = it.mmealScNm,
-                menu = it.ddishNm,
+                menu = SchoolMealConvertor.removeNumbersAndDots(it.ddishNm),
                 calorie = it.calInfo,
                 mealInfo = it.ntrInfo,
                 mealDate = it.mlsvYmd
