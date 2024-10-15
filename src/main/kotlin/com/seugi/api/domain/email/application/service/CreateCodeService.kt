@@ -20,7 +20,7 @@ class CreateCodeService (
 
         sendEmailUseCase.sendEmail(
             email,
-            "[Seugi] 이메일 인증 코드입니다",
+            "[Seugi] 이메일 인증 코드가 도착했어요 !",
             random
         )
 
