@@ -30,7 +30,7 @@ data class Profile (
 
     fun editProfile(dto: EditProfileRequest) {
         this.status = ProfileStatus(dto.status ?: this.status.value)
-        this.nick = ProfileNick(dto.status ?: this.nick.value)
+        this.nick = ProfileNick(dto.nick ?: this.nick.value)
         this.spot = ProfileSpot(dto.spot ?: this.spot.value)
         this.belong = ProfileBelong(dto.belong ?: this.belong.value)
         this.phone = ProfilePhone(dto.phone ?: this.phone.value)
