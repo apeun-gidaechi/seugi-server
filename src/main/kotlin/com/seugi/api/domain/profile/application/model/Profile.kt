@@ -29,13 +29,13 @@ data class Profile (
     }
 
     fun editProfile(dto: EditProfileRequest) {
-        this.status = ProfileStatus(dto.status)
-        this.nick = ProfileNick(dto.nick)
-        this.spot = ProfileSpot(dto.spot)
-        this.belong = ProfileBelong(dto.belong)
-        this.phone = ProfilePhone(dto.phone)
-        this.wire = ProfileWire(dto.wire)
-        this.location = ProfileLocation(dto.location)
+        this.status = ProfileStatus(dto.status ?: this.status.value)
+        this.nick = ProfileNick(dto.status ?: this.nick.value)
+        this.spot = ProfileSpot(dto.spot ?: this.spot.value)
+        this.belong = ProfileBelong(dto.belong ?: this.belong.value)
+        this.phone = ProfilePhone(dto.phone ?: this.phone.value)
+        this.wire = ProfileWire(dto.wire ?: this.wire.value)
+        this.location = ProfileLocation(dto.location ?: this.location.value)
     }
 
     fun editSchIdNum(dto: EditSchIdNumRequest) {
