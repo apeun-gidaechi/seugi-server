@@ -8,12 +8,12 @@ data class RetrieveMemberResponse (
     val email: String,
     val birth: String,
     val name: String,
-    val picture: String,
+    val picture: String?,
 
 ) {
     
     constructor (member: Member) : this (
-        id = member.id!!.value,
+        id = member.id.value,
         email = member.email.value,
         birth = member.birth.value,
         name = member.name.value,

@@ -10,7 +10,7 @@ data class Room(
     val type: RoomType,
     val roomAdmin: Long,
     val chatName: String,
-    val chatRoomImg: String,
+    val chatRoomImg: String?,
     val createdAt: LocalDateTime,
     val chatStatusEnum: ChatStatusEnum? = null,
     val joinUserInfo: Set<JoinUserInfo>,

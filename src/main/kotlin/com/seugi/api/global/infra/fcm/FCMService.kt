@@ -27,7 +27,7 @@ class FCMService(
         return memberPort.loadMemberWithId(userId)
     }
 
-    private fun Member.getImg(): String {
+    private fun Member.getImg(): String? {
         return this.picture.value
     }
 
@@ -35,14 +35,14 @@ class FCMService(
         return this.fcmToken.token
     }
 
-    private fun getAlarmImage(workspaceId: String, type: FCMEnums, member: Member): String {
+    private fun getAlarmImage(workspaceId: String, type: FCMEnums, member: Member): String? {
         return when (type) {
             FCMEnums.CHAT -> member.getImg()
             FCMEnums.NOTIFICATION -> workspaceService.findWorkspaceById(workspaceId).workspaceImageUrl ?: icon
         }
     }
 
-    private fun buildNotification(title: String, body: String, imageUrl: String): Notification {
+    private fun buildNotification(title: String, body: String, imageUrl: String?): Notification {
         return Notification.builder()
             .setTitle(title)
             .setBody(body)

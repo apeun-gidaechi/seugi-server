@@ -11,7 +11,7 @@ data class RoomResponse(
     val type: RoomType,
     val roomAdmin: Long,
     val chatName: String,
-    val chatRoomImg: String,
+    val chatRoomImg: String?,
     val createdAt: String,
     val chatStatusEnum: ChatStatusEnum,
     val joinUserInfo: Set<UserInfoResponse>,
