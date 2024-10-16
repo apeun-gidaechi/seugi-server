@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class EditMemberRequest (
 
-    @JsonProperty("picture") val picture: String,
+    @JsonProperty("picture") val picture: String?,
     @JsonProperty("name") val name: String,
     @JsonProperty("birth") val birth: String,
 
