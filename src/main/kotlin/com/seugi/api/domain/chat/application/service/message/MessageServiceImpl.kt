@@ -1,5 +1,6 @@
 package com.seugi.api.domain.chat.application.service.message
 
+import com.seugi.api.domain.ai.service.AiService
 import com.seugi.api.domain.chat.domain.chat.MessageEntity
 import com.seugi.api.domain.chat.domain.chat.MessageRepository
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
@@ -17,6 +18,9 @@ import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.bson.types.ObjectId
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
@@ -29,7 +33,10 @@ class MessageServiceImpl(
     private val messageMapper: MessageMapper,
     private val rabbitTemplate: RabbitTemplate,
     private val fcmService: FCMService,
+    private val aiService: AiService,
 ) : MessageService {
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     @Transactional
     override fun sendAndSaveMessage(chatMessageDto: ChatMessageDto, userId: Long) {
@@ -52,7 +59,8 @@ class MessageServiceImpl(
         )
     }
 
-    private fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): MessageResponse {
+    @Transactional
+    protected fun saveMessage(chatMessageDto: ChatMessageDto, userId: Long): MessageResponse {
 
         val message = messageMapper.toDomain(
             messageRepository.save(
@@ -64,11 +72,15 @@ class MessageServiceImpl(
                 )
             )
         )
+        if (message.mention.contains(-1) && message.userId != -1L) {
+            coroutineScope.launch {
+                sendAndSaveMessage(aiService.handleRequest(message), -1)
+            }
+        }
 
-        sendAlarm(message, userId)
+        if (message.type != Type.BOT) sendAlarm(message, userId)
 
         return messageMapper.toMessageResponse(message, chatMessageDto.uuid)
-
     }
 
     @Transactional(readOnly = true)
@@ -76,26 +88,23 @@ class MessageServiceImpl(
         return messageRepository.findByChatRoomId(roomId).lastOrNull()
     }
 
-
     @Transactional(readOnly = true)
     override fun getMessages(
         chatRoomId: String,
         userId: Long,
         timestamp: LocalDateTime,
     ): BaseResponse<GetMessageResponse> {
-
         val allMessages =
             messageRepository.findTop30ByChatRoomIdAndTimestampBeforeOrderByTimestampDesc(chatRoomId, timestamp)
                 .map { messageMapper.toDomain(it) }
 
-            return BaseResponse(
-                message = "채팅 불러오기 성공",
-                data = GetMessageResponse(
-                    firstMessageId = if (allMessages.isEmpty()) null else allMessages.last().id,
-                    messages = allMessages
-                )
+        return BaseResponse(
+            message = "채팅 불러오기 성공",
+            data = GetMessageResponse(
+                firstMessageId = if (allMessages.isEmpty()) null else allMessages.last().id,
+                messages = allMessages
             )
-
+        )
     }
 
     @Transactional(readOnly = true)
