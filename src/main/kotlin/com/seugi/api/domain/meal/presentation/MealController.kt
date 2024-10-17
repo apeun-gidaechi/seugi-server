@@ -15,8 +15,9 @@ class MealController(
     fun resetMeal(
         @PathVariable workspaceId: String,
     ): BaseResponse<Unit> {
-        return mealService.resetMealByWorkspaceId(
-            workspaceId = workspaceId
+        mealService.resetMealByWorkspaceId(workspaceId = workspaceId)
+        return BaseResponse(
+            message = "급식 저장 성공"
         )
     }
 
@@ -25,9 +26,12 @@ class MealController(
         @RequestParam("workspaceId") workspaceId: String,
         @RequestParam("date") date: String,
     ): BaseResponse<List<MealResponse>> {
-        return mealService.getMealByDate(
-            workspaceId = workspaceId,
-            mealDate = date
+        return BaseResponse(
+            message = "날짜로 급식 조회 성공",
+            data = mealService.getMealByDate(
+                workspaceId = workspaceId,
+                mealDate = date
+            )
         )
     }
 
@@ -35,8 +39,11 @@ class MealController(
     fun getAllMeals(
         @RequestParam("workspaceId") workspaceId: String,
     ): BaseResponse<List<MealResponse>> {
-        return mealService.getAllMeals(
-            workspaceId = workspaceId
+        return BaseResponse(
+            message = "모든 급식 조회 성공",
+            data = mealService.getAllMeals(
+                workspaceId = workspaceId
+            )
         )
     }
 

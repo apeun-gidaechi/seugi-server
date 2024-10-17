@@ -8,7 +8,6 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
-import com.seugi.api.global.response.BaseResponse
 import org.springframework.stereotype.Service
 
 @Service
@@ -45,23 +44,18 @@ class ScheduleServiceImpl(
         return scheduleRepository.saveAll(scheduleEntities).map { scheduleMapper.toDomain(it) }
     }
 
-    override fun getSchoolSchedules(userId: Long, workspaceId: String): BaseResponse<List<Schedule>> {
-        return BaseResponse(
-            message = "학사일정 전부 불러오기 성공",
-            data = if (!scheduleRepository.existsByWorkspaceId(workspaceId)) resetSchedule(workspaceId, userId)
-            else scheduleRepository.findByWorkspaceId(workspaceId).map { scheduleMapper.toDomain(it) }
-        )
+    override fun getSchoolSchedules(userId: Long, workspaceId: String): List<Schedule> {
+        return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) resetSchedule(workspaceId, userId)
+        else scheduleRepository.findByWorkspaceId(workspaceId).map { scheduleMapper.toDomain(it) }
+
     }
 
-    override fun getMonthSchoolSchedules(userId: Long, workspaceId: String, month: Int): BaseResponse<List<Schedule>> {
-        return BaseResponse(
-            message = "학사일정 한달치 불러오기 성공",
-            data = if (!scheduleRepository.existsByWorkspaceId(workspaceId)) {
-                resetSchedule(workspaceId, userId).filter { sc ->
-                    sc.date?.split("-")?.get(1)?.toIntOrNull() == month
-                }
-            } else scheduleRepository.findByMonth(workspaceId, month).map { scheduleMapper.toDomain(it) }
-        )
+    override fun getMonthSchoolSchedules(userId: Long, workspaceId: String, month: Int): List<Schedule> {
+        return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) {
+            resetSchedule(workspaceId, userId).filter { sc ->
+                sc.date?.split("-")?.get(1)?.toIntOrNull() == month
+            }
+        } else scheduleRepository.findByMonth(workspaceId, month).map { scheduleMapper.toDomain(it) }
     }
 
 }

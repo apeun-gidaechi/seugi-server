@@ -23,9 +23,9 @@ class NotificationController(
         @RequestBody createNoticeRequest: CreateNotificationRequest,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
-        return noticeService.createNotice(
-            createNoticeRequest = createNoticeRequest,
-            userId = userId
+        noticeService.createNotice(createNoticeRequest = createNoticeRequest, userId = userId)
+        return BaseResponse(
+            message = "공지 등록 성공"
         )
     }
 
@@ -35,10 +35,14 @@ class NotificationController(
         @GetAuthenticatedId userId: Long,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable,
     ): BaseResponse<List<NotificationResponse>> {
-        return noticeService.getNotices(
-            workspaceId = workspaceId,
-            userId = userId,
-            pageable = pageable
+
+        return BaseResponse(
+            message = "공지 불러오기 성공",
+            data = noticeService.getNotices(
+                workspaceId = workspaceId,
+                userId = userId,
+                pageable = pageable
+            )
         )
     }
 
@@ -47,9 +51,9 @@ class NotificationController(
         @RequestBody updateNoticeRequest: UpdateNotificationRequest,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
-        return noticeService.updateNotice(
-            updateNoticeRequest = updateNoticeRequest,
-            userId = userId
+        noticeService.updateNotice(updateNoticeRequest = updateNoticeRequest, userId = userId)
+        return BaseResponse(
+            message = "공지 수정 성공"
         )
     }
 
@@ -59,10 +63,9 @@ class NotificationController(
         @PathVariable id: Long,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
-        return noticeService.deleteNotice(
-            id = id,
-            workspaceId = workspaceId,
-            userId = userId
+        noticeService.deleteNotice(id = id, workspaceId = workspaceId, userId = userId)
+        return BaseResponse(
+            message = "공지 삭제 성공"
         )
     }
 
@@ -71,7 +74,10 @@ class NotificationController(
         @GetAuthenticatedId userId: Long,
         @RequestBody notificationEmojiRequest: NotificationEmojiRequest,
     ): BaseResponse<Unit> {
-        return noticeService.toggleEmoji(userId, notificationEmojiRequest)
+        noticeService.toggleEmoji(userId, notificationEmojiRequest)
+        return BaseResponse(
+            message = "성공"
+        )
     }
 
 

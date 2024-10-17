@@ -17,7 +17,10 @@ class TimetableController(
         @RequestParam("workspaceId") workspaceId: String,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<Unit> {
-        return timetableService.resetTimetable(workspaceId, userId)
+        timetableService.resetTimetable(workspaceId, userId)
+        return BaseResponse(
+            message = "시간표 재설정 완료"
+        )
     }
 
     @GetMapping("/weekend")
@@ -25,7 +28,10 @@ class TimetableController(
         @RequestParam("workspaceId") workspaceId: String,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<Timetable>> {
-        return timetableService.getWeekendTimetableByUserInfo(workspaceId, userId)
+        return BaseResponse(
+            message = "시간표 조회 성공",
+            data = timetableService.getWeekendTimetableByUserInfo(workspaceId, userId)
+        )
     }
 
     @GetMapping("/day")
@@ -33,7 +39,10 @@ class TimetableController(
         @RequestParam("workspaceId") workspaceId: String,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<Timetable>> {
-        return timetableService.getDayTimetableByUserInfo(workspaceId, userId)
+        return BaseResponse(
+            message = "시간표 조회 성공",
+            data = timetableService.getDayTimetableByUserInfo(workspaceId, userId)
+        )
     }
 
 }

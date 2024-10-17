@@ -8,7 +8,6 @@ import com.seugi.api.domain.meal.domain.model.MealResponse
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
-import com.seugi.api.global.response.BaseResponse
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -64,7 +63,7 @@ class MealServiceImpl(
     }
 
     @Transactional
-    override fun resetMealByWorkspaceId(workspaceId: String): BaseResponse<Unit> {
+    override fun resetMealByWorkspaceId(workspaceId: String) {
 
         val date = LocalDate.now()
         val workspace = workspaceService.findWorkspaceById(workspaceId)
@@ -80,45 +79,32 @@ class MealServiceImpl(
 
         saveMeals(meals)
 
-
-        return BaseResponse(
-            message = "급식 저장 성공"
-        )
-
     }
 
     @Transactional
-    override fun getMealByDate(workspaceId: String, mealDate: String): BaseResponse<List<MealResponse>> {
+    override fun getMealByDate(workspaceId: String, mealDate: String): List<MealResponse> {
 
         if (!mealRepository.checkMeal(workspaceId)) {
             resetMealByWorkspaceId(workspaceId)
         }
 
-        return BaseResponse(
-            message = "날짜로 급식 조회 성공",
-            data = toMealResponse(
-                mealRepository.getMealsByDateAndWorkspaceId(
-                    mealDate = mealDate,
-                    workspaceId = workspaceId
-                )
+        return toMealResponse(
+            mealRepository.getMealsByDateAndWorkspaceId(
+                mealDate = mealDate,
+                workspaceId = workspaceId
             )
-
         )
-
 
     }
 
     @Transactional
-    override fun getAllMeals(workspaceId: String): BaseResponse<List<MealResponse>> {
+    override fun getAllMeals(workspaceId: String): List<MealResponse> {
 
         if (!mealRepository.checkMeal(workspaceId)) {
             resetMealByWorkspaceId(workspaceId)
         }
 
-        return BaseResponse(
-            message = "모든 급식 조회 성공",
-            data = toMealResponse(mealRepository.findAllByWorkspaceId(workspaceId))
-        )
+        return toMealResponse(mealRepository.findAllByWorkspaceId(workspaceId))
 
     }
 

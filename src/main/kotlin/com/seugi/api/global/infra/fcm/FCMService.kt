@@ -82,7 +82,7 @@ class FCMService(
         )
 
         room.joinedUserInfo.forEach {
-            if (it.checkDate != DateTimeUtil.checkDate || it.userId != userId) {
+            if (it.checkDate != DateTimeUtil.checkDate && it.userId != userId) {
                 sendFCMNotifications(getMember(it.userId).getFCMToken(), notification)
             }
         }
