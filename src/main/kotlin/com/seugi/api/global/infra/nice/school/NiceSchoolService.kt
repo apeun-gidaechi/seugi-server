@@ -93,8 +93,8 @@ class NiceSchoolService(
                     pSize = 1000,
                     scCode = schoolInfo.scCode,
                     sdCode = schoolInfo.sdCode,
-                    startDate = startDate,
-                    endDate = endDate
+                    startDate = startDate.replace("-", ""),
+                    endDate = endDate.replace("-", "")
                 ).hisTimetable?.get(1)?.row
             }
 
