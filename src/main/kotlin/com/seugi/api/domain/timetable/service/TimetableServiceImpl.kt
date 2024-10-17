@@ -10,7 +10,6 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
-import com.seugi.api.global.response.BaseResponse
 import jakarta.transaction.Transactional
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -76,7 +75,7 @@ class TimetableServiceImpl(
     }
 
     @Transactional
-    override fun resetTimetable(workspaceId: String, userId: Long): BaseResponse<Unit> {
+    override fun resetTimetable(workspaceId: String, userId: Long) {
         val workspace = workspaceService.findWorkspaceById(workspaceId)
         checkUserInWorkspace(workspace, userId)
 
@@ -87,13 +86,10 @@ class TimetableServiceImpl(
         val timetables = getSchoolTimetable(workspace.schoolInfo, dateRange, workspaceId)
         saveTimetable(timetables.ifEmpty { listOf(Timetable(workspaceId = workspaceId)) })
 
-        return BaseResponse(
-            message = "시간표 재설정 완료"
-        )
     }
 
     @Transactional
-    override fun getWeekendTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
+    override fun getWeekendTimetableByUserInfo(workspaceId: String, userId: Long): List<Timetable> {
         if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
@@ -101,14 +97,11 @@ class TimetableServiceImpl(
         val timetables = timetableRepository.findWeekendTimetableByWorkspaceId(workspaceId)
             .filter { it.classNum == userInfo.schClass.toString() && it.grade == userInfo.schGrade.toString() }
 
-        return BaseResponse(
-            message = "시간표 조회 성공",
-            data = timetables.map(timetableMapper::toDomain)
-        )
+        return timetables.map(timetableMapper::toDomain)
     }
 
     @Transactional
-    override fun getDayTimetableByUserInfo(workspaceId: String, userId: Long): BaseResponse<List<Timetable>> {
+    override fun getDayTimetableByUserInfo(workspaceId: String, userId: Long): List<Timetable> {
         if (!timetableRepository.checkTimetableByWorkspaceId(workspaceId)) resetTimetable(workspaceId, userId)
 
         val userInfo = schIdNumUseCase.retrieveSchIdNum(workspaceId, userId)
@@ -117,9 +110,7 @@ class TimetableServiceImpl(
         val timetables = timetableRepository.findTodayTimetableByWorkspaceId(workspaceId, today)
             .filter { it.classNum == userInfo.schClass.toString() && it.grade == userInfo.schGrade.toString() }
 
-        return BaseResponse(
-            message = "시간표 조회 성공",
-            data = timetables.map(timetableMapper::toDomain)
-        )
+        return timetables.map(timetableMapper::toDomain)
+
     }
 }

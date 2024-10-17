@@ -14,7 +14,6 @@ import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.fcm.FCMService
-import com.seugi.api.global.response.BaseResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -44,7 +43,7 @@ class NotificationServiceImpl(
     }
 
     @Transactional
-    override fun createNotice(createNoticeRequest: CreateNotificationRequest, userId: Long): BaseResponse<Unit> {
+    override fun createNotice(createNoticeRequest: CreateNotificationRequest, userId: Long) {
         val workspaceEntity = findWorkspaceById(createNoticeRequest.workspaceId)
 
         if (workspaceEntity.student.contains(userId)) throw CustomException(NotificationErrorCode.FORBIDDEN)
@@ -54,9 +53,6 @@ class NotificationServiceImpl(
 
         sendAlert(createNoticeRequest.workspaceId, userId, createNoticeRequest.title)
 
-        return BaseResponse(
-            message = "공지 등록 성공"
-        )
     }
 
     @Transactional(readOnly = true)
@@ -64,19 +60,17 @@ class NotificationServiceImpl(
         workspaceId: String,
         userId: Long,
         pageable: Pageable,
-    ): BaseResponse<List<NotificationResponse>> {
-        return BaseResponse(
-            message = "공지 불러오기 성공",
-            data = noticeRepository.findByWorkspaceId(workspaceId, pageable).map {
-                noticeMapper.transferNoticeResponse(
-                    noticeMapper.toDomain(it)
-                )
-            }
-        )
+    ): List<NotificationResponse> {
+
+        return noticeRepository.findByWorkspaceId(workspaceId, pageable).map {
+            noticeMapper.transferNoticeResponse(
+                noticeMapper.toDomain(it)
+            )
+        }
     }
 
     @Transactional
-    override fun updateNotice(updateNoticeRequest: UpdateNotificationRequest, userId: Long): BaseResponse<Unit> {
+    override fun updateNotice(updateNoticeRequest: UpdateNotificationRequest, userId: Long) {
         val noticeEntity = findNotificationById(updateNoticeRequest.id)
 
         if (noticeEntity.user!!.id != userId) throw CustomException(NotificationErrorCode.FORBIDDEN)
@@ -85,13 +79,10 @@ class NotificationServiceImpl(
 
         noticeRepository.save(noticeEntity)
 
-        return BaseResponse(
-            message = "공지 수정 성공"
-        )
     }
 
     @Transactional
-    override fun deleteNotice(id: Long, workspaceId: String, userId: Long): BaseResponse<Unit> {
+    override fun deleteNotice(id: Long, workspaceId: String, userId: Long) {
         val workspaceEntity = findWorkspaceById(workspaceId)
         val notice = findNotificationById(id)
 
@@ -105,9 +96,6 @@ class NotificationServiceImpl(
         notice.deleteNotice()
         noticeRepository.save(notice)
 
-        return BaseResponse(
-            message = "공지 삭제 성공"
-        )
     }
 
     private fun addEmoji(
@@ -131,7 +119,7 @@ class NotificationServiceImpl(
     }
 
     @Transactional
-    override fun toggleEmoji(userId: Long, notificationEmojiRequest: NotificationEmojiRequest): BaseResponse<Unit> {
+    override fun toggleEmoji(userId: Long, notificationEmojiRequest: NotificationEmojiRequest) {
         val notification = findNotificationById(notificationEmojiRequest.notificationId)
 
         val matchedEmoji = notification.emoji.find { it.emoji == notificationEmojiRequest.emoji && it.userId == userId }
@@ -144,9 +132,6 @@ class NotificationServiceImpl(
 
         noticeRepository.save(notification)
 
-        return BaseResponse(
-            message = "성공"
-        )
     }
 
 

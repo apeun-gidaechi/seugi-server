@@ -17,7 +17,10 @@ class ScheduleController(
         @PathVariable workspaceId: String,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<Schedule>> {
-        return scheduleService.getSchoolSchedules(userId, workspaceId)
+        return BaseResponse(
+            message = "학사일정 전부 불러오기 성공",
+            data = scheduleService.getSchoolSchedules(userId, workspaceId)
+        )
     }
 
     @GetMapping("/month")
@@ -26,7 +29,10 @@ class ScheduleController(
         @RequestParam("month") month: Int,
         @GetAuthenticatedId userId: Long,
     ): BaseResponse<List<Schedule>> {
-        return scheduleService.getMonthSchoolSchedules(userId, workspaceId, month)
+        return BaseResponse(
+            message = "학사일정 한달치 불러오기 성공",
+            data = scheduleService.getMonthSchoolSchedules(userId, workspaceId, month)
+        )
     }
 
 
