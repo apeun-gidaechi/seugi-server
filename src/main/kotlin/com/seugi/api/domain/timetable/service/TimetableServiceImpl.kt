@@ -49,11 +49,11 @@ class TimetableServiceImpl(
         val startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
         val endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
 
-        return startOfWeek.formatForTimetable() to endOfWeek.formatForTimetable()
+        return startOfWeek.formatForTimetable().replace("-", "") to endOfWeek.formatForTimetable().replace("-", "")
     }
 
     private fun LocalDate.formatForTimetable(): String {
-        return "$year${monthValue.dateFormat()}${dayOfMonth.dateFormat()}"
+        return "$year-${monthValue.dateFormat()}-${dayOfMonth.dateFormat()}"
     }
 
     private fun Int.dateFormat(): String {
