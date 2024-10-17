@@ -71,7 +71,7 @@ class NiceSchoolService(
                 menu = SchoolMealConvertor.removeNumbersAndDots(it.ddishNm),
                 calorie = it.calInfo,
                 mealInfo = it.ntrInfo,
-                mealDate = it.mlsvYmd
+                mealDate = SchoolDateConvertor.dateFormat(it.mlsvYmd)
             )
         } ?: emptyList()
 

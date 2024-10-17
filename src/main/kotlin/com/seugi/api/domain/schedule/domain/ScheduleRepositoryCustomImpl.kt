@@ -29,7 +29,7 @@ class ScheduleRepositoryCustomImpl(
         val scheduleEntity = QScheduleEntity.scheduleEntity
         return jpaQueryFactory
             .selectFrom(scheduleEntity)
-            .where(scheduleEntity.date.substring(4, 6).eq(month.toString()), scheduleEntity.workspaceId.eq(workspaceId))
+            .where(scheduleEntity.date.substring(5, 7).eq(month.toString()), scheduleEntity.workspaceId.eq(workspaceId))
             .fetch() ?: emptyList()
     }
 

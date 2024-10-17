@@ -3,6 +3,7 @@ package com.seugi.api.domain.schedule.domain.mapper
 import com.seugi.api.domain.schedule.domain.ScheduleEntity
 import com.seugi.api.domain.schedule.domain.model.Schedule
 import com.seugi.api.global.common.Mapper
+import com.seugi.api.global.infra.nice.school.SchoolDateConvertor
 import com.seugi.api.global.infra.nice.school.schedule.ScheduleRow
 import org.springframework.stereotype.Component
 
@@ -43,7 +44,7 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
 
             Schedule(
                 workspaceId = workspaceId,
-                date = scheduleRow.aaYmd,
+                date = SchoolDateConvertor.dateFormat(scheduleRow.aaYmd),
                 eventName = scheduleRow.eventNm,
                 eventContent = scheduleRow.eventCntnt,
                 grade = grade
