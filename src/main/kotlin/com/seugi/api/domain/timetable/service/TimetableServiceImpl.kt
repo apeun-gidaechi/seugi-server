@@ -54,7 +54,7 @@ class TimetableServiceImpl(
     }
 
     private fun LocalDate.formatForTimetable(): String {
-        return "$year${monthValue.dateFormat()}${dayOfMonth.dateFormat()}"
+        return "$year-${monthValue.dateFormat()}-${dayOfMonth.dateFormat()}"
     }
 
     private fun Int.dateFormat(): String {

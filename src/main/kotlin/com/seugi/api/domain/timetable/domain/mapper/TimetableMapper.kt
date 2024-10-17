@@ -3,6 +3,7 @@ package com.seugi.api.domain.timetable.domain.mapper
 import com.seugi.api.domain.timetable.domain.TimetableEntity
 import com.seugi.api.domain.timetable.domain.model.Timetable
 import com.seugi.api.global.common.Mapper
+import com.seugi.api.global.infra.nice.school.SchoolDateConvertor
 import com.seugi.api.global.infra.nice.school.timetable.Row
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -42,7 +43,7 @@ class TimetableMapper : Mapper<Timetable, TimetableEntity> {
             classNum = niceData.classNm,
             time = niceData.perio,
             subject = niceData.itrtCntnt,
-            date = niceData.allTiYmd
+            date = SchoolDateConvertor.dateFormat(niceData.allTiYmd)
         )
     }
 }
