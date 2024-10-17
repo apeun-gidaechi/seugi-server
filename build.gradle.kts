@@ -22,10 +22,22 @@ configurations {
     }
 }
 val queryDslVersion: String by extra
+val springCloudVersion by extra("2023.0.2")
+val springAiVersion by extra("1.0.0-M3")
+
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
 }
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+        mavenBom("org.springframework.ai:spring-ai-bom:${springAiVersion}")
+    }
+}
+
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -68,17 +80,12 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.3.0")
 
     implementation("org.apache.tika:tika-core:2.9.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+
 
 }
-
-val springCloudVersion by extra("2023.0.2")
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
-    }
-}
-
 
 val generated = file("src/main/generated")
 
