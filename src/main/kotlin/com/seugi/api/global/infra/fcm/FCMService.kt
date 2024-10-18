@@ -8,6 +8,7 @@ import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.util.DateTimeUtil
@@ -46,7 +47,7 @@ class FCMService(
         return Notification.builder()
             .setTitle(title)
             .setBody(body)
-            .setImage(imageUrl)
+            .setImage(imageUrl ?: icon)
             .build()
     }
 
@@ -54,7 +55,7 @@ class FCMService(
         tokens.forEach { token ->
             FirebaseMessaging.getInstance().sendAsync(
                 Message.builder()
-                    .setToken(token)
+                    .setToken(token.ifEmpty { return })
                     .setNotification(notification)
                     .build()
             )
@@ -88,7 +89,7 @@ class FCMService(
         }
     }
 
-    fun sendAlert(workspaceId: String, userId: Long, message: String) {
+    fun sendNotificationAlert(workspaceId: String, userId: Long, message: String) {
         val workspace = workspaceService.findWorkspaceById(workspaceId)
         val sendUser = getMember(userId)
         val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin - userId
@@ -103,6 +104,19 @@ class FCMService(
             sendFCMNotifications(getMember(it!!).getFCMToken(), notification)
         }
 
+    }
+
+    fun sendJoinWorkspaceAlert(users: Set<Long>, workspaceEntity: WorkspaceEntity) {
+
+        val notification = buildNotification(
+            title = "${workspaceEntity.workspaceName}",
+            body = "워크스페이스 가입이 승인되었습니다.",
+            imageUrl = workspaceEntity.workspaceImageUrl
+        )
+
+        users.forEach {
+            sendFCMNotifications(getMember(it).getFCMToken(), notification)
+        }
     }
 
 }
