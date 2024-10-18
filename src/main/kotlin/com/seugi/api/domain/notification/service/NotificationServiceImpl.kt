@@ -39,7 +39,7 @@ class NotificationServiceImpl(
     }
 
     private fun sendAlert(workspaceId: String, userId: Long, message: String) {
-        fcmService.sendAlert(workspaceId, userId, message)
+        fcmService.sendNotificationAlert(workspaceId, userId, message)
     }
 
     @Transactional

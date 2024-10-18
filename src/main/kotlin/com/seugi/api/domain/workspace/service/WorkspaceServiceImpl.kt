@@ -16,6 +16,7 @@ import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoRes
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.global.exception.CustomException
+import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
 import com.seugi.api.global.response.BaseResponse
 import org.bson.types.ObjectId
@@ -34,6 +35,7 @@ class WorkspaceServiceImpl(
     private val loadProfilePort: LoadProfilePort,
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
+    private val fcmService: FCMService,
 ) : WorkspaceService {
 
     private fun genCode(length: Int = 6): String {
@@ -286,6 +288,8 @@ class WorkspaceServiceImpl(
         val workspaceEntity: WorkspaceEntity = findWorkspaceById(waitSetWorkspaceMemberRequest.workspaceId)
 
         checkForStudent(workspaceEntity = workspaceEntity, userId = userId)
+
+        fcmService.sendJoinWorkspaceAlert(waitSetWorkspaceMemberRequest.userSet, workspaceEntity)
 
         when (waitSetWorkspaceMemberRequest.role) {
             WorkspaceRole.STUDENT -> {
