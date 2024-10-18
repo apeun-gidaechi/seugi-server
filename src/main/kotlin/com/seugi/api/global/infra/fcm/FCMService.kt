@@ -55,7 +55,7 @@ class FCMService(
         tokens.forEach { token ->
             FirebaseMessaging.getInstance().sendAsync(
                 Message.builder()
-                    .setToken(token)
+                    .setToken(token.ifEmpty { return })
                     .setNotification(notification)
                     .build()
             )
