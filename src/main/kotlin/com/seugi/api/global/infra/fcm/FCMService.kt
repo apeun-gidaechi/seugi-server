@@ -9,7 +9,6 @@ import com.seugi.api.domain.chat.exception.ChatErrorCode
 import com.seugi.api.domain.member.application.model.Member
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
-import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.util.DateTimeUtil
 import org.bson.types.ObjectId
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service
 @Service
 class FCMService(
     private val memberPort: LoadMemberPort,
-    private val workspaceService: WorkspaceService,
     private val chatRoomRepository: ChatRoomRepository,
     @Value("\${fcm.icon.url}") private val icon: String,
 ) {
@@ -36,10 +34,10 @@ class FCMService(
         return this.fcmToken.token
     }
 
-    private fun getAlarmImage(workspaceId: String, type: FCMEnums, member: Member): String? {
+    private fun getAlarmImage(workspace: WorkspaceEntity?, type: FCMEnums, member: Member): String? {
         return when (type) {
             FCMEnums.CHAT -> member.getImg()
-            FCMEnums.NOTIFICATION -> workspaceService.findWorkspaceById(workspaceId).workspaceImageUrl ?: icon
+            FCMEnums.NOTIFICATION -> workspace?.workspaceImageUrl ?: icon
         }
     }
 
@@ -79,7 +77,7 @@ class FCMService(
         val notification = buildNotification(
             title = room.chatName.ifEmpty { "1대1 채팅" },
             body = "${sendMember.name.value} : $message",
-            imageUrl = getAlarmImage(workspaceId = "", type = FCMEnums.CHAT, member = sendMember)
+            imageUrl = getAlarmImage(workspace = null, type = FCMEnums.CHAT, member = sendMember)
         )
 
         room.joinedUserInfo.forEach {
@@ -89,15 +87,15 @@ class FCMService(
         }
     }
 
-    fun sendNotificationAlert(workspaceId: String, userId: Long, message: String) {
-        val workspace = workspaceService.findWorkspaceById(workspaceId)
+    fun sendNotificationAlert(workspace: WorkspaceEntity, userId: Long, message: String) {
+
         val sendUser = getMember(userId)
         val users = workspace.student + workspace.middleAdmin + workspace.workspaceAdmin - userId
 
         val notification = buildNotification(
             title = "[공지] ${workspace.workspaceName}",
             body = "${sendUser.name.value} : $message",
-            imageUrl = getAlarmImage(workspaceId, FCMEnums.NOTIFICATION, sendUser)
+            imageUrl = getAlarmImage(workspace, FCMEnums.NOTIFICATION, sendUser)
         )
 
         users.forEach {

@@ -38,8 +38,8 @@ class NotificationServiceImpl(
         return workspaceService.findWorkspaceById(workspaceId)
     }
 
-    private fun sendAlert(workspaceId: String, userId: Long, message: String) {
-        fcmService.sendNotificationAlert(workspaceId, userId, message)
+    private fun sendAlert(workspaceEntity: WorkspaceEntity, userId: Long, message: String) {
+        fcmService.sendNotificationAlert(workspaceEntity, userId, message)
     }
 
     @Transactional
@@ -51,7 +51,7 @@ class NotificationServiceImpl(
         val notice = noticeMapper.transferNoticeEntity(createNoticeRequest, memberRepository.findById(userId).get())
         noticeRepository.save(notice)
 
-        sendAlert(createNoticeRequest.workspaceId, userId, createNoticeRequest.title)
+        sendAlert(workspaceEntity, userId, createNoticeRequest.title)
 
     }
 
