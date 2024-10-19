@@ -17,6 +17,7 @@ class RemoveMemberService(
         val member = loadMemberPort.loadMemberWithId(id)
 
         member.deleted = MemberDeleted(true)
+        member.fcmToken.token.clear()
 
         saveMemberPort.saveMember(member)
 
