@@ -53,7 +53,7 @@ class MessageServiceImpl(
 
     private fun sendAlarm(message: Message, userId: Long) {
         fcmService.sendChatAlarm(
-            message = message.message,
+            message = message,
             chatRoomId = message.chatRoomId,
             userId = userId
         )
