@@ -1,6 +1,6 @@
 package com.seugi.api.domain.workspace.presentation.dto.request
 
-data class KickWorkspaceMember(
+data class KickWorkspaceMemberRequest(
     val memberList: Set<Long>? = null,
     val workspaceId: String? = null,
 )

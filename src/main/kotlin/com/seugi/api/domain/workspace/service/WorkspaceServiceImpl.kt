@@ -480,16 +480,19 @@ class WorkspaceServiceImpl(
     }
 
     @Transactional
-    override fun kickWorkspaceMember(userId: Long, kickWorkspaceMember: KickWorkspaceMember): BaseResponse<Unit> {
-        val workspaceEntity = findWorkspaceById(kickWorkspaceMember.workspaceId ?: "")
+    override fun kickWorkspaceMember(
+        userId: Long,
+        kickWorkspaceMemberRequest: KickWorkspaceMemberRequest,
+    ): BaseResponse<Unit> {
+        val workspaceEntity = findWorkspaceById(kickWorkspaceMemberRequest.workspaceId ?: "")
 
         if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
             WorkspaceErrorCode.FORBIDDEN
         )
 
-        kickWorkspaceMember.memberList?.forEach {
+        kickWorkspaceMemberRequest.memberList?.forEach {
             if (!workspaceEntity.middleAdmin.contains(it)) removeUserFromWorkspace(it, workspaceEntity)
-            profileAdapter.deleteProfile(it, kickWorkspaceMember.workspaceId ?: "")
+            profileAdapter.deleteProfile(it, kickWorkspaceMemberRequest.workspaceId ?: "")
         }
 
 

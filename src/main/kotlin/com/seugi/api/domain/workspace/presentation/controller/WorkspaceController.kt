@@ -150,9 +150,9 @@ class WorkspaceController(
     @PatchMapping("/kick")
     fun kickWorkspaceMember(
         @GetAuthenticatedId userId: Long,
-        @RequestBody kickWorkspaceMember: KickWorkspaceMember,
+        @RequestBody kickWorkspaceMemberRequest: KickWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.kickWorkspaceMember(userId, kickWorkspaceMember)
+        return workspaceService.kickWorkspaceMember(userId, kickWorkspaceMemberRequest)
     }
 
 }
