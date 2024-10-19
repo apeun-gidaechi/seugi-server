@@ -3,6 +3,7 @@ package com.seugi.api.domain.workspace.service
 import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.member.application.port.out.LoadMemberPort
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
+import com.seugi.api.domain.profile.adapter.out.ProfileAdapter
 import com.seugi.api.domain.profile.application.port.`in`.ManageProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.workspace.domain.WorkspaceRepository
@@ -36,6 +37,7 @@ class WorkspaceServiceImpl(
     private val loadMemberPort: LoadMemberPort,
     private val niceSchoolService: NiceSchoolService,
     private val fcmService: FCMService,
+    private val profileAdapter: ProfileAdapter,
 ) : WorkspaceService {
 
     private fun genCode(length: Int = 6): String {
@@ -486,10 +488,11 @@ class WorkspaceServiceImpl(
         )
 
         kickWorkspaceMember.memberList?.forEach {
-            workspaceEntity.student.remove(it)
-            workspaceEntity.teacher.remove(it)
-            if (!workspaceEntity.middleAdmin.contains(it)) workspaceEntity.middleAdmin.remove(it)
+            if (!workspaceEntity.middleAdmin.contains(it)) removeUserFromWorkspace(it, workspaceEntity)
+            profileAdapter.deleteProfile(it, kickWorkspaceMember.workspaceId ?: "")
         }
+
+
 
         workspaceRepository.save(workspaceEntity)
         return BaseResponse(
