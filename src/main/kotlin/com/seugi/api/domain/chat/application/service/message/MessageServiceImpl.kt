@@ -18,6 +18,7 @@ import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.fcm.FCMService
 import com.seugi.api.global.response.BaseResponse
+import com.seugi.api.global.util.DateTimeUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ class MessageServiceImpl(
 
     private fun sendAlarm(message: Message, userId: Long) {
         fcmService.sendChatAlarm(
-            message = message.message,
+            message = message,
             chatRoomId = message.chatRoomId,
             userId = userId
         )
@@ -112,7 +113,8 @@ class MessageServiceImpl(
         val timestamp = room.joinUserInfo.find { it.userId == userId }?.timestamp
         return messageRepository.findByChatRoomIdEqualsAndTimestampAfter(
             chatRoomId = room.id.toString(),
-            timestamp = timestamp ?: LocalDateTime.now()
+            timestamp = if (timestamp == DateTimeUtil.localDateTime) LocalDateTime.now() else timestamp
+                ?: LocalDateTime.now()
         ).count()
     }
 

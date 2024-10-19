@@ -3,6 +3,7 @@ package com.seugi.api.global.infra.fcm
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
+import com.seugi.api.domain.chat.domain.chat.model.Type
 import com.seugi.api.domain.chat.domain.room.ChatRoomEntity
 import com.seugi.api.domain.chat.domain.room.ChatRoomRepository
 import com.seugi.api.domain.chat.exception.ChatErrorCode
@@ -66,17 +67,17 @@ class FCMService(
             .orElseThrow { CustomException(ChatErrorCode.CHAT_ROOM_NOT_FOUND) }
     }
 
-    fun sendChatAlarm(message: String, chatRoomId: String, userId: Long) {
+    fun sendChatAlarm(message: com.seugi.api.domain.chat.domain.chat.model.Message, chatRoomId: String, userId: Long) {
 
         val room = findChatRoomById(chatRoomId)
 
         val sendMember = getMember(userId)
 
-        if (message.isEmpty()) return
+        if (message.message.isEmpty()) return
 
         val notification = buildNotification(
             title = room.chatName.ifEmpty { "1대1 채팅" },
-            body = "${sendMember.name.value} : $message",
+            body = "${sendMember.name.value} : ${if (message.type == Type.FILE) "파일을 보냈습니다." else if (message.type == Type.IMG) "사진을 보냈습니다." else message.message}",
             imageUrl = getAlarmImage(workspace = null, type = FCMEnums.CHAT, member = sendMember)
         )
 
