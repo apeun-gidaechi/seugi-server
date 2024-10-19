@@ -115,7 +115,7 @@ class MessageServiceImpl(
             chatRoomId = room.id.toString(),
             timestamp = if (timestamp == DateTimeUtil.localDateTime) LocalDateTime.now() else timestamp
                 ?: LocalDateTime.now()
-        ).count()
+        ).count { it.type == Type.MESSAGE || it.type == Type.IMG || it.type == Type.FILE }
     }
 
     @Transactional
