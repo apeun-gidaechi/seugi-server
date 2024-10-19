@@ -477,6 +477,26 @@ class WorkspaceServiceImpl(
         )
     }
 
+    @Transactional
+    override fun kickWorkspaceMember(userId: Long, kickWorkspaceMember: KickWorkspaceMember): BaseResponse<Unit> {
+        val workspaceEntity = findWorkspaceById(kickWorkspaceMember.workspaceId ?: "")
+
+        if (workspaceEntity.workspaceAdmin != userId && !workspaceEntity.middleAdmin.contains(userId)) throw CustomException(
+            WorkspaceErrorCode.FORBIDDEN
+        )
+
+        kickWorkspaceMember.memberList?.forEach {
+            workspaceEntity.student.remove(it)
+            workspaceEntity.teacher.remove(it)
+            if (!workspaceEntity.middleAdmin.contains(it)) workspaceEntity.middleAdmin.remove(it)
+        }
+
+        workspaceRepository.save(workspaceEntity)
+        return BaseResponse(
+            message = "맴버 추방 성공"
+        )
+    }
+
     private fun validateUserPermission(userId: Long, workspace: WorkspaceEntity, workspaceRole: WorkspaceRole) {
         if (workspaceRole == WorkspaceRole.MIDDLE_ADMIN && workspace.workspaceAdmin != userId) {
             throw CustomException(WorkspaceErrorCode.FORBIDDEN)

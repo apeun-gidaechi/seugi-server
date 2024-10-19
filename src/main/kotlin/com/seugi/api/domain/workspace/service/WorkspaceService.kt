@@ -35,4 +35,5 @@ interface WorkspaceService {
         manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
     ): BaseResponse<Unit>
 
+    fun kickWorkspaceMember(userId: Long, kickWorkspaceMember: KickWorkspaceMember): BaseResponse<Unit>
 }
