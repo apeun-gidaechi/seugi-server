@@ -20,23 +20,22 @@ class GoogleRefreshService (
 ) {
 
     fun refreshAccessToken(oauth: OAuth) {
-        val accessToken: String
-
         try {
-            accessToken = GoogleRefreshTokenRequest (
+            val accessToken = GoogleRefreshTokenRequest (
                 netHttpTransport,
                 GsonFactory.getDefaultInstance(),
                 oauth.refreshToken.value,
                 properties.clientId,
                 properties.clientSecret
             ).execute().accessToken
+
+            oauth.accessToken = OAuthAccessToken(accessToken)
+
+            saveOAuthPort.saveOAuth(oauth)
         } catch (e: GoogleJsonResponseException) {
             throw CustomException(OAuthErrorCode.OAUTH_REFRESH_EXPIRED)
         }
 
-        oauth.accessToken = OAuthAccessToken(accessToken)
-
-        saveOAuthPort.saveOAuth(oauth)
     }
 
 }
