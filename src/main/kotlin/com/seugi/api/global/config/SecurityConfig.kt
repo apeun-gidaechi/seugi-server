@@ -73,7 +73,6 @@ class SecurityConfig (
 
             .exceptionHandling {
                 it.authenticationEntryPoint { _, response, _ ->
-                    println("넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라")
                     responsor.send(response, CommonErrorCode.NOT_FOUND)
                 }
                 it.accessDeniedHandler { _, response, _ ->
