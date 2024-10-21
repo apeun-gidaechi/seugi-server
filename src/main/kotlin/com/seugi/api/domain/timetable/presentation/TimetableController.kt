@@ -14,7 +14,7 @@ class TimetableController(
     private val timetableService: TimetableService,
 ) {
 
-    @PostMapping
+    @PostMapping(path = ["", "/"])
     fun createTimetable(
         @GetAuthenticatedId userId: Long,
         @RequestBody timetable: CreateTimetableRequest,
@@ -22,7 +22,7 @@ class TimetableController(
         return timetableService.createTimetable(timetable, userId)
     }
 
-    @PatchMapping
+    @PatchMapping(path = ["", "/"])
     fun fixTimetable(
         @GetAuthenticatedId userId: Long,
         @RequestBody fixTimetableRequest: FixTimetableRequest,
