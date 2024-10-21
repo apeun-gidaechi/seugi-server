@@ -11,6 +11,6 @@ enum class OAuthErrorCode (
 
     OAUTH_NOT_FOUND(HttpStatus.NOT_FOUND, "NOT_FOUND", "연동이 발견되지 않았습니다"),
     OAUTH_ALREADY_EXIST(HttpStatus.CONFLICT, "CONFLICT", "이미 연동되었습니다"),
-    OAUTH_NOT_SUFFICIENT(HttpStatus.BAD_REQUEST, "BAD_REQUEST", "인증 정보가 불충분합니다")
+    OAUTH_REFRESH_EXPIRED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "다시 구글 연동을 해주세요")
 
 }
