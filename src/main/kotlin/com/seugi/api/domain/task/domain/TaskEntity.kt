@@ -14,9 +14,16 @@ class TaskEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
-    @Column(nullable = false) val workspaceId: String,
-    @Column(nullable = false) var title: String,
-    @Column(nullable = false) var description: String,
-    @Column(nullable = false) val dueDate: LocalDateTime,
+    @Column(nullable = false)
+    val workspaceId: String,
+
+    @Column(nullable = false)
+    var title: String,
+
+    @Column(nullable = false)
+    var description: String,
+
+    @Column(nullable = false)
+    val dueDate: LocalDateTime,
 
 )
