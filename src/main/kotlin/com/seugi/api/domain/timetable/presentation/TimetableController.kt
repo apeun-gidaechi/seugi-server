@@ -1,6 +1,8 @@
 package com.seugi.api.domain.timetable.presentation
 
 import com.seugi.api.domain.timetable.domain.model.Timetable
+import com.seugi.api.domain.timetable.presentation.dto.request.CreateTimetableRequest
+import com.seugi.api.domain.timetable.presentation.dto.request.FixTimetableRequest
 import com.seugi.api.domain.timetable.service.TimetableService
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
@@ -11,6 +13,31 @@ import org.springframework.web.bind.annotation.*
 class TimetableController(
     private val timetableService: TimetableService,
 ) {
+
+    @PostMapping
+    fun createTimetable(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody timetable: CreateTimetableRequest,
+    ): BaseResponse<Unit> {
+        return timetableService.createTimetable(timetable, userId)
+    }
+
+    @PatchMapping
+    fun fixTimetable(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody fixTimetableRequest: FixTimetableRequest,
+    ): BaseResponse<Unit> {
+        return timetableService.fixTimetable(userId, fixTimetableRequest)
+    }
+
+    @DeleteMapping("/{id}")
+    fun deleteTimetable(
+        @GetAuthenticatedId userId: Long,
+        @PathVariable id: Long,
+    ): BaseResponse<Unit> {
+        return timetableService.deleteTimetable(userId, id)
+    }
+
 
     @PostMapping("/reset")
     fun resetTimetable(

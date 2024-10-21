@@ -5,11 +5,14 @@ import com.seugi.api.domain.timetable.domain.TimetableRepository
 import com.seugi.api.domain.timetable.domain.mapper.TimetableMapper
 import com.seugi.api.domain.timetable.domain.model.Timetable
 import com.seugi.api.domain.timetable.exception.TimetableException
+import com.seugi.api.domain.timetable.presentation.dto.request.CreateTimetableRequest
+import com.seugi.api.domain.timetable.presentation.dto.request.FixTimetableRequest
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
+import com.seugi.api.global.response.BaseResponse
 import jakarta.transaction.Transactional
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -72,6 +75,62 @@ class TimetableServiceImpl(
         return niceSchoolService.getSchoolTimeTable(schoolInfo, dateRange.first, dateRange.second, workspaceId)
             ?.map { timetableMapper.niceTimetableToModel(it, workspaceId) }
             ?: emptyList()
+    }
+
+    private fun checkRole(workspaceId: String, userId: Long) {
+        workspaceService.findWorkspaceById(workspaceId).let {
+            if (it.workspaceAdmin != userId &&
+                !it.middleAdmin.contains(userId) &&
+                !it.teacher.contains(userId)
+            ) throw CustomException(
+                TimetableException.FORBIDDEN
+            )
+        }
+    }
+
+    @Transactional
+    override fun createTimetable(createTimetableRequest: CreateTimetableRequest, userId: Long): BaseResponse<Unit> {
+
+        checkRole(createTimetableRequest.workspaceId, userId)
+        val timetableEntity = timetableMapper.requestToEntity(createTimetableRequest)
+
+        timetableRepository.save(timetableEntity)
+
+        return BaseResponse(
+            message = "시간표 저장 성공!"
+        )
+
+    }
+
+    @Transactional
+    override fun fixTimetable(userId: Long, fixTimetableRequest: FixTimetableRequest): BaseResponse<Unit> {
+        val timetable = timetableRepository.findById(fixTimetableRequest.id)
+            .orElseThrow { CustomException(TimetableException.NOT_FOUND) }
+
+        checkRole(timetable.workspaceId, userId)
+
+        timetable.updateSubject(fixTimetableRequest.subject)
+
+        timetableRepository.save(timetable)
+
+        return BaseResponse(
+            message = "시간표 수정 성공!"
+        )
+
+    }
+
+    @Transactional
+    override fun deleteTimetable(userId: Long, id: Long): BaseResponse<Unit> {
+        val timetable = timetableRepository.findById(id).orElseThrow { CustomException(TimetableException.NOT_FOUND) }
+
+        checkRole(timetable.workspaceId, userId)
+
+        timetableRepository.delete(timetable)
+
+        return BaseResponse(
+            message = "시간표 삭제 성공!"
+        )
+
     }
 
     @Transactional
