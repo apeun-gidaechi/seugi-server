@@ -86,7 +86,7 @@ class MessageServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getLastMessage(roomId: String): MessageEntity? {
-        return messageRepository.findByChatRoomId(roomId).lastOrNull()
+        return messageRepository.findByChatRoomId(roomId).lastOrNull { it.type == Type.MESSAGE }
     }
 
     @Transactional(readOnly = true)
@@ -115,7 +115,7 @@ class MessageServiceImpl(
             chatRoomId = room.id.toString(),
             timestamp = if (timestamp == DateTimeUtil.localDateTime) LocalDateTime.now() else timestamp
                 ?: LocalDateTime.now()
-        ).count()
+        ).count { it.type == Type.MESSAGE || it.type == Type.IMG || it.type == Type.FILE }
     }
 
     @Transactional

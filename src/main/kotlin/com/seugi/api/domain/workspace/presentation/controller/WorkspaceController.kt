@@ -147,4 +147,12 @@ class WorkspaceController(
         return workspaceService.manageWorkspaceMemberPermission(userId, manageWorkspaceMemberPermissionRequest)
     }
 
+    @PatchMapping("/kick")
+    fun kickWorkspaceMember(
+        @GetAuthenticatedId userId: Long,
+        @RequestBody kickWorkspaceMemberRequest: KickWorkspaceMemberRequest,
+    ): BaseResponse<Unit> {
+        return workspaceService.kickWorkspaceMember(userId, kickWorkspaceMemberRequest)
+    }
+
 }

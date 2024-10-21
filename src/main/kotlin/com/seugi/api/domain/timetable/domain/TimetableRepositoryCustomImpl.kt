@@ -23,6 +23,7 @@ class TimetableRepositoryCustomImpl(
         return jpaQueryFactory
             .selectFrom(timetableEntity)
             .where(timetableEntity.workspaceId.eq(workspaceId), timetableEntity.date.eq(date))
+            .orderBy(timetableEntity.date.asc())
             .fetch() ?: emptyList()
     }
 
@@ -32,6 +33,7 @@ class TimetableRepositoryCustomImpl(
         return jpaQueryFactory
             .selectFrom(timetableEntity)
             .where(timetableEntity.workspaceId.eq(workspaceId))
+            .orderBy(timetableEntity.date.asc())
             .fetch() ?: emptyList()
     }
 

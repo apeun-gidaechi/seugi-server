@@ -6,6 +6,7 @@ import com.seugi.api.domain.profile.application.model.Profile
 import com.seugi.api.domain.profile.application.model.value.ProfilePermission
 import com.seugi.api.domain.profile.application.model.value.ProfileWorkspaceId
 import com.seugi.api.domain.profile.application.port.`in`.ManageProfileUseCase
+import com.seugi.api.domain.profile.application.port.out.DeleteProfileUseCase
 import com.seugi.api.domain.profile.application.port.out.ExistProfilePort
 import com.seugi.api.domain.profile.application.port.out.LoadProfilePort
 import com.seugi.api.domain.profile.application.port.out.SaveProfilePort
@@ -18,6 +19,7 @@ class ManageProfileService(
     private val loadMemberPort: LoadMemberPort,
     private val loaProfilePort: LoadProfilePort,
     private val saveProfilePort: SaveProfilePort,
+    private val deleteProfileUseCase: DeleteProfileUseCase,
 ) : ManageProfileUseCase {
 
     override fun manageProfile(memberId: Long, workspaceId: String, permission: WorkspaceRole) {
@@ -28,6 +30,10 @@ class ManageProfileService(
         } else {
             createNewProfile(member, workspaceId, permission)
         }
+    }
+
+    override fun deleteProfile(memberId: Long, workspaceId: String) {
+        deleteProfileUseCase.deleteProfile(memberId, workspaceId)
     }
 
     private fun updateExistingProfile(memberId: Long, workspaceId: String, permission: WorkspaceRole) {

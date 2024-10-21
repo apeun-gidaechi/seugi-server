@@ -2,6 +2,7 @@ package com.seugi.api.domain.timetable.domain.mapper
 
 import com.seugi.api.domain.timetable.domain.TimetableEntity
 import com.seugi.api.domain.timetable.domain.model.Timetable
+import com.seugi.api.domain.timetable.presentation.dto.request.CreateTimetableRequest
 import com.seugi.api.global.common.Mapper
 import com.seugi.api.global.infra.nice.school.SchoolDateConvertor
 import com.seugi.api.global.infra.nice.school.timetable.Row
@@ -46,4 +47,17 @@ class TimetableMapper : Mapper<Timetable, TimetableEntity> {
             date = SchoolDateConvertor.dateFormat(niceData.allTiYmd)
         )
     }
+
+    fun requestToEntity(createTimetableRequest: CreateTimetableRequest): TimetableEntity {
+        return TimetableEntity(
+            workspaceId = createTimetableRequest.workspaceId,
+            grade = createTimetableRequest.grade,
+            classNum = createTimetableRequest.classNum,
+            time = createTimetableRequest.time,
+            subject = createTimetableRequest.subject,
+            date = createTimetableRequest.date,
+            updatedAt = LocalDateTime.now()
+        )
+    }
+
 }
