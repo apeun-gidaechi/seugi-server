@@ -12,6 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.context.DelegatingSecurityContextRepository
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository
+import org.springframework.security.web.context.SecurityContextRepository
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -25,10 +29,21 @@ class SecurityConfig (
     private val responsor: ErrorResponseSender,
     @Value("\${management.endpoints.web.base-path}") private val actuatorUrl : String
 ) {
+    @Bean
+    fun securityContextRepository(): SecurityContextRepository {
+        return DelegatingSecurityContextRepository(
+            RequestAttributeSecurityContextRepository(),
+            HttpSessionSecurityContextRepository()
+        )
+    }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
+            .securityContext {
+                it.securityContextRepository(securityContextRepository())
+            }
+
             .cors {
                 corsConfigurationSource()
             }
@@ -58,6 +73,7 @@ class SecurityConfig (
 
             .exceptionHandling {
                 it.authenticationEntryPoint { _, response, _ ->
+                    println("넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라넌나가라")
                     responsor.send(response, CommonErrorCode.NOT_FOUND)
                 }
                 it.accessDeniedHandler { _, response, _ ->

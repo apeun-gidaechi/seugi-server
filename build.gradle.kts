@@ -84,7 +84,8 @@ dependencies {
 
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
 
-
+    implementation("com.google.apis:google-api-services-classroom:v1-rev20241007-2.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 }
 
 val generated = file("src/main/generated")
