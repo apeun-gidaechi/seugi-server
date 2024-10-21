@@ -18,7 +18,7 @@ class TaskController (
     private val service: TaskService
 ) {
 
-    @PostMapping()
+    @PostMapping
     fun createTask(dto: CreateTaskRequest): BaseResponse<Unit> {
         return BaseResponse (
             message = "과제 만들기 성공 !",
