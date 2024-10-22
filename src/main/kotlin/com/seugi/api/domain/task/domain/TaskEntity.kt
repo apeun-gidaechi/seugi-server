@@ -20,10 +20,8 @@ class TaskEntity (
     @Column(nullable = false)
     var title: String,
 
-    @Column(nullable = false)
     var description: String?,
 
-    @Column(nullable = false)
     val dueDate: LocalDateTime?,
 
 )
