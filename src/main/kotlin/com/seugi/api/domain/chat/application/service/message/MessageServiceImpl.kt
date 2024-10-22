@@ -86,7 +86,7 @@ class MessageServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getLastMessage(roomId: String): MessageEntity? {
-        return messageRepository.findByChatRoomId(roomId).lastOrNull { it.type == Type.MESSAGE }
+        return messageRepository.findByChatRoomId(roomId).lastOrNull()
     }
 
     @Transactional(readOnly = true)
