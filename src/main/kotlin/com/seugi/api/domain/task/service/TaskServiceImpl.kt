@@ -14,7 +14,6 @@ import com.seugi.api.domain.task.domain.model.ClassroomTask
 import com.seugi.api.domain.task.presentation.dto.request.CreateTaskRequest
 import com.seugi.api.global.auth.oauth.enums.Provider
 import kotlinx.coroutines.*
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
