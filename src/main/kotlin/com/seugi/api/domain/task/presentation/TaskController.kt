@@ -9,6 +9,7 @@ import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,11 +20,9 @@ class TaskController (
 ) {
 
     @PostMapping
-    fun createTask(dto: CreateTaskRequest): BaseResponse<Unit> {
-        return BaseResponse (
-            message = "과제 만들기 성공 !",
-            data = service.createTask(dto)
-        )
+    fun createTask(@RequestBody dto: CreateTaskRequest): BaseResponse<Unit> {
+        service.createTask(dto)
+        return BaseResponse (message = "과제 만들기 성공 !")
     }
 
     @GetMapping("/{workspaceId}")
