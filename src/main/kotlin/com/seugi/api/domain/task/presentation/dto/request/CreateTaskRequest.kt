@@ -7,7 +7,7 @@ class CreateTaskRequest (
 
     @JsonProperty("workspaceId") val workspaceId: String,
     @JsonProperty("title") val title: String,
-    @JsonProperty("description") val description: String,
-    @JsonProperty("dueDate") val dueDate: LocalDateTime
+    @JsonProperty("description") val description: String?,
+    @JsonProperty("dueDate") val dueDate: LocalDateTime?
 
 )
