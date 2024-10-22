@@ -10,7 +10,7 @@ class OAuth (
     val member: Member,
     val provider: OAuthProvider,
     val sub: OAuthSub,
-    val accessToken: OAuthAccessToken,
+    var accessToken: OAuthAccessToken,
     val refreshToken: OAuthRefreshToken
 
 ) {
