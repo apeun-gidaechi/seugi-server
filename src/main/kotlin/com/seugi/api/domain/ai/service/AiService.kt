@@ -67,45 +67,59 @@ class AiService(
         val prompt = promptTemplate.create(mapOf("message" to message.message), requestModel)
 
         val result = openAiChatModel.call(prompt).result.output.content
-        return handleResponse(result, message)
+        return handleResponse(result, message.chatRoomId, message.userId, message.message)
+    }
+
+    fun handleRequest(
+        chatMessageDto: ChatMessageDto,
+        userId: Long,
+    ): ChatMessageDto {
+        val promptTemplate = PromptTemplate(rolePrompt + beforePrompt)
+
+        val prompt = promptTemplate.create(mapOf("message" to chatMessageDto.message), requestModel)
+
+        val result = openAiChatModel.call(prompt).result.output.content
+        return handleResponse(result, chatMessageDto.roomId ?: "", userId, chatMessageDto.message ?: "")
     }
 
     private fun handleResponse(
         result: String,
-        message: Message,
+        chatRoomId: String,
+        userId: Long,
+        message: String,
     ): ChatMessageDto {
 
         val date: Any = when (result) {
             "급식" -> {
                 mealService.getMealByDate(
                     mealDate = getToday(),
-                    workspaceId = findChatRoomById(message.chatRoomId).workspaceId
+                    workspaceId = findChatRoomById(chatRoomId).workspaceId
                 )
             }
 
             "시간표" -> {
                 timetableService.getDayTimetableByUserInfo(
-                    workspaceId = findChatRoomById(message.chatRoomId).workspaceId,
-                    userId = message.userId
+                    workspaceId = findChatRoomById(chatRoomId).workspaceId,
+                    userId = userId
                 )
             }
 
             "공지" -> {
                 notificationService.getNotices(
-                    workspaceId = findChatRoomById(message.chatRoomId).workspaceId,
-                    userId = message.userId,
+                    workspaceId = findChatRoomById(chatRoomId).workspaceId,
+                    userId = userId,
                     pageable = PageRequest.of(0, 1)
                 )
             }
 
             "사람 뽑기" -> {
-                findChatRoomById(message.chatRoomId).joinedUserInfo.map {
+                findChatRoomById(chatRoomId).joinedUserInfo.map {
                     it.userId
                 }
             }
 
             "팀짜기" -> {
-                findChatRoomById(message.chatRoomId).joinedUserInfo.map {
+                findChatRoomById(chatRoomId).joinedUserInfo.map {
                     it.userId
                 }
             }
@@ -120,12 +134,12 @@ class AiService(
             "급식", "시간표", "공지" -> {
                 ChatMessageDto(
                     type = Type.BOT,
-                    roomId = message.chatRoomId,
+                    roomId = chatRoomId,
                     message = AiResponse(
                         keyword = result,
                         data = date
                     ).toJsonString(),
-                    mention = setOf(message.userId)
+                    mention = setOf(userId)
                 )
             }
 
@@ -135,7 +149,7 @@ class AiService(
                 val aiResult = openAiChatModel.call(
                     promptTemplate.create(
                         mapOf(
-                            "first" to message.message,
+                            "first" to message,
                             "keyword" to result,
                             "data" to date.toJsonString()
                         ), responseModel
@@ -143,12 +157,12 @@ class AiService(
                 ).result.output.content
                 return ChatMessageDto(
                     type = Type.BOT,
-                    roomId = message.chatRoomId,
+                    roomId = chatRoomId,
                     message = AiResponse(
                         keyword = result,
                         data = aiResult
                     ).toJsonString(),
-                    mention = setOf(message.userId)
+                    mention = setOf(userId)
                 )
             }
         }

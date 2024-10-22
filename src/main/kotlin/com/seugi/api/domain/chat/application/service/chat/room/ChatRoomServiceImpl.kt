@@ -79,8 +79,8 @@ class ChatRoomServiceImpl(
         return chatRoomMapper.toResponse(
             room = room,
             members = getUserInfo(room),
-            lastMessage = lastMessageEntity?.message ?: "",
-            lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: "").toString(),
+            lastMessage = if (lastMessageEntity?.type == Type.MESSAGE) lastMessageEntity.message else "",
+            lastMessageTimeStamp = (lastMessageEntity?.timestamp ?: LocalDateTime.now()).toString(),
             notReadCnt = messageService.getNotReadMessageCount(room, userId)
         )
     }
