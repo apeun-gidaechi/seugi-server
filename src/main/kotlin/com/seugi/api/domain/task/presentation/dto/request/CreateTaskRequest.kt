@@ -5,9 +5,16 @@ import java.time.LocalDateTime
 
 class CreateTaskRequest (
 
-    @JsonProperty("workspaceId") val workspaceId: String,
-    @JsonProperty("title") val title: String,
-    @JsonProperty("description") val description: String?,
-    @JsonProperty("dueDate") val dueDate: LocalDateTime?
+    @JsonProperty("workspaceId")
+    val workspaceId: String,
+
+    @JsonProperty("title")
+    val title: String,
+
+    @JsonProperty("description")
+    val description: String?,
+
+    @JsonProperty("dueDate")
+    val dueDate: LocalDateTime?
 
 )
