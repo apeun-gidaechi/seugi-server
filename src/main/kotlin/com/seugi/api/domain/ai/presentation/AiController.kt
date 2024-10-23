@@ -5,6 +5,7 @@ import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.global.common.annotation.GetAuthenticatedId
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -15,7 +16,7 @@ class AiController(
     private val aiService: AiService,
 ) {
 
-    @GetMapping
+    @PostMapping
     fun generatedAiChatbot(
         @RequestBody chatMessageDto: ChatMessageDto,
         @GetAuthenticatedId userId: Long,
