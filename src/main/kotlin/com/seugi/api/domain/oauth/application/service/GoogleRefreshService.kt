@@ -1,9 +1,9 @@
 package com.seugi.api.domain.oauth.application.service
 
+import com.google.api.client.auth.oauth2.TokenResponseException
 import com.google.api.client.json.gson.GsonFactory
 import com.seugi.api.global.auth.oauth.google.GoogleProperties
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest
-import com.google.api.client.googleapis.json.GoogleJsonResponseException
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.seugi.api.domain.oauth.application.exception.OAuthErrorCode
 import com.seugi.api.domain.oauth.application.model.OAuth
@@ -32,7 +32,7 @@ class GoogleRefreshService (
             oauth.accessToken = OAuthAccessToken(accessToken)
 
             saveOAuthPort.saveOAuth(oauth)
-        } catch (e: GoogleJsonResponseException) {
+        } catch (e: TokenResponseException) {
             throw CustomException(OAuthErrorCode.OAUTH_REFRESH_EXPIRED)
         }
 
