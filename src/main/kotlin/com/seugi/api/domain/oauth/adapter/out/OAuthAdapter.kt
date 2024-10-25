@@ -6,6 +6,7 @@ import com.seugi.api.domain.oauth.adapter.out.mapper.OAuthMapper
 import com.seugi.api.domain.oauth.adapter.out.repository.OAuthRepository
 import com.seugi.api.domain.oauth.application.exception.OAuthErrorCode
 import com.seugi.api.domain.oauth.application.model.OAuth
+import com.seugi.api.domain.oauth.port.out.DeleteOAuthPort
 import com.seugi.api.domain.oauth.port.out.ExistOAuthPort
 import com.seugi.api.domain.oauth.port.out.LoadOAuthPort
 import com.seugi.api.domain.oauth.port.out.SaveOAuthPort
@@ -19,7 +20,7 @@ class OAuthAdapter (
     private val oAuthRepository: OAuthRepository,
     private val memberRepository: MemberRepository,
     private val oAuthMapper: OAuthMapper
-): LoadOAuthPort, ExistOAuthPort, SaveOAuthPort {
+): LoadOAuthPort, ExistOAuthPort, SaveOAuthPort, DeleteOAuthPort {
 
     override fun loadOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): OAuth {
         val member = memberRepository.findByIdOrNull(memberId)
@@ -51,4 +52,10 @@ class OAuthAdapter (
         )
     }
 
+    override fun deleteOAuth(memberId: Long, provider: Provider) {
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+
+        oAuthRepository.deleteByMemberAndProvider(member, provider)
+    }
 }
