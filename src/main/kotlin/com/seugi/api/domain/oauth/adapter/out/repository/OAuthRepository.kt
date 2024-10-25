@@ -10,5 +10,6 @@ interface OAuthRepository : CrudRepository<OAuthEntity, Long>, OAuthCustomReposi
     override fun findByMemberAndProvider(member: MemberEntity, provider: Provider): OAuthEntity?
     override fun findByProviderAndSub(provider: Provider, sub: String): OAuthEntity?
     override fun existsByMemberAndProvider(member: MemberEntity, provider: Provider): Boolean
+    override fun deleteByMemberAndProvider(member: MemberEntity, provider: Provider)
 
 }
