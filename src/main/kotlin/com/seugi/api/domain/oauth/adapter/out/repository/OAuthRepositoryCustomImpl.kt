@@ -51,4 +51,15 @@ class OAuthRepositoryCustomImpl (
             .fetchOne() != null
     }
 
+    override fun deleteByMemberAndProvider(member: MemberEntity, provider: Provider) {
+        val entity = QOAuthEntity.oAuthEntity
+
+        jpaQueryFactory
+            .delete(entity)
+            .where(
+                entity.member.eq(member),
+                entity.provider.eq(provider)
+            )
+            .execute()
+    }
 }
