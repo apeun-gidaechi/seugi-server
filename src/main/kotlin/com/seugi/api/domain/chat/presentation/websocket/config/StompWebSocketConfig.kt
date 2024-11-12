@@ -1,8 +1,8 @@
 package com.seugi.api.domain.chat.presentation.websocket.config
 
 import com.seugi.api.domain.chat.application.service.chat.room.ChatRoomService
+import com.seugi.api.domain.chat.presentation.websocket.util.SecurityUtils
 import com.seugi.api.domain.member.application.exception.MemberErrorCode
-import com.seugi.api.global.auth.jwt.JwtUserDetails
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
@@ -15,7 +15,6 @@ import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
-import org.springframework.messaging.support.MessageBuilder
 import org.springframework.messaging.support.MessageHeaderAccessor
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
@@ -50,9 +49,9 @@ class StompWebSocketConfig(
                 val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)!!
 
                 when (accessor.messageType) {
-                    SimpMessageType.CONNECT -> handleConnect(message, accessor)
+                    SimpMessageType.CONNECT -> handleConnect(accessor)
                     SimpMessageType.SUBSCRIBE -> handleSubscribe(accessor)
-                    SimpMessageType.UNSUBSCRIBE, SimpMessageType.DISCONNECT -> handleUnsubscribeOrDisconnect()
+                    SimpMessageType.UNSUBSCRIBE, SimpMessageType.DISCONNECT -> handleUnsubscribeOrDisconnect(accessor)
                     else -> {}
                 }
                 return message
@@ -60,20 +59,13 @@ class StompWebSocketConfig(
         })
     }
 
-    private fun handleConnect(message: Message<*>, accessor: StompHeaderAccessor) {
+    private fun handleConnect(accessor: StompHeaderAccessor) {
         val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
         if (authToken != null && authToken.startsWith("Bearer ")) {
             val auth = jwtUtils.getAuthentication(authToken)
-            val userDetails = auth.principal as? JwtUserDetails
-            val userId: String? = userDetails?.id?.value?.toString()
-
-            if (userId != null) {
-                val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-                simpAttributes.setAttribute("user-id", userId)
-                MessageBuilder.createMessage(message.payload, accessor.messageHeaders)
-            } else {
-                throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
-            }
+            accessor.user = auth
+        } else {
+            throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
         }
     }
 
@@ -81,25 +73,20 @@ class StompWebSocketConfig(
         accessor.destination?.let {
             val simpAttributes = SimpAttributesContextHolder.currentAttributes()
             simpAttributes.setAttribute("sub", it.substringAfterLast("."))
-            val userId = simpAttributes.getAttribute("user-id") as String
             chatRoomService.sub(
-                userId = userId.toLong(),
+                userId = SecurityUtils.getUserId(accessor.user),
                 roomId = it.substringAfterLast(".")
             )
         }
     }
 
-    private fun handleUnsubscribeOrDisconnect() {
-        val simpAttributes = SimpAttributesContextHolder.currentAttributes()
-        val userId = simpAttributes.getAttribute("user-id") as String?
-        val roomId = simpAttributes.getAttribute("sub") as String?
-        userId?.let {
-            roomId?.let {
-                chatRoomService.unSub(
-                    userId = userId.toLong(),
-                    roomId = it
-                )
-            }
+    private fun handleUnsubscribeOrDisconnect(accessor: StompHeaderAccessor) {
+        accessor.destination?.let {
+            val simpAttributes = SimpAttributesContextHolder.currentAttributes()
+            chatRoomService.unSub(
+                userId = SecurityUtils.getUserId(accessor.user),
+                roomId = simpAttributes.getAttribute("sub").toString()
+            )
         }
     }
 }
