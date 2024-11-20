@@ -1,4 +1,4 @@
-package com.seugi.api.domain.chat.presentation.websocket.config
+package com.seugi.api.global.config
 
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.Queue
