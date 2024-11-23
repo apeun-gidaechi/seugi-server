@@ -7,13 +7,13 @@ import org.springframework.http.HttpStatus
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class BaseResponse<T>(
 
-    val status: Int = HttpStatus.OK.value(),
-    val success: Boolean = true,
-    val state: String? = "OK",
-    val message: String,
-    val data: T? = null
+    override val status: Int = HttpStatus.OK.value(),
+    override val success: Boolean = true,
+    override val state: String = "OK",
+    override val message: String,
+    val data: T? = null,
 
-) {
+    ) : ResponseInterface {
 
     // errorResponse constructor
     constructor(code: CustomErrorCode) : this(
