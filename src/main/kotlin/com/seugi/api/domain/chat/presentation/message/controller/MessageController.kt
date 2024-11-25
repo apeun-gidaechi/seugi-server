@@ -35,7 +35,7 @@ class MessageController(
         @RequestBody emoji: AddEmoji,
         @GetAuthenticatedId userId: Long
     ): BaseResponse<Unit> {
-        return messageService.addEmojiToMessage(
+        return messageService.deleteEmojiToMessage(
             userId = userId,
             emoji = emoji
         )
