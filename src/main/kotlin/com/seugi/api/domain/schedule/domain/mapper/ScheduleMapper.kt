@@ -27,13 +27,13 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
             date = domain.date!!,
             eventName = domain.eventName ?: "",
             eventContent = domain.eventContent ?: "",
-            grade = domain.grade ?: emptyList()
+            grade = domain.grade ?: emptySet()
         )
     }
 
     fun toDomain(row: List<ScheduleRow>, workspaceId: String): List<Schedule> {
         return row.map { scheduleRow ->
-            val grade = listOfNotNull(
+            val grade = setOfNotNull(
                 scheduleRow.oneGradeEventYn.takeIf { it == "Y" }?.let { 1 },
                 scheduleRow.twGradeEventYn.takeIf { it == "Y" }?.let { 2 },
                 scheduleRow.threeGradeEventYn.takeIf { it == "Y" }?.let { 3 },

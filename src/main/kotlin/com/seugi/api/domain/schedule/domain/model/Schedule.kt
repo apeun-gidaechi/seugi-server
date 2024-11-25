@@ -6,5 +6,5 @@ data class Schedule(
     val date: String? = null,
     val eventName: String? = null,
     val eventContent: String? = null,
-    val grade: List<Int>? = null,
+    val grade: Set<Int>? = null,
 )

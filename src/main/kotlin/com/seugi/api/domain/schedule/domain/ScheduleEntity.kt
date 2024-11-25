@@ -22,6 +22,6 @@ class ScheduleEntity(
     val eventContent: String,
 
     @ElementCollection
-    val grade: List<Int>,
+    val grade: Set<Int>,
 
     )
