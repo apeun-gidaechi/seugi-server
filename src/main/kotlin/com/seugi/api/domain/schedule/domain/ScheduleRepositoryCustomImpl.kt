@@ -21,6 +21,7 @@ class ScheduleRepositoryCustomImpl(
         val scheduleEntity = QScheduleEntity.scheduleEntity
         return jpaQueryFactory
             .selectFrom(scheduleEntity)
+            .leftJoin(scheduleEntity.grade).fetchJoin()
             .where(scheduleEntity.workspaceId.eq(workspaceId))
             .fetch() ?: emptyList()
     }
@@ -29,6 +30,7 @@ class ScheduleRepositoryCustomImpl(
         val scheduleEntity = QScheduleEntity.scheduleEntity
         return jpaQueryFactory
             .selectFrom(scheduleEntity)
+            .leftJoin(scheduleEntity.grade).fetchJoin()
             .where(scheduleEntity.date.substring(5, 7).eq(month.toString()), scheduleEntity.workspaceId.eq(workspaceId))
             .fetch() ?: emptyList()
     }
