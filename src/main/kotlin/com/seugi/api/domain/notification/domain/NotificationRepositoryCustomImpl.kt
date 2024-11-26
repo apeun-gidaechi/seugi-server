@@ -13,8 +13,8 @@ class NotificationRepositoryCustomImpl(
     override fun findByWorkspaceId(workspaceId: String, pageable: Pageable): List<NotificationEntity> {
         val notice: QNotificationEntity = QNotificationEntity.notificationEntity
 
-        return jpaQueryFactory
-            .select(notice)
+        val noticeIdList = jpaQueryFactory
+            .select(notice.id)
             .from(notice)
             .where(
                 notice.workspaceId.eq(workspaceId),
@@ -24,6 +24,15 @@ class NotificationRepositoryCustomImpl(
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch().orEmpty().toList()
+
+        return jpaQueryFactory
+            .select(notice)
+            .from(notice)
+            .leftJoin(notice.user).fetchJoin()
+            .leftJoin(notice.emoji).fetchJoin()
+            .where(notice.id.`in`(noticeIdList))
+            .fetch().orEmpty().toList()
+
     }
 
 }

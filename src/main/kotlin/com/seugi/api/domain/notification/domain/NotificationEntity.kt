@@ -31,7 +31,6 @@ class NotificationEntity(
     var content: String,
 
     @ElementCollection
-    @Column(nullable = false)
     val emoji: MutableList<NotificationEmoji> = mutableListOf(),
 
     @Column(nullable = false, updatable = false)
