@@ -65,9 +65,11 @@ class RedisConfig(
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer()))
 
         val schedulesCacheConfig = defaultCacheConfig.entryTtl(Duration.ofDays(1))
+        val notificationCacheConfig = defaultCacheConfig.entryTtl(Duration.ofHours(1))
 
         val cacheConfigurations: MutableMap<String, RedisCacheConfiguration> = mutableMapOf()
         cacheConfigurations["schedules"] = schedulesCacheConfig
+        cacheConfigurations["notification"] = notificationCacheConfig
 
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(redisConnectionFactory)
             .cacheDefaults(defaultCacheConfig)

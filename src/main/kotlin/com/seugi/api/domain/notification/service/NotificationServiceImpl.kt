@@ -25,6 +25,7 @@ class NotificationServiceImpl(
     private val noticeRepository: NotificationRepository,
     private val noticeMapper: NotificationMapper,
     private val fcmService: FCMService,
+    private val notificationCacheService: NotificationCacheService
 ) : NotificationService {
 
     @Transactional(readOnly = true)
@@ -52,7 +53,7 @@ class NotificationServiceImpl(
         noticeRepository.save(notice)
 
         sendAlert(workspaceEntity, userId, createNoticeRequest.title)
-
+        notificationCacheService.deleteCache(createNoticeRequest.workspaceId)
     }
 
     @Transactional(readOnly = true)
@@ -61,12 +62,7 @@ class NotificationServiceImpl(
         userId: Long,
         pageable: Pageable,
     ): List<NotificationResponse> {
-
-        return noticeRepository.findByWorkspaceId(workspaceId, pageable).map {
-            noticeMapper.transferNoticeResponse(
-                noticeMapper.toDomain(it)
-            )
-        }
+        return notificationCacheService.getNotices(workspaceId, pageable)
     }
 
     @Transactional
@@ -76,9 +72,8 @@ class NotificationServiceImpl(
         if (noticeEntity.user!!.id != userId) throw CustomException(NotificationErrorCode.FORBIDDEN)
 
         noticeEntity.updateNotice(updateNoticeRequest)
-
         noticeRepository.save(noticeEntity)
-
+        notificationCacheService.deleteCache(noticeEntity.workspaceId)
     }
 
     @Transactional
@@ -95,7 +90,7 @@ class NotificationServiceImpl(
 
         notice.deleteNotice()
         noticeRepository.save(notice)
-
+        notificationCacheService.deleteCache(workspaceId)
     }
 
     private fun addEmoji(
@@ -131,8 +126,6 @@ class NotificationServiceImpl(
         }
 
         noticeRepository.save(notification)
-
+        notificationCacheService.deleteCache(notification.workspaceId)
     }
-
-
 }
