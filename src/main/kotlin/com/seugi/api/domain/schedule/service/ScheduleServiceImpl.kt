@@ -8,7 +8,10 @@ import com.seugi.api.domain.workspace.domain.model.SchoolInfo
 import com.seugi.api.domain.workspace.service.WorkspaceService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.infra.nice.school.NiceSchoolService
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ScheduleServiceImpl(
@@ -37,19 +40,24 @@ class ScheduleServiceImpl(
         return workspaceEntity.schoolInfo
     }
 
-    private fun resetSchedule(workspaceId: String, userId: Long): List<Schedule> {
+    @CacheEvict(value = ["schedules"], key = "#workspaceId")
+    protected fun resetSchedule(workspaceId: String, userId: Long): List<Schedule> {
         val schoolInfo = getWorkspaceInfo(workspaceId, userId)
         val schoolSchedules = getSchoolSchedules(schoolInfo, workspaceId)
         val scheduleEntities = schoolSchedules.map { scheduleMapper.toEntity(it) }
         return scheduleRepository.saveAll(scheduleEntities).map { scheduleMapper.toDomain(it) }
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = ["schedules"] , key = "#workspaceId", cacheManager = "contentCacheManager")
     override fun getSchoolSchedules(userId: Long, workspaceId: String): List<Schedule> {
         return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) resetSchedule(workspaceId, userId)
         else scheduleRepository.findByWorkspaceId(workspaceId).map { scheduleMapper.toDomain(it) }
 
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = ["schedules"] , key = "#workspaceId", cacheManager = "contentCacheManager")
     override fun getMonthSchoolSchedules(userId: Long, workspaceId: String, month: Int): List<Schedule> {
         return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) {
             resetSchedule(workspaceId, userId).filter { sc ->
