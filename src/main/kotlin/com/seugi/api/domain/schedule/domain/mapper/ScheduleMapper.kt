@@ -17,7 +17,7 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
             date = entity.date,
             eventName = entity.eventName,
             eventContent = entity.eventContent,
-            grade = entity.grade
+            grade = entity.grade.toList()
         )
     }
 
@@ -27,7 +27,7 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
             date = domain.date!!,
             eventName = domain.eventName ?: "",
             eventContent = domain.eventContent ?: "",
-            grade = domain.grade ?: emptySet()
+            grade = domain.grade?.toSet() ?: emptySet()
         )
     }
 
@@ -47,7 +47,7 @@ class ScheduleMapper : Mapper<Schedule, ScheduleEntity> {
                 date = SchoolDateConvertor.dateFormat(scheduleRow.aaYmd),
                 eventName = scheduleRow.eventNm,
                 eventContent = scheduleRow.eventCntnt,
-                grade = grade
+                grade = grade.toList()
             )
         }
     }

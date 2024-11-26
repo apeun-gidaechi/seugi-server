@@ -49,7 +49,7 @@ class ScheduleServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = ["schedules"] , key = "#workspaceId", cacheManager = "contentCacheManager")
+    @Cacheable(value = ["schedules"] , key = "#workspaceId")
     override fun getSchoolSchedules(userId: Long, workspaceId: String): List<Schedule> {
         return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) resetSchedule(workspaceId, userId)
         else scheduleRepository.findByWorkspaceId(workspaceId).map { scheduleMapper.toDomain(it) }
@@ -57,7 +57,7 @@ class ScheduleServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = ["schedules"] , key = "#workspaceId", cacheManager = "contentCacheManager")
+    @Cacheable(value = ["schedules"] , key = "#workspaceId")
     override fun getMonthSchoolSchedules(userId: Long, workspaceId: String, month: Int): List<Schedule> {
         return if (!scheduleRepository.existsByWorkspaceId(workspaceId)) {
             resetSchedule(workspaceId, userId).filter { sc ->
