@@ -20,9 +20,9 @@ class NotificationRepositoryCustomImpl(
                 notice.workspaceId.eq(workspaceId),
                 notice.deleted.isFalse
             )
-            .orderBy(notice.id.desc())
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
+            .orderBy(notice.id.desc())
             .fetch().orEmpty().toList()
 
         return jpaQueryFactory
@@ -31,6 +31,7 @@ class NotificationRepositoryCustomImpl(
             .leftJoin(notice.user).fetchJoin()
             .leftJoin(notice.emoji).fetchJoin()
             .where(notice.id.`in`(noticeIdList))
+            .orderBy(notice.id.desc())
             .fetch().orEmpty().toList()
 
     }
