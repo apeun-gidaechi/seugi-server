@@ -20,6 +20,7 @@ class NotificationRepositoryCustomImpl(
                 notice.workspaceId.eq(workspaceId),
                 notice.deleted.isFalse
             )
+            .orderBy(notice.id.desc())
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch().orEmpty().toList()
