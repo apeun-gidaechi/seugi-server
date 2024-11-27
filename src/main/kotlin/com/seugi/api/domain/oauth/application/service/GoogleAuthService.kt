@@ -1,9 +1,8 @@
 package com.seugi.api.domain.oauth.application.service
 
-import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.application.port.out.ExistMemberPort
-import com.seugi.api.domain.member.application.port.out.LoadMemberPort
-import com.seugi.api.domain.member.application.port.out.SaveMemberPort
+import com.seugi.api.domain.member.domain.MemberRepository
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.domain.member.service.MemberService
 import com.seugi.api.domain.oauth.adapter.`in`.dto.request.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.port.`in`.GoogleAuthUseCase
@@ -19,13 +18,12 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 @Service
-class GoogleAuthService (
+class GoogleAuthService(
     private val saveOAuthPort: SaveOAuthPort,
-    private val existMemberPort: ExistMemberPort,
-    private val loadMemberPort: LoadMemberPort,
-    private val saveMemberPort: SaveMemberPort,
     private val jwtUtils: JwtUtils,
-    private val googleUtils: GoogleUtils
+    private val googleUtils: GoogleUtils,
+    private val memberRepository: MemberRepository,
+    private val memberService: MemberService
 ) : GoogleAuthUseCase {
 
     @Transactional
@@ -36,9 +34,9 @@ class GoogleAuthService (
         val exchange = googleUtils.exchange(decode, redirectUri)
         val parse = googleUtils.parse(exchange.idToken)
 
-        if (!existMemberPort.existMemberWithEmail(parse.email)) {
+        if (!memberRepository.existsByEmail(parse.email)) {
             val model = Member(parse.name, dto.token, parse.email)
-            val member = saveMemberPort.saveMember(model)
+            val member = memberService.save(model)
 
             val oauth = OAuth(
                 Provider.GOOGLE,
@@ -56,9 +54,9 @@ class GoogleAuthService (
             )
         }
 
-        val member = loadMemberPort.loadMemberWithEmail(parse.email)
-        member.addFCMToken(dto.token)
-        saveMemberPort.saveMember(member)
+        val member = memberService.findByEmail(parse.email)
+        member.fcmToken.add(dto.token)
+        memberService.save(member)
 
         return BaseResponse (
             message = "구글 로그인 성공 !!",

@@ -1,7 +1,7 @@
 package com.seugi.api.domain.profile.application.service
 
-import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.domain.member.service.MemberService
 import com.seugi.api.domain.profile.application.model.Profile
 import com.seugi.api.domain.profile.application.model.value.ProfilePermission
 import com.seugi.api.domain.profile.application.model.value.ProfileWorkspaceId
@@ -16,14 +16,14 @@ import org.springframework.stereotype.Service
 @Service
 class ManageProfileService(
     private val existProfilePort: ExistProfilePort,
-    private val loadMemberPort: LoadMemberPort,
+    private val memberService: MemberService,
     private val loaProfilePort: LoadProfilePort,
     private val saveProfilePort: SaveProfilePort,
     private val deleteProfileUseCase: DeleteProfileUseCase,
 ) : ManageProfileUseCase {
 
     override fun manageProfile(memberId: Long, workspaceId: String, permission: WorkspaceRole) {
-        val member = loadMemberPort.loadMemberWithId(memberId)
+        val member = memberService.findById(memberId)
 
         if (existProfilePort.existProfile(memberId, workspaceId)) {
             updateExistingProfile(memberId, workspaceId, permission)

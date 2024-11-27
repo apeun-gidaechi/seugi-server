@@ -6,7 +6,6 @@ import jakarta.persistence.Id
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.Document
 
-
 @Document(collection = "workspace")
 class WorkspaceEntity(
 

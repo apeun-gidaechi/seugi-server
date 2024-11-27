@@ -3,7 +3,8 @@ package com.seugi.api.domain.chat.presentation.websocket.config
 import com.seugi.api.domain.chat.application.service.chat.room.ChatRoomService
 import com.seugi.api.domain.chat.presentation.websocket.handler.StompErrorHandler
 import com.seugi.api.domain.chat.presentation.websocket.util.SecurityUtils
-import com.seugi.api.domain.member.application.exception.MemberErrorCode
+import com.seugi.api.domain.member.exception.MemberErrorCode
+import com.seugi.api.global.auth.jwt.JwtUserDetailsService
 import com.seugi.api.global.auth.jwt.JwtUtils
 import com.seugi.api.global.exception.CustomException
 import org.springframework.beans.factory.annotation.Value
@@ -17,6 +18,8 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageHeaderAccessor
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
@@ -26,8 +29,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 class StompWebSocketConfig(
-    private val jwtUtils: JwtUtils,
+    private val utils: JwtUtils,
     private val chatRoomService: ChatRoomService,
+    private val service: JwtUserDetailsService,
     @Value("\${spring.rabbitmq.host}") private val rabbitmqHost: String,
     private val stompErrorHandler: StompErrorHandler
 ) : WebSocketMessageBrokerConfigurer {
@@ -66,10 +70,13 @@ class StompWebSocketConfig(
     private fun handleConnect(accessor: StompHeaderAccessor) {
         val authToken = accessor.getNativeHeader("Authorization")?.firstOrNull()
         if (authToken != null && authToken.startsWith("Bearer ")) {
-            val auth = jwtUtils.getAuthentication(authToken)
-            accessor.user = auth
+            val token = authToken.removePrefix("Bearer ")
+            val id = utils.parse(token).id.toLong()
+            val details = service.loadUserById(id)
+            val authentication = UsernamePasswordAuthenticationToken(details, null, details.authorities)
+            accessor.user = authentication
         } else {
-            throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            throw CustomException(MemberErrorCode.NOT_FOUND)
         }
     }
 

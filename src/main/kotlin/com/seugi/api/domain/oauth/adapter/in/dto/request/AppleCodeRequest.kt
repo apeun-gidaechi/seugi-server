@@ -18,6 +18,6 @@ class AppleCodeRequest (
 
     @JsonProperty("name")
     @JsonSetter(nulls = Nulls.AS_EMPTY)
-    val name: String = "",
+    val name: String = ""
 
 )

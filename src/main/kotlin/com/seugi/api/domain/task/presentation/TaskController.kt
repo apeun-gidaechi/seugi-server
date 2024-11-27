@@ -1,10 +1,11 @@
 package com.seugi.api.domain.task.presentation
 
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.task.domain.model.ClassroomTask
 import com.seugi.api.domain.task.domain.model.Task
 import com.seugi.api.domain.task.presentation.dto.request.CreateTaskRequest
 import com.seugi.api.domain.task.service.TaskService
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,10 +35,10 @@ class TaskController (
     }
 
     @GetMapping("/classroom")
-    suspend fun getClassroomTasks(@GetAuthenticatedId userId: Long): BaseResponse<List<ClassroomTask>> {
+    suspend fun getClassroomTasks(@GetResolvedMember model: Member): BaseResponse<List<ClassroomTask>> {
         return BaseResponse (
             message = "클래스룸 과제 불러오기 성공 !",
-            data = service.getAllClassroomTask(userId)
+            data = service.getAllClassroomTask(model.id)
         )
     }
 

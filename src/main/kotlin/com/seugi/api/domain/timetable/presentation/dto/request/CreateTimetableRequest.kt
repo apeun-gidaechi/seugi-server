@@ -1,6 +1,6 @@
 package com.seugi.api.domain.timetable.presentation.dto.request
 
-data class CreateTimetableRequest(
+class CreateTimetableRequest(
     val workspaceId: String,
     val grade: String,
     val classNum: String,

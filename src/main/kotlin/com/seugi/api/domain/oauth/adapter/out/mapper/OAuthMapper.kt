@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.adapter.out.mapper
 
-import com.seugi.api.domain.member.adapter.out.mapper.MemberMapper
+import com.seugi.api.domain.member.domain.mapper.MemberMapper
 import com.seugi.api.domain.oauth.adapter.out.entity.OAuthEntity
 import com.seugi.api.domain.oauth.application.model.OAuth
 import com.seugi.api.domain.oauth.application.model.vo.*

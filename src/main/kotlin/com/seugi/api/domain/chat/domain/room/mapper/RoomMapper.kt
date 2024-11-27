@@ -8,7 +8,7 @@ import com.seugi.api.domain.chat.domain.room.model.Room
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.UserInfoResponse
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
 import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

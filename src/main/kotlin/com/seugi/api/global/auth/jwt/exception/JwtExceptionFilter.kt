@@ -24,6 +24,7 @@ class JwtExceptionFilter(
         } catch (e: CustomException) {
             responsor.send(response, e.customErrorCode)
         } catch (e: Exception) {
+            e.printStackTrace()
             responsor.send(response, CommonErrorCode.INTERNAL_SERVER_ERROR)
         }
 

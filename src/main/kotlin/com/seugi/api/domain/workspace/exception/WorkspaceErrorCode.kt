@@ -3,7 +3,6 @@ package com.seugi.api.domain.workspace.exception
 import com.seugi.api.global.exception.CustomErrorCode
 import org.springframework.http.HttpStatus
 
-
 enum class WorkspaceErrorCode (
     override val status: HttpStatus,
     override val state: String,

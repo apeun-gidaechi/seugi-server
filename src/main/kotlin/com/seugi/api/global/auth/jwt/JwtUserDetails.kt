@@ -3,29 +3,20 @@ package com.seugi.api.global.auth.jwt
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import com.seugi.api.domain.member.application.model.Member
-import com.seugi.api.domain.member.application.model.value.MemberId
+import com.seugi.api.domain.member.domain.model.Member
 
-class JwtUserDetails(
-    val member: Member
-) : UserDetails {
-
-    val id: MemberId? = member.id
+class JwtUserDetails(val member: Member) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        val authorities: MutableCollection<GrantedAuthority> = ArrayList()
-
-        authorities.add(SimpleGrantedAuthority(member.role.value))
-
-        return authorities
+        return mutableListOf(SimpleGrantedAuthority(member.role.value))
     }
 
     override fun getPassword(): String {
-        return member.password.value
+        return member.password
     }
 
     override fun getUsername(): String {
-        return member.name.value
+        return member.name
     }
 
     override fun isAccountNonExpired(): Boolean {

@@ -1,0 +1,11 @@
+package com.seugi.api.domain.member.presentation.controller.dto.req
+
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class LoginMemberRequest(
+
+    @JsonProperty("email") val email: String,
+    @JsonProperty("password") val password: String,
+    @JsonProperty("token") val token: String
+
+)

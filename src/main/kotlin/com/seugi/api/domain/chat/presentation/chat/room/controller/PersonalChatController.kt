@@ -5,7 +5,8 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 
@@ -23,15 +24,15 @@ class PersonalChatController(
 
     @PostMapping("/create")
     fun createRoom(
-        @GetAuthenticatedId id: Long,
+        @GetResolvedMember model: Member,
         @RequestBody createRoomRequest: CreateRoomRequest
     ): BaseResponse<String> {
-        return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.PERSONAL)
+        return chatRoomService.createChatRoom(createRoomRequest, model.id, RoomType.PERSONAL)
     }
 
     @GetMapping("/search")
     fun searchRoom(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestParam("workspace", defaultValue = "") workspaceId: String,
         @RequestParam("word", defaultValue = "") word: String
     ): BaseResponse<List<RoomResponse>> {
@@ -39,28 +40,28 @@ class PersonalChatController(
         return chatRoomService.searchRoomNameIn(
             SearchRoomRequest(workspaceId = workspaceId, word = word),
             RoomType.PERSONAL,
-            userId
+            model.id
         )
     }
 
     @GetMapping("/search/room/{roomId}")
     fun getRoom(
         @PathVariable("roomId") roomId: String,
-        @GetAuthenticatedId userId: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<RoomResponse> {
         return chatRoomService.getRoom(
             roomId = roomId,
-            userId = userId,
+            userId = model.id,
             type = RoomType.PERSONAL
         )
     }
 
     @GetMapping("/search/{workspaceId}")
     fun getRooms(
-        @GetAuthenticatedId userid: Long,
+        @GetResolvedMember model: Member,
         @PathVariable workspaceId: String
     ): BaseResponse<List<RoomResponse>> {
-        return chatRoomService.getRooms(workspaceId, userid, RoomType.PERSONAL)
+        return chatRoomService.getRooms(workspaceId, model.id, RoomType.PERSONAL)
     }
 
 }

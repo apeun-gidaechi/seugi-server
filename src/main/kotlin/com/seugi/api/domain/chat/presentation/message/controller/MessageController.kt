@@ -4,7 +4,8 @@ import com.seugi.api.domain.chat.application.service.message.MessageService
 import com.seugi.api.domain.chat.domain.chat.embeddable.AddEmoji
 import com.seugi.api.domain.chat.domain.chat.embeddable.DeleteMessage
 import com.seugi.api.domain.chat.presentation.chat.member.dto.response.GetMessageResponse
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -22,10 +23,10 @@ class MessageController(
     @PutMapping("/emoji")
     fun addEmojiToMessage(
         @RequestBody emoji: AddEmoji,
-        @GetAuthenticatedId userId: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<Unit> {
         return messageService.addEmojiToMessage(
-            userId = userId,
+            userId = model.id,
             emoji = emoji
         )
     }
@@ -33,10 +34,10 @@ class MessageController(
     @DeleteMapping("/emoji")
     fun deleteEmojiToMessage(
         @RequestBody emoji: AddEmoji,
-        @GetAuthenticatedId userId: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<Unit> {
         return messageService.deleteEmojiToMessage(
-            userId = userId,
+            userId = model.id,
             emoji = emoji
         )
     }
@@ -44,23 +45,23 @@ class MessageController(
     @DeleteMapping("/delete")
     fun deleteMessage(
         @RequestBody deleteMessage: DeleteMessage,
-        @GetAuthenticatedId userId: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<Unit> {
         return messageService.deleteMessage(
             deleteMessage = deleteMessage,
-            userId = userId
+            userId = model.id
         )
     }
 
     @GetMapping("/search/{roomId}")
     fun getMessages(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @PathVariable roomId: String,
         @RequestParam("timestamp", required = false) timestamp: LocalDateTime = LocalDateTime.now(),
     ): BaseResponse<GetMessageResponse> {
         return messageService.getMessages(
             chatRoomId = roomId,
-            userId = userId,
+            userId = model.id,
             timestamp = timestamp
         )
     }

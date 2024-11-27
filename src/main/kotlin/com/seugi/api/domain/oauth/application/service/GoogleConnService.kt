@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.application.service
 
-import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.service.MemberService
 import com.seugi.api.domain.oauth.adapter.`in`.dto.request.GoogleCodeRequest
 import com.seugi.api.domain.oauth.application.exception.OAuthErrorCode
 import com.seugi.api.domain.oauth.application.model.OAuth
@@ -19,9 +19,9 @@ import java.nio.charset.StandardCharsets
 @Service
 class GoogleConnService (
     private val existOAuthPort: ExistOAuthPort,
-    private val loadMemberPort: LoadMemberPort,
     private val saveOAuthPort: SaveOAuthPort,
-    private val googleUtils: GoogleUtils
+    private val googleUtils: GoogleUtils,
+    private val memberService: MemberService
 ) : GoogleConnUseCase {
 
     @Transactional
@@ -36,7 +36,7 @@ class GoogleConnService (
         val exchange = googleUtils.exchange(decode, redirectUri)
         val parse = googleUtils.parse(exchange.idToken)
 
-        val member = loadMemberPort.loadMemberWithId(id)
+        val member = memberService.findById(id)
         val oauth = OAuth(
             Provider.GOOGLE,
             parse.sub,

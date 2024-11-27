@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -12,7 +13,8 @@ import java.io.IOException
 
 @Component
 class JwtAuthenticationFilter(
-    private val jwtUtils: JwtUtils,
+    private val utils: JwtUtils,
+    private val service : JwtUserDetailsService
 ) : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class, CustomException::class)
@@ -21,11 +23,14 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val token: String? = request.getHeader("Authorization")
+        val header: String? = request.getHeader("Authorization")
 
-        if (!token.isNullOrBlank()) {
-            jwtUtils.checkTokenInfo(jwtUtils.getToken(token))
-            SecurityContextHolder.getContext().authentication = jwtUtils.getAuthentication(token)
+        if (!header.isNullOrBlank()) {
+            val token = header.removePrefix("Bearer ")
+            val id = utils.parse(token).id.toLong()
+            val details = service.loadUserById(id)
+            val authentication = UsernamePasswordAuthenticationToken(details, null, details.authorities)
+            SecurityContextHolder.getContext().authentication = authentication
         }
 
         doFilter(request, response, filterChain)

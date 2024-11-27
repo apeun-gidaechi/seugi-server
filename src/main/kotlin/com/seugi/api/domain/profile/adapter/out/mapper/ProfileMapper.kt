@@ -1,6 +1,6 @@
 package com.seugi.api.domain.profile.adapter.out.mapper
 
-import com.seugi.api.domain.member.adapter.out.mapper.MemberMapper
+import com.seugi.api.domain.member.domain.mapper.MemberMapper
 import com.seugi.api.domain.profile.adapter.out.entity.ProfileEntity
 import com.seugi.api.domain.profile.application.model.Profile
 import com.seugi.api.domain.profile.application.model.value.*

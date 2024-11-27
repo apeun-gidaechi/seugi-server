@@ -1,8 +1,9 @@
 package com.seugi.api.domain.profile.adapter.`in`.controller
 
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileRequest
 import com.seugi.api.domain.profile.application.port.`in`.EditProfileUseCase
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,9 +20,9 @@ class EditProfileController (
     @PatchMapping("/{workspaceId}")
     fun editProfile(@RequestBody dto: EditProfileRequest,
                     @PathVariable workspaceId: String,
-                    @GetAuthenticatedId id: Long
+                    @GetResolvedMember model: Member
     ): BaseResponse<Unit> {
-        return editProfileUseCase.editProfile(dto, workspaceId, id)
+        return editProfileUseCase.editProfile(dto, workspaceId, model.id)
     }
 
 }

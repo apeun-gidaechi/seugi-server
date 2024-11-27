@@ -1,6 +1,6 @@
 package com.seugi.api.domain.workspace.service
 
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.entity.WorkspaceEntity
 import com.seugi.api.domain.workspace.presentation.dto.request.*

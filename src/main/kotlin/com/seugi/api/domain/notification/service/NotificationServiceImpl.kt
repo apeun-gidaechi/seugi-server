@@ -1,6 +1,6 @@
 package com.seugi.api.domain.notification.service
 
-import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
+import com.seugi.api.domain.member.domain.MemberRepository
 import com.seugi.api.domain.notification.domain.NotificationEntity
 import com.seugi.api.domain.notification.domain.NotificationRepository
 import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji

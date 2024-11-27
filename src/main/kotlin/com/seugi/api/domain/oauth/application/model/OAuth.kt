@@ -1,6 +1,6 @@
 package com.seugi.api.domain.oauth.application.model
 
-import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.oauth.application.model.vo.*
 import com.seugi.api.global.auth.oauth.enums.Provider
 

@@ -2,7 +2,7 @@ package com.seugi.api.domain.workspace.domain.model
 
 import com.seugi.api.domain.workspace.domain.enums.Status
 
-data class Workspace(
+class Workspace(
     val workspaceId: String? = null,
     val workspaceName: String? = null,
     val workspaceImageUrl: String? = null,

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import com.seugi.api.domain.email.port.`in`.SendEmailUseCase
 import com.seugi.api.global.exception.CustomException
 
+/* todo: SES 사용 */
 @Service
 class SendEmailService (
     private val emailSender: JavaMailSender

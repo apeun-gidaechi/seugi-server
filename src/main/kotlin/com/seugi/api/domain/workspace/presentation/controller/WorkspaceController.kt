@@ -1,6 +1,7 @@
 package com.seugi.api.domain.workspace.presentation.controller
 
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import com.seugi.api.domain.workspace.presentation.dto.request.*
@@ -8,7 +9,7 @@ import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceInfoRes
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceMemberChartResponse
 import com.seugi.api.domain.workspace.presentation.dto.response.WorkspaceResponse
 import com.seugi.api.domain.workspace.service.WorkspaceService
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -22,44 +23,44 @@ class WorkspaceController(
 
     @PostMapping(path = ["", "/"])
     fun createWorkspace(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @Valid @RequestBody createWorkspaceRequest: CreateWorkspaceRequest,
     ): BaseResponse<String> {
-        return workspaceService.createWorkspace(userId = userId, createWorkspaceRequest = createWorkspaceRequest)
+        return workspaceService.createWorkspace(userId = model.id, createWorkspaceRequest = createWorkspaceRequest)
     }
 
     @DeleteMapping("/{workspaceId}")
     fun deleteWorkspace(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @PathVariable workspaceId: String,
     ): BaseResponse<Unit> {
-        return workspaceService.deleteWorkspace(userId = userId, workspaceId = workspaceId)
+        return workspaceService.deleteWorkspace(userId = model.id, workspaceId = workspaceId)
     }
 
     @GetMapping(path = ["", "/"])
     fun getWorkspaces(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<List<WorkspaceResponse>> {
-        return workspaceService.getWorkspaces(userId = userId)
+        return workspaceService.getWorkspaces(userId = model.id)
     }
 
     @GetMapping("/{workspaceId}")
     fun getWorkspace(
         @PathVariable workspaceId: String,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<WorkspaceResponse> {
         return workspaceService.getWorkspace(
             workspaceId = workspaceId,
-            userId = userId
+            userId = model.id
         )
     }
 
     @GetMapping("/code/{workspaceId}")
     fun getWorkspaceCode(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @PathVariable workspaceId: String,
     ): BaseResponse<String> {
-        return workspaceService.getWorkspaceCode(userId = userId, workspaceId = workspaceId)
+        return workspaceService.getWorkspaceCode(userId = model.id, workspaceId = workspaceId)
     }
 
     @GetMapping("/search/{code}")
@@ -71,88 +72,88 @@ class WorkspaceController(
 
     @PostMapping("/join")
     fun joinWorkspace(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestBody joinWorkspaceRequest: JoinWorkspaceRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.joinWorkspace(userId = userId, joinWorkspaceRequest = joinWorkspaceRequest)
+        return workspaceService.joinWorkspace(userId = model.id, joinWorkspaceRequest = joinWorkspaceRequest)
     }
 
     @PatchMapping("/add")
     fun addWaitListToWorkspaceMember(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
         return workspaceService.addWaitListToWorkspaceMember(
-            userId = userId,
+            userId = model.id,
             waitSetWorkspaceMemberRequest = waitSetWorkspaceMemberRequest
         )
     }
 
     @DeleteMapping("/cancel")
     fun cancelWaitListToWorkspaceMember(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestBody waitSetWorkspaceMemberRequest: WaitSetWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.cancelWaitListToWorkspaceMember(userId, waitSetWorkspaceMemberRequest)
+        return workspaceService.cancelWaitListToWorkspaceMember(model.id, waitSetWorkspaceMemberRequest)
     }
 
     @GetMapping("/wait-list")
     fun getWaitList(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestParam("workspaceId", defaultValue = "") workspaceId: String,
         @RequestParam("role", defaultValue = "STUDENT") role: String,
     ): BaseResponse<List<RetrieveMemberResponse>> {
         return workspaceService.getWaitList(
-            userId = userId,
+            userId = model.id,
             getWaitListRequest = GetWaitListRequest(workspaceId = workspaceId, role = WorkspaceRole.valueOf(role))
         )
     }
 
     @PatchMapping(path = ["", "/"])
     fun updateWorkspace(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @Valid @RequestBody updateWorkspaceRequest: UpdateWorkspaceRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.updateWorkspace(userId = userId, updateWorkspaceRequest = updateWorkspaceRequest)
+        return workspaceService.updateWorkspace(userId = model.id, updateWorkspaceRequest = updateWorkspaceRequest)
     }
 
     @GetMapping("/my/wait-list")
     fun getMyWaitList(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<List<WorkspaceInfoResponse>> {
-        return workspaceService.getMyWaitList(userId = userId)
+        return workspaceService.getMyWaitList(userId = model.id)
     }
 
     @GetMapping("/members/chart")
     fun getWorkspaceMemberChart(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestParam workspaceId: String,
     ): BaseResponse<WorkspaceMemberChartResponse> {
-        return workspaceService.getWorkspaceMemberChart(userId, workspaceId)
+        return workspaceService.getWorkspaceMemberChart(model.id, workspaceId)
     }
 
     @GetMapping("/members")
     fun getWorkspaceMemberList(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestParam workspaceId: String,
     ): BaseResponse<Set<RetrieveProfileResponse>> {
-        return workspaceService.getWorkspaceMemberList(userId, workspaceId)
+        return workspaceService.getWorkspaceMemberList(model.id, workspaceId)
     }
 
     @PatchMapping("/permission")
     fun manageWorkspaceMemberPermission(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @Valid @RequestBody manageWorkspaceMemberPermissionRequest: ManageWorkspaceMemberPermissionRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.manageWorkspaceMemberPermission(userId, manageWorkspaceMemberPermissionRequest)
+        return workspaceService.manageWorkspaceMemberPermission(model.id, manageWorkspaceMemberPermissionRequest)
     }
 
     @PatchMapping("/kick")
     fun kickWorkspaceMember(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestBody kickWorkspaceMemberRequest: KickWorkspaceMemberRequest,
     ): BaseResponse<Unit> {
-        return workspaceService.kickWorkspaceMember(userId, kickWorkspaceMemberRequest)
+        return workspaceService.kickWorkspaceMember(model.id, kickWorkspaceMemberRequest)
     }
 
 }

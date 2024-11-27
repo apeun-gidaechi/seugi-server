@@ -1,7 +1,7 @@
 package com.seugi.api.domain.oauth.adapter.out
 
-import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
-import com.seugi.api.domain.member.application.exception.MemberErrorCode
+import com.seugi.api.domain.member.domain.MemberRepository
+import com.seugi.api.domain.member.exception.MemberErrorCode
 import com.seugi.api.domain.oauth.adapter.out.mapper.OAuthMapper
 import com.seugi.api.domain.oauth.adapter.out.repository.OAuthRepository
 import com.seugi.api.domain.oauth.application.exception.OAuthErrorCode
@@ -24,7 +24,7 @@ class OAuthAdapter (
 
     override fun loadOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): OAuth {
         val member = memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw CustomException(MemberErrorCode.NOT_FOUND)
 
         val oAuth = oAuthRepository.findByMemberAndProvider(member, provider)
             ?: throw CustomException(OAuthErrorCode.OAUTH_NOT_FOUND)
@@ -41,7 +41,7 @@ class OAuthAdapter (
 
     override fun existOAuthByMemberIdAndProvider(memberId: Long, provider: Provider): Boolean {
         val member = memberRepository.findByIdOrNull(memberId)
-            ?: throw  CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw  CustomException(MemberErrorCode.NOT_FOUND)
 
         return oAuthRepository.existsByMemberAndProvider(member, provider)
     }
@@ -54,7 +54,7 @@ class OAuthAdapter (
 
     override fun deleteOAuth(memberId: Long, provider: Provider) {
         val member = memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw CustomException(MemberErrorCode.NOT_FOUND)
 
         oAuthRepository.deleteByMemberAndProvider(member, provider)
     }

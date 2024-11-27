@@ -1,6 +1,6 @@
 package com.seugi.api.domain.profile.application.model
 
-import com.seugi.api.domain.member.application.model.Member
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.profile.adapter.`in`.request.EditProfileRequest
 import com.seugi.api.domain.profile.adapter.`in`.request.EditSchIdNumRequest
 import com.seugi.api.domain.profile.application.model.value.*
@@ -15,7 +15,7 @@ data class Profile (
     var schClass: ProfileSchClass = ProfileSchClass(0), // 반
     var schNumber: ProfileSchNumber = ProfileSchNumber(0), // 번호
     var status: ProfileStatus = ProfileStatus(""), // 상태메시지
-    var nick: ProfileNick = ProfileNick(member.name.value), // 닉네임
+    var nick: ProfileNick = ProfileNick(member.name), // 닉네임
     var spot: ProfileSpot = ProfileSpot(""), // 직위
     var belong: ProfileBelong = ProfileBelong(""), // 소속
     var phone: ProfilePhone = ProfilePhone(""), // 휴대전화번호

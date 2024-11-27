@@ -1,11 +1,12 @@
 package com.seugi.api.domain.notification.presentation.controller
 
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.notification.presentation.dto.request.CreateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.request.NotificationEmojiRequest
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import com.seugi.api.domain.notification.presentation.dto.response.NotificationResponse
 import com.seugi.api.domain.notification.service.NotificationService
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -21,18 +22,16 @@ class NotificationController(
     @PostMapping
     fun createNotice(
         @RequestBody createNoticeRequest: CreateNotificationRequest,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<Unit> {
-        noticeService.createNotice(createNoticeRequest = createNoticeRequest, userId = userId)
-        return BaseResponse(
-            message = "공지 등록 성공"
-        )
+        noticeService.createNotice(createNoticeRequest = createNoticeRequest, userId = model.id)
+        return BaseResponse(message = "공지 등록 성공")
     }
 
     @GetMapping("/{workspaceId}")
     fun getNotices(
         @PathVariable workspaceId: String,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = 20) pageable: Pageable,
     ): BaseResponse<List<NotificationResponse>> {
 
@@ -40,7 +39,7 @@ class NotificationController(
             message = "공지 불러오기 성공",
             data = noticeService.getNotices(
                 workspaceId = workspaceId,
-                userId = userId,
+                userId = model.id,
                 pageable = pageable
             )
         )
@@ -49,9 +48,9 @@ class NotificationController(
     @PatchMapping
     fun updateNotice(
         @RequestBody updateNoticeRequest: UpdateNotificationRequest,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<Unit> {
-        noticeService.updateNotice(updateNoticeRequest = updateNoticeRequest, userId = userId)
+        noticeService.updateNotice(updateNoticeRequest = updateNoticeRequest, userId = model.id)
         return BaseResponse(
             message = "공지 수정 성공"
         )
@@ -61,9 +60,9 @@ class NotificationController(
     fun deleteNotice(
         @PathVariable workspaceId: String,
         @PathVariable id: Long,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<Unit> {
-        noticeService.deleteNotice(id = id, workspaceId = workspaceId, userId = userId)
+        noticeService.deleteNotice(id = id, workspaceId = workspaceId, userId = model.id)
         return BaseResponse(
             message = "공지 삭제 성공"
         )
@@ -71,10 +70,10 @@ class NotificationController(
 
     @PatchMapping("/emoji")
     fun addEmoji(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestBody notificationEmojiRequest: NotificationEmojiRequest,
     ): BaseResponse<Unit> {
-        noticeService.toggleEmoji(userId, notificationEmojiRequest)
+        noticeService.toggleEmoji(model.id, notificationEmojiRequest)
         return BaseResponse(
             message = "성공"
         )

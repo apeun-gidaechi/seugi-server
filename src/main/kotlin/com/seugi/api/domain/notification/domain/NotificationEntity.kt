@@ -1,6 +1,6 @@
 package com.seugi.api.domain.notification.domain
 
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.member.domain.MemberEntity
 import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 import com.seugi.api.domain.notification.presentation.dto.request.UpdateNotificationRequest
 import jakarta.persistence.*

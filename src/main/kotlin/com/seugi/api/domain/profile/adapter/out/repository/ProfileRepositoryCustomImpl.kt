@@ -1,11 +1,10 @@
 package com.seugi.api.domain.profile.adapter.out.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.member.domain.MemberEntity
 import com.seugi.api.domain.profile.adapter.out.entity.ProfileEntity
 import com.seugi.api.domain.profile.adapter.out.entity.QProfileEntity
 import org.springframework.stereotype.Repository
-import java.util.Optional
 
 @Repository
 class ProfileRepositoryCustomImpl (

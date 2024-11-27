@@ -1,7 +1,7 @@
 package com.seugi.api.domain.profile.adapter.out
 
-import com.seugi.api.domain.member.adapter.out.repository.MemberRepository
-import com.seugi.api.domain.member.application.exception.MemberErrorCode
+import com.seugi.api.domain.member.domain.MemberRepository
+import com.seugi.api.domain.member.exception.MemberErrorCode
 import com.seugi.api.domain.profile.adapter.out.mapper.ProfileMapper
 import com.seugi.api.domain.profile.adapter.out.repository.ProfileRepository
 import com.seugi.api.domain.profile.application.exception.ProfileErrorCode
@@ -23,7 +23,7 @@ class ProfileAdapter(
 
     override fun loadProfile(memberId: Long, workspaceId: String): Profile {
         val memberEntity = memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw CustomException(MemberErrorCode.NOT_FOUND)
 
         val profileEntity = profileRepository.findByMemberAndWorkspaceId(memberEntity, workspaceId)
             ?: throw CustomException(ProfileErrorCode.PROFILE_NOT_FOUND)
@@ -39,14 +39,14 @@ class ProfileAdapter(
 
     override fun existProfile(memberId: Long, workspaceId: String): Boolean {
         val memberEntity = memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw CustomException(MemberErrorCode.NOT_FOUND)
 
         return profileRepository.existsByMemberAndWorkspaceId(memberEntity, workspaceId)
     }
 
     override fun deleteProfile(memberId: Long, workspaceId: String) {
         val memberEntity = memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException(MemberErrorCode.MEMBER_NOT_FOUND)
+            ?: throw CustomException(MemberErrorCode.NOT_FOUND)
         val profile = profileRepository.findByMemberAndWorkspaceId(memberEntity, workspaceId)
         profileRepository.delete(profile!!)
     }

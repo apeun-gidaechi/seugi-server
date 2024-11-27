@@ -1,7 +1,7 @@
 package com.seugi.api.domain.workspace.service
 
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
-import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.service.MemberService
 import com.seugi.api.domain.profile.adapter.`in`.response.RetrieveProfileResponse
 import com.seugi.api.domain.profile.adapter.out.ProfileAdapter
 import com.seugi.api.domain.profile.application.port.`in`.ManageProfileUseCase
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import kotlin.random.Random
 
-
 @Service
 class WorkspaceServiceImpl(
     private val workspaceMapper: WorkspaceMapper,
@@ -34,7 +33,7 @@ class WorkspaceServiceImpl(
     @Value("\${workspace.code.secret}") private val charset: String,
     private val manageProfileUseCase: ManageProfileUseCase,
     private val loadProfilePort: LoadProfilePort,
-    private val loadMemberPort: LoadMemberPort,
+    private val memberService: MemberService,
     private val niceSchoolService: NiceSchoolService,
     private val fcmService: FCMService,
     private val profileAdapter: ProfileAdapter,
@@ -48,7 +47,7 @@ class WorkspaceServiceImpl(
     }
 
     private fun getMemberInfo(userId: Long): RetrieveMemberResponse {
-        return RetrieveMemberResponse(loadMemberPort.loadMemberWithId(userId))
+        return RetrieveMemberResponse(memberService.findById(userId))
     }
 
     private fun checkForStudent(workspaceEntity: WorkspaceEntity, userId: Long) {

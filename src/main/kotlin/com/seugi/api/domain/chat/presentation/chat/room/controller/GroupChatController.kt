@@ -5,7 +5,9 @@ import com.seugi.api.domain.chat.domain.enums.type.RoomType
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.CreateRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRequest
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.domain.member.domain.MemberRepository
+import com.seugi.api.domain.member.domain.model.Member
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 
@@ -18,57 +20,58 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/chat/group")
 class GroupChatController(
     private val chatRoomService: ChatRoomService,
+    private val memberRepository: MemberRepository,
 ) {
 
     @PostMapping("/create")
     fun createRoom(
-        @GetAuthenticatedId id: Long,
+        @GetResolvedMember model: Member,
         @RequestBody createRoomRequest: CreateRoomRequest
     ): BaseResponse<String> {
-        return chatRoomService.createChatRoom(createRoomRequest, id, RoomType.GROUP)
+        return chatRoomService.createChatRoom(createRoomRequest, model.id, RoomType.GROUP)
     }
 
     @GetMapping("/search")
     fun searchRoom(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @RequestParam("workspace", defaultValue = "") workspaceId: String,
         @RequestParam("word", defaultValue = "") word: String
     ): BaseResponse<List<RoomResponse>> {
         return chatRoomService.searchRoomNameIn(
             SearchRoomRequest(workspaceId = workspaceId, word = word),
             RoomType.GROUP,
-            userId
+            model.id
         )
     }
 
     @GetMapping("/search/room/{roomId}")
     fun getRoom(
         @PathVariable("roomId") roomId: String,
-        @GetAuthenticatedId userId: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<RoomResponse> {
         return chatRoomService.getRoom(
             roomId = roomId,
-            userId = userId,
+            userId = model.id,
             type = RoomType.GROUP
         )
     }
 
     @GetMapping("/search/{workspaceID}")
     fun getRooms(
-        @GetAuthenticatedId userid: Long,
+        @GetResolvedMember model: Member,
         @PathVariable workspaceID: String,
     ): BaseResponse<List<RoomResponse>> {
-        return chatRoomService.getRooms(workspaceID, userid, RoomType.GROUP)
+        return chatRoomService.getRooms(workspaceID, model.id, RoomType.GROUP)
     }
 
 
     //나가기
     @PatchMapping("/left/{roomId}")
     fun leftRoom(
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
         @PathVariable roomId: String,
     ): BaseResponse<Unit> {
-        return chatRoomService.leftRoom(userId, roomId)
+        return chatRoomService.leftRoom(model.id, roomId)
     }
 
 }

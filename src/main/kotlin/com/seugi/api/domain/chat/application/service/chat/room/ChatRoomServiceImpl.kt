@@ -16,8 +16,8 @@ import com.seugi.api.domain.chat.presentation.chat.room.dto.request.SearchRoomRe
 import com.seugi.api.domain.chat.presentation.chat.room.dto.response.RoomResponse
 import com.seugi.api.domain.chat.presentation.websocket.dto.ChatMessageDto
 import com.seugi.api.domain.chat.presentation.websocket.dto.MessageEventDto
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
-import com.seugi.api.domain.member.application.port.out.LoadMemberPort
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.service.MemberService
 import com.seugi.api.global.exception.CustomException
 import com.seugi.api.global.response.BaseResponse
 import com.seugi.api.global.util.DateTimeUtil
@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 @Service
 class ChatRoomServiceImpl(
     private val chatRoomRepository: ChatRoomRepository,
-    private val loadMemberPort: LoadMemberPort,
+    private val memberService: MemberService,
     private val chatRoomMapper: RoomMapper,
     private val messageService: MessageService,
 ) : ChatRoomService {
@@ -87,7 +87,7 @@ class ChatRoomServiceImpl(
 
     //채팅방 반환시 유저 모델 전달용 함수
     private fun getUserInfo(room: Room): Set<RetrieveMemberResponse> {
-        return room.joinUserInfo.map { RetrieveMemberResponse(loadMemberPort.loadMemberWithId(it.userId)) }
+        return room.joinUserInfo.map { RetrieveMemberResponse(memberService.findById(it.userId)) }
             .toSet()
     }
 
@@ -101,7 +101,7 @@ class ChatRoomServiceImpl(
 
     private fun generateRoomName(createRoomRequest: CreateRoomRequest): String {
         return createRoomRequest.joinUsers.asSequence()
-            .map { loadMemberPort.loadMemberWithId(it).name.value }
+            .map { memberService.findById(it).name }
             .takeWhile { (createRoomRequest.roomName + it).length <= 10 }
             .joinToString(separator = ", ")
     }
@@ -175,10 +175,10 @@ class ChatRoomServiceImpl(
 
         when (type) {
             PERSONAL -> {
-                val member = loadMemberPort.loadMemberWithId(room.joinUserInfo.first { it.userId != userId }.userId)
+                val member = memberService.findById(room.joinUserInfo.first { it.userId != userId }.userId)
                 val chatRoom = room.copy(
-                    chatName = member.name.value,
-                    chatRoomImg = member.picture.value
+                    chatName = member.name,
+                    chatRoomImg = member.picture
                 )
 
 
@@ -214,12 +214,12 @@ class ChatRoomServiceImpl(
         val rooms: List<RoomResponse> = when (type) {
             PERSONAL -> {
                 chatRooms.map { room ->
-                    val member = loadMemberPort.loadMemberWithId(
+                    val member = memberService.findById(
                         room.joinUserInfo.first { it.userId != userId }.userId
                     )
                     val updatedRoom = room.copy(
-                        chatName = member.name.value,
-                        chatRoomImg = member.picture.value
+                        chatName = member.name,
+                        chatRoomImg = member.picture
                     )
                     toResponse(updatedRoom, userId)
                 }
@@ -290,14 +290,14 @@ class ChatRoomServiceImpl(
         when (type) {
             PERSONAL -> {
                 val entity = chatRoomEntities.mapNotNull { it ->
-                    val member = loadMemberPort.loadMemberWithId(
+                    val member = memberService.findById(
                         it.joinedUserInfo.first { it.userId != userId }.userId
                     )
-                    if (member.name.value.contains(searchRoomRequest.word)) {
+                    if (member.name.contains(searchRoomRequest.word)) {
                         val chatRoom = chatRoomMapper.toDomain(it)
                         val updatedChatRoom = chatRoom.copy(
-                            chatName = member.name.value,
-                            chatRoomImg = member.picture.value
+                            chatName = member.name,
+                            chatRoomImg = member.picture
                         )
                         return@mapNotNull updatedChatRoom
                     } else {

@@ -1,6 +1,7 @@
 package com.seugi.api.domain.notification.domain.mapper
 
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.member.domain.MemberEntity
+import com.seugi.api.domain.member.domain.mapper.MemberMapper
 import com.seugi.api.domain.notification.domain.NotificationEntity
 import com.seugi.api.domain.notification.domain.embeddable.NotificationEmoji
 import com.seugi.api.domain.notification.domain.model.Notification
@@ -11,12 +12,14 @@ import com.seugi.api.global.common.Mapper
 import org.springframework.stereotype.Component
 
 @Component
-class NotificationMapper : Mapper<Notification, NotificationEntity> {
+class NotificationMapper (
+    private val memberMapper: MemberMapper
+) : Mapper<Notification, NotificationEntity> {
     override fun toDomain(entity: NotificationEntity): Notification {
         return Notification(
             id = entity.id!!,
             workspaceId = entity.workspaceId,
-            user = entity.user!!,
+            user = memberMapper.toDomain(entity.user!!),
             title = entity.title,
             content = entity.content,
             emoji = entity.emoji,
@@ -29,12 +32,13 @@ class NotificationMapper : Mapper<Notification, NotificationEntity> {
     override fun toEntity(domain: Notification): NotificationEntity {
         return NotificationEntity(
             workspaceId = domain.workspaceId,
-            user = domain.user,
+            user = memberMapper.toEntity(domain.user),
             title = domain.title,
             content = domain.content
         )
     }
 
+    // todo: refactor
     fun transferNoticeEntity(
         createNoticeRequest: CreateNotificationRequest,
         userEntity: MemberEntity,
@@ -42,7 +46,7 @@ class NotificationMapper : Mapper<Notification, NotificationEntity> {
         return toEntity(
             Notification(
                 workspaceId = createNoticeRequest.workspaceId,
-                user = userEntity,
+                user = memberMapper.toDomain(userEntity),
                 title = createNoticeRequest.title,
                 content = createNoticeRequest.content
             )

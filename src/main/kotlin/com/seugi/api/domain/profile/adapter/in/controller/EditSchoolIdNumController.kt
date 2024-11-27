@@ -1,8 +1,9 @@
 package com.seugi.api.domain.profile.adapter.`in`.controller
 
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.profile.adapter.`in`.request.EditSchIdNumRequest
 import com.seugi.api.domain.profile.application.port.`in`.EditSchIdNumUseCase
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -20,9 +21,9 @@ class EditSchoolIdNumController (
     fun editSchIdNum(
         @RequestBody dto: EditSchIdNumRequest,
         @PathVariable workspaceId: String,
-        @GetAuthenticatedId id: Long
+        @GetResolvedMember model: Member
     ): BaseResponse<Unit> {
-        return editSchIdNumUseCase.editSchIdNum(dto, workspaceId, id)
+        return editSchIdNumUseCase.editSchIdNum(dto, workspaceId, model.id)
     }
 
 }

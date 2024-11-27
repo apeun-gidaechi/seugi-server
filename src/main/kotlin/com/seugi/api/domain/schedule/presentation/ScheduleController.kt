@@ -1,8 +1,9 @@
 package com.seugi.api.domain.schedule.presentation
 
+import com.seugi.api.domain.member.domain.model.Member
 import com.seugi.api.domain.schedule.domain.model.Schedule
 import com.seugi.api.domain.schedule.service.ScheduleService
-import com.seugi.api.global.common.annotation.GetAuthenticatedId
+import com.seugi.api.global.common.annotation.GetResolvedMember
 import com.seugi.api.global.response.BaseResponse
 import org.springframework.web.bind.annotation.*
 
@@ -15,11 +16,11 @@ class ScheduleController(
     @GetMapping("/{workspaceId}")
     fun getSchoolSchedules(
         @PathVariable workspaceId: String,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<List<Schedule>> {
         return BaseResponse(
             message = "학사일정 전부 불러오기 성공",
-            data = scheduleService.getSchoolSchedules(userId, workspaceId)
+            data = scheduleService.getSchoolSchedules(model.id, workspaceId)
         )
     }
 
@@ -27,11 +28,11 @@ class ScheduleController(
     fun getMonthSchedules(
         @RequestParam("workspaceId") workspaceId: String,
         @RequestParam("month") month: Int,
-        @GetAuthenticatedId userId: Long,
+        @GetResolvedMember model: Member,
     ): BaseResponse<List<Schedule>> {
         return BaseResponse(
             message = "학사일정 한달치 불러오기 성공",
-            data = scheduleService.getMonthSchoolSchedules(userId, workspaceId, month)
+            data = scheduleService.getMonthSchoolSchedules(model.id, workspaceId, month)
         )
     }
 

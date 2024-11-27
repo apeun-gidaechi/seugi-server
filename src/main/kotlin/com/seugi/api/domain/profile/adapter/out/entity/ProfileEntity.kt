@@ -1,6 +1,6 @@
 package com.seugi.api.domain.profile.adapter.out.entity
 
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.member.domain.MemberEntity
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 import jakarta.persistence.*
 

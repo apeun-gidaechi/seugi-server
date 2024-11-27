@@ -1,7 +1,7 @@
 package com.seugi.api.domain.oauth.adapter.out.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.seugi.api.domain.member.adapter.out.entity.MemberEntity
+import com.seugi.api.domain.member.domain.MemberEntity
 import com.seugi.api.domain.oauth.adapter.out.entity.OAuthEntity
 import com.seugi.api.domain.oauth.adapter.out.entity.QOAuthEntity
 import com.seugi.api.global.auth.oauth.enums.Provider

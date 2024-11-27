@@ -1,6 +1,6 @@
 package com.seugi.api.domain.timetable.domain.model
 
-data class Timetable(
+class Timetable(
     val id: Long? = null,
     val workspaceId: String? = null,
     val grade: String? = null,

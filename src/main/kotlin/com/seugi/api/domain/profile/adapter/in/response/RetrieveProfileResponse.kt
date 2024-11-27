@@ -1,10 +1,10 @@
 package com.seugi.api.domain.profile.adapter.`in`.response
 
-import com.seugi.api.domain.member.adapter.`in`.dto.res.RetrieveMemberResponse
+import com.seugi.api.domain.member.presentation.controller.dto.res.RetrieveMemberResponse
 import com.seugi.api.domain.profile.application.model.Profile
 import com.seugi.api.domain.workspace.domain.enums.WorkspaceRole
 
-data class RetrieveProfileResponse (
+class RetrieveProfileResponse (
 
     val workspaceId: String, // 워크스페이스 ID
     val member: RetrieveMemberResponse,
