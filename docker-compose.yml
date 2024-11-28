@@ -1,0 +1,95 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: seugi-redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    networks:
+      - seugi-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: seugi-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    networks:
+      - seugi-network
+
+  mysql:
+    image: mysql:latest
+    container_name: seugi-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - seugi-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: seugi-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_PLUGINS: "rabbitmq_management rabbitmq_stomp"
+    networks:
+      - seugi-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - mongodb
+      - mysql
+      - rabbitmq
+    container_name: seugi-server
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: ${REDIS_PASSWORD}
+      SPRING_MONGODB_URI: mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@$mongodb/${MONGODB_DATABASE}?retryWrites=true&w=majority&appName=seugi
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      SPRING_MAIL_HOST: ${MAIL_HOST}
+      SPRING_MAIL_PORT: ${MAIL_PORT}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      SPRING_AWS_S3_ACCESSKEY: ${S3_ACCESSKEY}
+      SPRING_AWS_S3_SECRETKEY: ${S3_SECRETKEY}
+      SPRING_AWS_S3_BUCKET: ${S3_BUCKET}
+      SPRING_JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SPRING_JWT_ACCESS_EXPIRE: ${JWT_ACCESS_EXPIRE}
+      SPRING_JWT_REFRESH_EXPIRE: ${JWT_REFRESH_EXPIRE}
+      SPRING_OAUTH_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SPRING_OAUTH_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      SPRING_OAUTH_APPLE_KEY_ID: ${APPLE_KEY_ID}
+      SPRING_OAUTH_APPLE_TEAM_ID: ${APPLE_TEAM_ID}
+      SPRING_OAUTH_APPLE_APP_ID: ${APPLE_APP_ID}
+      SPRING_OAUTH_APPLE_SERVICE_ID: ${APPLE_SERVICE_ID}
+      SPRING_OAUTH_APPLE_PRIVATE_KEY: ${APPLE_PRIVATE_KEY}
+      SPRING_DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}
+    networks:
+      - seugi-network
+
+networks:
+  seugi-network:
